@@ -24,10 +24,21 @@ public final class Main implements Runnable {
     public void run() {
         final Dataset<Row> df = this.spark.read()
                 .format("com.databricks.spark.avro")
-                .options(this.args)
+                .options(
+                        new PrefixArgs(
+                                "input",
+                                this.args
+                        )
+                )
                 .load();
         df.write()
-                .options(this.args)
-                .csv(this.args.get("output"));
+                .format("csv")
+                .options(
+                        new PrefixArgs(
+                                "output",
+                                this.args
+                        )
+                )
+                .save();
     }
 }

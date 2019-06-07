@@ -54,8 +54,8 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--path=" + input,
-                        "--output=" + output
+                        "--input.path=" + input,
+                        "--output.path=" + output
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -87,9 +87,9 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--path=" + input,
-                        "--output=" + output,
-                        "--delimiter=X"
+                        "--input.path=" + input,
+                        "--output.path=" + output,
+                        "--output.delimiter=X"
                 )
         ).run();
 
