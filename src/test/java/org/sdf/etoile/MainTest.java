@@ -41,16 +41,7 @@ public final class MainTest {
                 .toPath()
                 .resolve("csv")
                 .toFile();
-        Files.copy(
-                Paths.get(
-                        this.getClass()
-                                .getClassLoader()
-                                .getResource("test.avro")
-                                .getFile()
-                ),
-                input.toPath()
-                        .resolve("test.avro")
-        );
+        copyAvro(input);
         new Main(
                 session,
                 new Args(
@@ -74,16 +65,7 @@ public final class MainTest {
                 .toPath()
                 .resolve("output")
                 .toFile();
-        Files.copy(
-                Paths.get(
-                        this.getClass()
-                                .getClassLoader()
-                                .getResource("test.avro")
-                                .getFile()
-                ),
-                input.toPath()
-                        .resolve("test.avro")
-        );
+        copyAvro(input);
         new Main(
                 session,
                 new Args(
@@ -92,7 +74,6 @@ public final class MainTest {
                         "--output.delimiter=X"
                 )
         ).run();
-
         final List<File> files = Arrays
                 .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
                 .collect(Collectors.toList());
@@ -112,6 +93,19 @@ public final class MainTest {
                 Matchers.everyItem(
                         Matchers.containsString("X")
                 )
+        );
+    }
+
+    private void copyAvro(final File input) throws IOException {
+        Files.copy(
+                Paths.get(
+                        this.getClass()
+                                .getClassLoader()
+                                .getResource("test.avro")
+                                .getFile()
+                ),
+                input.toPath()
+                        .resolve("test.avro")
         );
     }
 
