@@ -10,7 +10,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public final class Main implements Runnable {
     private static final String DEFAULT_OUTPUT_FORMAT = "csv";
-    private static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
+    public static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
     private final SparkSession spark;
     private final Map<String, String> args;
 
@@ -35,7 +35,7 @@ public final class Main implements Runnable {
                 )
                 .options(input)
                 .load();
-        final PrefixArgs output = new PrefixArgs(
+        final Map<String, String> output = new PrefixArgs(
                 "output",
                 this.args
         );
