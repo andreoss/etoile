@@ -1,0 +1,11 @@
+Пример использования étoilé
+
+```
+$ spark2-submit --master local étoilé-0.1.0-SNAPSHOT.jar \
+    --input.path=hdfs://tmp/avro                            \
+    --output.path=file:///tmp/csv10                         \
+    --output.delimiter=""                                   \
+    --output.header=true
+```
+
+
