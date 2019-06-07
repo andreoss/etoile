@@ -9,6 +9,8 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 public final class Main implements Runnable {
+    private static final String DEFAULT_OUTPUT_FORMAT = "csv";
+    private static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
     private final SparkSession spark;
     private final Map<String, String> args;
 
@@ -22,23 +24,27 @@ public final class Main implements Runnable {
 
     @Override
     public void run() {
+        final Map<String, String> input = new PrefixArgs(
+                "input",
+                this.args
+        );
         final Dataset<Row> df = this.spark.read()
-                .format("com.databricks.spark.avro")
-                .options(
-                        new PrefixArgs(
-                                "input",
-                                this.args
+                .format(input.getOrDefault(
+                        "format", DEFAULT_INPUT_FORMAT
                         )
                 )
+                .options(input)
                 .load();
+        final PrefixArgs output = new PrefixArgs(
+                "output",
+                this.args
+        );
         df.write()
-                .format("csv")
-                .options(
-                        new PrefixArgs(
-                                "output",
-                                this.args
+                .format(output.getOrDefault(
+                        "format", DEFAULT_OUTPUT_FORMAT
                         )
                 )
+                .options(output)
                 .save();
     }
 }

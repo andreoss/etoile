@@ -9,6 +9,7 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
+import org.mockito.internal.util.io.IOUtil;
 
 import java.io.File;
 import java.io.FileReader;
@@ -95,6 +96,49 @@ public final class MainTest {
                 )
         );
     }
+    @Test
+    public void canUseCustomFormat() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.getRoot()
+                .toPath()
+                .resolve("output")
+                .toFile();
+        IOUtil.writeText(
+                "1,2,3,4,5",
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.delimiter=,",
+                        "--input.path=" + input,
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=#"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+                "files were written",
+                files,
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "contains 1 line and delimiter is ;",
+                lines,
+                Matchers.contains(
+                        Matchers.is("1#2#3#4#5")
+                )
+        );
+    }
+
 
     private void copyAvro(final File input) throws IOException {
         Files.copy(
