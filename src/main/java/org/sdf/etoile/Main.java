@@ -25,7 +25,7 @@ public final class Main implements Runnable {
         final Dataset<Row> df = this.spark.read()
                 .format("com.databricks.spark.avro")
                 .options(this.args)
-                .load(this.args.get("input"));
+                .load();
         df.write()
                 .options(this.args)
                 .csv(this.args.get("output"));

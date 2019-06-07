@@ -54,7 +54,7 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--input=" + input,
+                        "--path=" + input,
                         "--output=" + output
                 )
         ).run();
@@ -87,7 +87,7 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--input=" + input,
+                        "--path=" + input,
                         "--output=" + output,
                         "--delimiter=X"
                 )
