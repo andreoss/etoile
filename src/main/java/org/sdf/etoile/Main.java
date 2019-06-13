@@ -29,9 +29,7 @@ public final class Main implements Runnable {
                 .load();
         if (input.containsKey("sort")) {
             final Column expr = functions.expr(input.get("sort"));
-            saveOutput(
-                    df.sort(expr)
-            );
+            saveOutput(df.sort(expr));
         } else {
             saveOutput(df);
         }
