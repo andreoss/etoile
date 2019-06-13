@@ -183,6 +183,49 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void writesSortedOutput_AndSortsNumerically() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        copyAvro(input, "unsorted.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input,
+                        "--input.sort=cast(NUMB1 as int)",
+                        "--output.path=" + output,
+                        "--output.delimiter=|",
+                        "--output.format=csv"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+                "files were written",
+                files,
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "contains 3 lines sorted by NUMB1",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("wrwrwrw|4|3"),
+                        Matchers.startsWith("wwer|5|12"),
+                        Matchers.startsWith("RRE|3|55")
+                )
+        );
+    }
+
     private void copyAvro(final File input, final String name) throws IOException {
         Files.copy(
                 Paths.get(

@@ -1,9 +1,7 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.*;
 
 import java.util.Map;
 
@@ -30,7 +28,10 @@ public final class Main implements Runnable {
                 .options(input)
                 .load();
         if (input.containsKey("sort")) {
-            saveOutput(df.sort(input.get("sort")));
+            final Column expr = functions.expr(input.get("sort"));
+            saveOutput(
+                    df.sort(expr)
+            );
         }
         else {
             saveOutput(df);
