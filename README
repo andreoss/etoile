@@ -1,11 +1,24 @@
-Пример использования étoilé
+Параметры для входных данных передаются с префиксом input
+`--input.path`, `--input.format` и т.д
+Для выходных данных аналогично, с префиксом output
 
 ```
 $ spark2-submit --master local étoilé-0.1.0-SNAPSHOT.jar \
     --input.path=hdfs://tmp/avro                            \
     --output.path=file:///tmp/csv10                         \
-    --output.delimiter=""                                   \
+    --output.delimiter=","                                   \
     --output.header=true
 ```
 
+Можно передать выражение или имя колонки для сортивки входного датасета,
+через параметр input.sort
+
+```
+$ spark2-submit --master local[1] étoilé-0.1.0-SNAPSHOT.jar   \
+    --input.path=hdfs://tmp/avro                                 \
+    --input.sort='cast(CTL_VALIDFROM as timestamp)'              \
+    --output.path=file:///tmp/csv20                              \
+    --output.delimiter="|"                                       \
+    --output.header=true                                         \
+```
 
