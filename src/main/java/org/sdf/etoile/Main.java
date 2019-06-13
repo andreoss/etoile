@@ -32,8 +32,7 @@ public final class Main implements Runnable {
             saveOutput(
                     df.sort(expr)
             );
-        }
-        else {
+        } else {
             saveOutput(df);
         }
     }
@@ -41,10 +40,7 @@ public final class Main implements Runnable {
     private void saveOutput(final Dataset<Row> df) {
         final Map<String, String> output = new PrefixArgs("output", this.args);
         df.write()
-                .format(output.getOrDefault(
-                        "format", DEFAULT_OUTPUT_FORMAT
-                        )
-                )
+                .format(output.getOrDefault("format", DEFAULT_OUTPUT_FORMAT))
                 .options(output)
                 .save();
     }
