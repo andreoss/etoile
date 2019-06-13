@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public final class Args implements Map<String, String> {
-    private static final Pattern ARG_RX = Pattern.compile("--(?<key>[a-z0-9\\.]+)=(?<value>\\S+)");
+    private static final Pattern ARG_RX = Pattern.compile("--(?<key>[a-z0-9\\.]+)=(?<value>.+)");
 
     private final Pattern pattern;
     private final String[] args;
