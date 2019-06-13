@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.SparkSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.hamcrest.collection.IsIterableContainingInOrder;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -96,6 +97,7 @@ public final class MainTest {
                 )
         );
     }
+
     @Test
     public void canUseCustomFormat() throws IOException {
         final File input = temp.newFolder("input");
@@ -139,18 +141,64 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void writesSortedOutput() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        copyAvro(input, "unsorted.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input,
+                        "--input.sort=CTL_SEQNO",
+                        "--output.path=" + output,
+                        "--output.format=csv"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+                "files were written",
+                files,
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "contains 3 lines sorted by CTL_SEQNO",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.endsWith("I,1,1"),
+                        Matchers.endsWith("I,2,2"),
+                        Matchers.endsWith("I,3,3")
+                )
+        );
+    }
 
-    private void copyAvro(final File input) throws IOException {
+    private void copyAvro(final File input, final String name) throws IOException {
         Files.copy(
                 Paths.get(
                         this.getClass()
                                 .getClassLoader()
-                                .getResource("test.avro")
+                                .getResource(name)
                                 .getFile()
                 ),
                 input.toPath()
-                        .resolve("test.avro")
+                        .resolve(name)
         );
+    }
+
+
+    private void copyAvro(final File input) throws IOException {
+        copyAvro(input, "test.avro");
     }
 
     @Before
