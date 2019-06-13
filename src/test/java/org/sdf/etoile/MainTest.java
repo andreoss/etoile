@@ -99,6 +99,46 @@ public final class MainTest {
     }
 
     @Test
+    public void canSpecifyNumberOfPartitions() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.getRoot()
+                .toPath()
+                .resolve("output")
+                .toFile();
+        IOUtil.writeText(
+                String.join("\n",
+                        "a,b,c,d,e",
+                        "1,x,a,y,5",
+                        "2,x,b,y,5",
+                        "3,x,c,y,5",
+                        "4,x,d,y,5",
+                        "5,x,c,y,5"
+                ),
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.delimiter=,",
+                        "--input.path=" + input,
+                        "--output.partitions=1",
+                        "--output.path=" + output
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .collect(Collectors.toList());
+        MatcherAssert.assertThat(
+                "files were written",
+                files,
+                Matchers.hasSize(Matchers.equalTo(1))
+        );
+    }
+
+
+    @Test
     public void canUseCustomFormat() throws IOException {
         final File input = temp.newFolder("input");
         final File output = temp.getRoot()
@@ -247,7 +287,7 @@ public final class MainTest {
     @Before
     public void setUp() {
         session = SparkSession.builder()
-                .master("local[1]")
+                .master("local[*]")
                 .getOrCreate();
     }
 }

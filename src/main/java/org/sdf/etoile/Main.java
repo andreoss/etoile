@@ -37,7 +37,10 @@ public final class Main implements Runnable {
 
     private void saveOutput(final Dataset<Row> df) {
         final Map<String, String> output = new PrefixArgs("output", this.args);
-        df.write()
+        final int num = Integer.parseUnsignedInt(output.getOrDefault("partitions", "1"));
+        df
+                .coalesce(num)
+                .write()
                 .format(output.getOrDefault("format", DEFAULT_OUTPUT_FORMAT))
                 .options(output)
                 .save();
