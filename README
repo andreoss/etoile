@@ -22,3 +22,17 @@ $ spark2-submit --master local[1] étoilé-0.1.0-SNAPSHOT.jar   \
     --output.header=true                                         \
 ```
 
+Можно через конвертировать в csv таблицы из oracle
+
+```
+$ spark2-submit spark2-submit --driver-class-path ojdbc8-12.2.0.1.jar --jars ojdbc8-12.2.0.1.jar --master local[1] étoilé-0.1.2-SNAPSHOT.jar   \
+    --input.url="jdbc://"                                                                                                                         \
+    --input.format="jdbc"                                                                                                                         \
+    --input.dbtable=schema_name.table_name                                                                                                        \
+    --input.path=hdfs://tmp/avro                                                                                                                  \
+    --input.user=org.sdf_test                                                                                                                       \
+    --input.password=org.sdf_test                                                                                                                   \
+    --output.path=file:///tmp/csv20                                                                                                               \
+```
+
+
