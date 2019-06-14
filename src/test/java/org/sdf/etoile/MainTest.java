@@ -12,10 +12,7 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.mockito.internal.util.io.IOUtil;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.nio.file.Files;
+import java.io.*;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -267,16 +264,14 @@ public final class MainTest {
     }
 
     private void copyAvro(final File input, final String name) throws IOException {
-        Files.copy(
-                Paths.get(
-                        this.getClass()
-                                .getClassLoader()
-                                .getResource(name)
-                                .getFile()
-                ),
-                input.toPath()
-                        .resolve(name)
-        );
+        final File copy = Paths.get(input.getAbsolutePath(), name).toFile();
+        try (final InputStream stream = this.getClass()
+                .getClassLoader()
+                .getResourceAsStream(name);
+             final OutputStream output = new FileOutputStream(copy)
+        ) {
+            IOUtils.copy(stream, output);
+        }
     }
 
 
