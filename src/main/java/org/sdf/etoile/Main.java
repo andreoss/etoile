@@ -46,10 +46,11 @@ public final class Main implements Runnable {
     }
 
     private List<Map<String, String>> parseCastParameter(final String cast) {
-        return Stream.of(cast.split(","))
+        final String colSep = ",";
+        final String typeSep = ":";
+        return Stream.of(cast.split(colSep))
                 .filter(s -> !s.isEmpty())
-                .filter(s -> s.contains(":"))
-                .map(s -> Arrays.asList(s.split(":")))
+                .map(s -> Arrays.asList(s.split(typeSep)))
                 .map(l -> Collections.singletonMap(l.get(0), l.get(1)))
                 .collect(Collectors.toList());
     }
