@@ -19,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class MainTest {
     @Rule
@@ -216,6 +217,191 @@ public final class MainTest {
                         Matchers.endsWith("I,1,1"),
                         Matchers.endsWith("I,2,2"),
                         Matchers.endsWith("I,3,3")
+                )
+        );
+    }
+
+    @Test
+    public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        IOUtil.writeText(
+                String.join("\n",
+                        "id,ts,ts",
+                        "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
+                        "1,1999-06-13 13:31:59,2019-06-13 13:31:59"
+                ),
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=ts1",
+                        "--input.cast=ts1:timestamp,ts2:timestamp",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "converts two timestamp columns and sorts",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("1|1999"),
+                        Matchers.startsWith("0|2000")
+                )
+        );
+    }
+
+    @Test
+    public void canCastType_StringToTimestamp() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        IOUtil.writeText(
+                String.join("\n",
+                        "id,ctl_validfrom,name",
+                        "0,2019-06-13 13:31:59,abc",
+                        "1,2019-06-13 13:31:59,xyz"
+                ),
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=id",
+                        "--input.cast=ctl_validfrom:timestamp",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "converts timestamp to string",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("0|2019-06-13T13:31:59.000Z|abc"),
+                        Matchers.startsWith("1|2019-06-13T13:31:59.000Z|xyz")
+                )
+        );
+    }
+
+    @Test
+    public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        IOUtil.writeText(
+                String.join("\n",
+                        "id,ctl_validfrom,name",
+                        "0,2019-06-13 13:31:59,abc",
+                        "1,2019-06-13 13:31:59,xyz"
+                ),
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=id",
+                        "--input.cast=ctl_validfrom:timestamp",
+                        "--output.cast=ctl_validfrom:string",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "converts timestamp to string and back to timestamp",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("0|2019-06-13 13:31:59|abc"),
+                        Matchers.startsWith("1|2019-06-13 13:31:59|xyz")
+                )
+        );
+    }
+
+    @Test
+    public void canCastType_StringToInt_andIntToTimestamp() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        IOUtil.writeText(
+                String.join("\n",
+                        "id,ts",
+                        "0,0",
+                        "1,1000"
+                ),
+                input.toPath().resolve("test-input.csv").toFile()
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=id",
+                        "--input.cast=ts:int,ts:timestamp",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        final List<File> files = Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .sorted()
+                .collect(Collectors.toList());
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        MatcherAssert.assertThat(
+                "converts timestamp to string and back to timestamp",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("0|1970-01-01T00:00:00.000Z"),
+                        Matchers.startsWith("1|1970-01-01T00:16:40.000Z")
                 )
         );
     }
