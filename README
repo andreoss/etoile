@@ -3,7 +3,7 @@
 Для выходных данных аналогично, с префиксом output
 
 ```
-$ spark2-submit --master local étoilé-0.1.0-SNAPSHOT.jar \
+$ spark2-submit --master local étoilé-0.1.4-SNAPSHOT.jar \
     --input.path=hdfs://tmp/avro                            \
     --output.path=file:///tmp/csv10                         \
     --output.delimiter=","                                   \
@@ -14,7 +14,7 @@ $ spark2-submit --master local étoilé-0.1.0-SNAPSHOT.jar \
 через параметр input.sort
 
 ```
-$ spark2-submit --master local[1] étoilé-0.1.0-SNAPSHOT.jar   \
+$ spark2-submit --master local[1] étoilé-0.1.4-SNAPSHOT.jar   \
     --input.path=hdfs://tmp/avro                                 \
     --input.sort='cast(CTL_VALIDFROM as timestamp)'              \
     --output.path=file:///tmp/csv20                              \
@@ -22,10 +22,10 @@ $ spark2-submit --master local[1] étoilé-0.1.0-SNAPSHOT.jar   \
     --output.header=true                                         \
 ```
 
-Можно через конвертировать в csv таблицы из oracle
+Можно конвертировать в csv таблицы из oracle
 
 ```
-$ spark2-submit spark2-submit --driver-class-path ojdbc8-12.2.0.1.jar --jars ojdbc8-12.2.0.1.jar --master local[1] étoilé-0.1.2-SNAPSHOT.jar   \
+$ spark2-submit spark2-submit --jars étoilé-0.1.4-SNAPSHOT.jar --master local étoilé-0.1.4-SNAPSHOT.jar   \
     --input.url="jdbc://"                                                                                                                         \
     --input.format="jdbc"                                                                                                                         \
     --input.dbtable=schema_name.table_name                                                                                                        \
@@ -34,5 +34,18 @@ $ spark2-submit spark2-submit --driver-class-path ojdbc8-12.2.0.1.jar --jars ojd
     --input.password=org.sdf_test                                                                                                                   \
     --output.path=file:///tmp/csv20                                                                                                               \
 ```
+
+Через параметр input.cast или output.cast менять тип колонок в таблице
+
+```
+$ spark2-submit spark2-submit --jars étoilé-0.1.4-SNAPSHOT.jar --master local étoilé-0.1.4-SNAPSHOT.jar
+    --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
+    --input.dbtable=schema_name.table_name                                                                                                        \
+    --input.path=hdfs://tmp/avro
+    --input.cast="tableName:type"
+    (or --output.cast="tableName:type")
+    --output.path=file:///tmp/csv20
+```
+
 
 
