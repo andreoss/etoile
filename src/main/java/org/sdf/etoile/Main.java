@@ -3,10 +3,8 @@ package org.sdf.etoile;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -32,17 +30,28 @@ public final class Main implements Runnable {
                 .format(input.getOrDefault("format", DEFAULT_INPUT_FORMAT))
                 .options(input)
                 .load();
+        final Dataset<Row> result = sorted(input, orig);
+        saveOutput(result);
+    }
 
-        final Dataset<Row> dfWithCasts = castTypes(orig, parseCastParameter(input.getOrDefault("cast", "")));
+    private Dataset<Row> sorted(final Map<String, String> input, final Dataset<Row> orig) {
+        final Dataset<Row> casted = fullCast(orig, input);
         final Dataset<Row> result;
         if (input.containsKey("sort")) {
             final Column expr = functions.expr(input.get("sort"));
-            result = dfWithCasts.sort(expr);
+            result = casted.sort(expr);
         } else {
-            result = dfWithCasts;
+            result = casted;
 
         }
-        saveOutput(result);
+        return result;
+    }
+
+    private Dataset<Row> fullCast(final Dataset<Row> orig, final Map<String, String> params) {
+        final List<Map<String, String>> cast = parseCastParameter(params.getOrDefault("cast", ""));
+        final Dataset<Row> columnsCasted = castTypes(orig, cast);
+        final List<Map<String, String>> convert = parseCastParameter(params.getOrDefault("convert", ""));
+        return castTypes(columnsCasted, remapTypesToColumns(columnsCasted, convert));
     }
 
     private List<Map<String, String>> parseCastParameter(final String cast) {
@@ -70,13 +79,47 @@ public final class Main implements Runnable {
 
     private void saveOutput(final Dataset<Row> df) {
         final Map<String, String> output = new PrefixArgs("output", this.args);
-
         final int num = Integer.parseUnsignedInt(output.getOrDefault("partitions", "1"));
-        castTypes(df, parseCastParameter(output.getOrDefault("cast", "")))
+        final Dataset<Row> casted = fullCast(df, output);
+        casted
                 .coalesce(num)
                 .write()
                 .format(output.getOrDefault("format", DEFAULT_OUTPUT_FORMAT))
                 .options(output)
                 .save();
+    }
+
+    private List<Map<String, String>> remapTypesToColumns(final Dataset<Row> df, final Iterable<? extends Map<String, String>> types) {
+        final Map<String, List<String>> cols = mapTypesToColumns(df);
+        final List<Map<String, String>> result = new ArrayList<>();
+        for (final Map<String, String> type : types) {
+            for (final Map.Entry<String, String> entry : type.entrySet()) {
+                final String from = entry.getKey();
+                final String to = entry.getValue();
+                if (cols.containsKey(from)) {
+                    final List<String> xs = cols.get(from);
+                    for (final String x : xs) {
+                        result.add(
+                                Collections.singletonMap(
+                                        x, to
+                                )
+                        );
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    private Map<String, List<String>> mapTypesToColumns(final Dataset<Row> df) {
+        final BinaryOperator<List<String>> merge = (a, b) -> Stream.of(a, b).flatMap(List::stream).collect(Collectors.toList());
+        return Stream.of(df.schema().fields())
+                .collect(
+                        Collectors.toMap(
+                                field -> field.dataType().catalogString().toLowerCase(),
+                                field -> Collections.singletonList(field.name().toLowerCase()),
+                                merge
+                        )
+                );
     }
 }
