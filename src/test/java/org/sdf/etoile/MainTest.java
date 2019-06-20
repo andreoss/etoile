@@ -19,7 +19,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public final class MainTest {
     @Rule
@@ -41,7 +40,7 @@ public final class MainTest {
                 .toPath()
                 .resolve("csv")
                 .toFile();
-        copyAvro(input);
+        copyAvro(input, "test.avro");
         new Main(
                 session,
                 new Args(
@@ -65,7 +64,7 @@ public final class MainTest {
                 .toPath()
                 .resolve("output")
                 .toFile();
-        copyAvro(input);
+        copyAvro(input, "test.avro");
         new Main(
                 session,
                 new Args(
@@ -74,22 +73,15 @@ public final class MainTest {
                         "--output.delimiter=X"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .collect(Collectors.toList());
         MatcherAssert.assertThat(
                 "files were written",
-                files,
+                listCsvFiles(output),
                 Matchers.hasSize(Matchers.greaterThan(0))
         );
 
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "each line contains delimiter",
-                lines,
+                readAllLines(output),
                 Matchers.everyItem(
                         Matchers.containsString("X")
                 )
@@ -125,14 +117,17 @@ public final class MainTest {
                         "--output.path=" + output
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .collect(Collectors.toList());
         MatcherAssert.assertThat(
                 "files were written",
-                files,
+                listCsvFiles(output),
                 Matchers.hasSize(Matchers.equalTo(1))
         );
+    }
+
+    private List<File> listCsvFiles(final File output) {
+        return Arrays
+                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .collect(Collectors.toList());
     }
 
 
@@ -158,18 +153,12 @@ public final class MainTest {
                         "--output.delimiter=#"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .collect(Collectors.toList());
         MatcherAssert.assertThat(
                 "files were written",
-                files,
+                listCsvFiles(output),
                 Matchers.hasSize(Matchers.greaterThan(0))
         );
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
+        final List<String> lines = readAllLines(output);
         MatcherAssert.assertThat(
                 "contains 1 line and delimiter is ;",
                 lines,
@@ -177,6 +166,14 @@ public final class MainTest {
                         Matchers.is("1#2#3#4#5")
                 )
         );
+    }
+
+    private List<String> readAllLines(final List<File> files) throws IOException {
+        final List<String> lines = new ArrayList<>();
+        for (final File csv : files) {
+            lines.addAll(IOUtils.readLines(new FileReader(csv)));
+        }
+        return lines;
     }
 
     @Test
@@ -197,22 +194,14 @@ public final class MainTest {
                         "--output.format=csv"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
         MatcherAssert.assertThat(
                 "files were written",
-                files,
+                listCsvFiles(output),
                 Matchers.hasSize(Matchers.greaterThan(0))
         );
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "contains 3 lines sorted by CTL_SEQNO",
-                lines,
+                readAllLines(output),
                 IsIterableContainingInOrder.contains(
                         Matchers.endsWith("I,1,1"),
                         Matchers.endsWith("I,2,2"),
@@ -224,18 +213,7 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
-        IOUtil.writeText(
-                String.join("\n",
-                        "id,ts,ts",
-                        "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
-                        "1,1999-06-13 13:31:59,2019-06-13 13:31:59"
-                ),
-                input.toPath().resolve("test-input.csv").toFile()
-        );
+        final File output = writeCsv(input, "id,ts,ts", "0,2000-06-13 13:31:59,2019-06-13 13:31:59", "1,1999-06-13 13:31:59,2019-06-13 13:31:59");
         new Main(
                 session,
                 new Args(
@@ -249,17 +227,9 @@ public final class MainTest {
                         "--output.delimiter=|"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "converts two timestamp columns and sorts",
-                lines,
+                readAllLines(output),
                 IsIterableContainingInOrder.contains(
                         Matchers.startsWith("1|1999"),
                         Matchers.startsWith("0|2000")
@@ -270,18 +240,7 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
-        IOUtil.writeText(
-                String.join("\n",
-                        "id,ctl_validfrom,name",
-                        "0,2019-06-13 13:31:59,abc",
-                        "1,2019-06-13 13:31:59,xyz"
-                ),
-                input.toPath().resolve("test-input.csv").toFile()
-        );
+        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
         new Main(
                 session,
                 new Args(
@@ -295,17 +254,9 @@ public final class MainTest {
                         "--output.delimiter=|"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "converts timestamp to string",
-                lines,
+                readAllLines(output),
                 IsIterableContainingInOrder.contains(
                         Matchers.startsWith("0|2019-06-13T13:31:59.000Z|abc"),
                         Matchers.startsWith("1|2019-06-13T13:31:59.000Z|xyz")
@@ -314,20 +265,82 @@ public final class MainTest {
     }
 
     @Test
-    public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
+    public void canCastTypAllTimestampsToStringOnWrite() throws IOException {
         final File input = temp.newFolder("input");
+        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=id",
+                        "--input.cast=ctl_validfrom:timestamp",
+                        "--output.convert=timestamp:string",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "converts timestamp to string and back to timestamp",
+                readAllLines(output),
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("0|2019-06-13 13:31:59|abc"),
+                        Matchers.startsWith("1|2019-06-13 13:31:59|xyz")
+                )
+        );
+    }
+
+    @Test
+    public void canCastAllIntsToTimestampOnRead() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = writeCsv(input,
+                "id,ctl_validfrom,name",
+                "0,0,abc",
+                "1,0,xyz");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.sort=id",
+                        "--input.cast=ctl_validfrom:int,ctl_validfrom:timestamp",
+                        "--input.convert=timestamp:string",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=|"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "converts timestamp to string and back to timestamp",
+                readAllLines(output),
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("0|1970-01-01 00"),
+                        Matchers.startsWith("1|1970-01-01 00")
+                )
+        );
+    }
+
+    private File writeCsv(final File input, final String... lines) throws IOException {
         final File output = temp.newFolder("output")
                 .toPath()
                 .resolve("csv")
                 .toFile();
         IOUtil.writeText(
                 String.join("\n",
-                        "id,ctl_validfrom,name",
-                        "0,2019-06-13 13:31:59,abc",
-                        "1,2019-06-13 13:31:59,xyz"
+                        lines
                 ),
                 input.toPath().resolve("test-input.csv").toFile()
         );
+        return output;
+    }
+
+    @Test
+    public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
         new Main(
                 session,
                 new Args(
@@ -342,17 +355,9 @@ public final class MainTest {
                         "--output.delimiter=|"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "converts timestamp to string and back to timestamp",
-                lines,
+                readAllLines(output),
                 IsIterableContainingInOrder.contains(
                         Matchers.startsWith("0|2019-06-13 13:31:59|abc"),
                         Matchers.startsWith("1|2019-06-13 13:31:59|xyz")
@@ -363,17 +368,10 @@ public final class MainTest {
     @Test
     public void canCastType_StringToInt_andIntToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
-        IOUtil.writeText(
-                String.join("\n",
-                        "id,ts",
-                        "0,0",
-                        "1,1000"
-                ),
-                input.toPath().resolve("test-input.csv").toFile()
+        final File output = writeCsv(input,
+                "id,ts",
+                "0,0",
+                "1,1000"
         );
         new Main(
                 session,
@@ -388,20 +386,53 @@ public final class MainTest {
                         "--output.delimiter=|"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
         MatcherAssert.assertThat(
                 "converts timestamp to string and back to timestamp",
-                lines,
+                readAllLines(output),
                 IsIterableContainingInOrder.contains(
                         Matchers.startsWith("0|1970-01-01T00:00:00.000Z"),
                         Matchers.startsWith("1|1970-01-01T00:16:40.000Z")
+                )
+        );
+    }
+
+    private List<String> readAllLines(final File output) throws IOException {
+        return readAllLines(listCsvFiles(output));
+    }
+
+    @Test
+    public void writesSortedOutput_castsByColumnName() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        copyAvro(input, "unsorted.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input,
+                        "--input.cast=numb1:int",
+                        "--input.sort=NUMB1",
+                        "--output.path=" + output,
+                        "--output.delimiter=|",
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "files were written",
+                listCsvFiles(output),
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = readAllLines(output);
+        MatcherAssert.assertThat(
+                "contains 3 lines sorted by NUMB1",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("wrwrwrw|4|3"),
+                        Matchers.startsWith("wwer|5|12"),
+                        Matchers.startsWith("RRE|3|55")
                 )
         );
     }
@@ -425,19 +456,12 @@ public final class MainTest {
                         "--output.format=csv"
                 )
         ).run();
-        final List<File> files = Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
-                .sorted()
-                .collect(Collectors.toList());
         MatcherAssert.assertThat(
                 "files were written",
-                files,
+                listCsvFiles(output),
                 Matchers.hasSize(Matchers.greaterThan(0))
         );
-        final List<String> lines = new ArrayList<>();
-        for (final File csv : files) {
-            lines.addAll(IOUtils.readLines(new FileReader(csv)));
-        }
+        final List<String> lines = readAllLines(output);
         MatcherAssert.assertThat(
                 "contains 3 lines sorted by NUMB1",
                 lines,
@@ -460,10 +484,6 @@ public final class MainTest {
         }
     }
 
-
-    private void copyAvro(final File input) throws IOException {
-        copyAvro(input, "test.avro");
-    }
 
     @Before
     public void setUp() {
