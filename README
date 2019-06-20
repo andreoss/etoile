@@ -42,22 +42,22 @@ $ spark2-submit spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local 
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.path=hdfs://tmp/avro                                                                                                                  \
-    --input.cast="tableName:type,tableName:type"                                                                                                  \
-    (or --output.cast="tableName:type,tableName:type")
+    --input.cast="column:type,column:type"                                                                                                  \
+    (or --output.cast="column:type,column:type")
     --output.path=file:///tmp/csv20                                                                                                               \
 ```
 
-Можно через параметр input.convert менять тип колонок для всей таблицы (функция выполняется только после выполнения функции *.cast)
+Можно через параметр input.convert менять тип колонок для всей таблицы, без указания конкретной колонки
 
 ```
 $ spark2-submit spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.path=hdfs://tmp/avro                                                                                                                  \
-    --input.cast="tableName:type,tableName:type"                                                                                                  \
+    --input.cast="column:type,column:type"                                                                                                        \
     (or --output.cast="tableName:type,tableName:type")
-    --input.convert="type:castType,type:castType"                                                                                                   \
-    (or --output.convert="type:castType,type:castType")
+    --input.convert=type:type,type:type                                                                                                           \
+    (or --output.convert="type:type,type:type")
     --output.path=file:///tmp/csv20                                                                                                               \
 ```
 
