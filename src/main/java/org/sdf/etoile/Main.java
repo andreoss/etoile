@@ -1,9 +1,17 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.spark.sql.*;
+import org.apache.spark.sql.Column;
+import org.apache.spark.sql.Dataset;
+import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.functions;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -42,7 +50,6 @@ public final class Main implements Runnable {
             result = casted.sort(expr);
         } else {
             result = casted;
-
         }
         return result;
     }
@@ -67,10 +74,11 @@ public final class Main implements Runnable {
     private Dataset<Row> castTypes(final Dataset<Row> orig, final List<Map<String, String>> casts) {
         Dataset<Row> copy = orig;
         for (final Map<String, String> map : casts) {
-            for (Map.Entry<String, String> entry : map.entrySet()) {
+            for (final Map.Entry<String, String> entry : map.entrySet()) {
                 final String name = entry.getKey();
                 final String type = entry.getValue();
-                final Column cast = copy.col(name).cast(type);
+                final Column cast = copy.col(name)
+                        .cast(type);
                 copy = copy.withColumn(name, cast);
             }
         }
@@ -100,9 +108,7 @@ public final class Main implements Runnable {
                     final List<String> xs = cols.get(from);
                     for (final String x : xs) {
                         result.add(
-                                Collections.singletonMap(
-                                        x, to
-                                )
+                                Collections.singletonMap(x, to)
                         );
                     }
                 }
@@ -112,12 +118,18 @@ public final class Main implements Runnable {
     }
 
     private Map<String, List<String>> mapTypesToColumns(final Dataset<Row> df) {
-        final BinaryOperator<List<String>> merge = (a, b) -> Stream.of(a, b).flatMap(List::stream).collect(Collectors.toList());
-        return Stream.of(df.schema().fields())
+        final BinaryOperator<List<String>> merge = (a, b) -> Stream.of(a, b)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+        return Stream.of(df.schema()
+                .fields())
                 .collect(
                         Collectors.toMap(
-                                field -> field.dataType().catalogString().toLowerCase(),
-                                field -> Collections.singletonList(field.name().toLowerCase()),
+                                field -> field.dataType()
+                                        .catalogString()
+                                        .toLowerCase(),
+                                field -> Collections.singletonList(field.name()
+                                        .toLowerCase()),
                                 merge
                         )
                 );
