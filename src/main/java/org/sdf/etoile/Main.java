@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 @RequiredArgsConstructor
 public final class Main implements Runnable {
-    public static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
+    private static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
     private static final String DEFAULT_OUTPUT_FORMAT = "csv";
     private final SparkSession spark;
     private final Map<String, String> args;
