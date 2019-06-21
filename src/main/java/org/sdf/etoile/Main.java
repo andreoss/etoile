@@ -1,185 +1,36 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Delegate;
-import org.apache.spark.sql.Column;
-import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.functions;
-import org.apache.spark.sql.types.DataType;
-import org.apache.spark.sql.types.StructField;
-import org.apache.spark.sql.types.StructType;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
 
 @RequiredArgsConstructor
 public final class Main implements Runnable {
-    private static final String DEFAULT_INPUT_FORMAT = "com.databricks.spark.avro";
-    private static final String DEFAULT_OUTPUT_FORMAT = "csv";
     private final SparkSession spark;
     private final Map<String, String> args;
 
     public static void main(final String[] args) {
-        new Main(
-                SparkSession.builder()
-                        .getOrCreate(),
-                new Args(args)
-        ).run();
+        new Main(SparkSession.builder()
+                .getOrCreate(), new Args(args)).run();
     }
 
     @Override
     public void run() {
-        final Map<String, String> input = new PrefixArgs("input", this.args);
-        final Dataset<Row> orig = this.spark.read()
-                .format(input.getOrDefault("format", DEFAULT_INPUT_FORMAT))
-                .options(input)
-                .load();
-        final Dataset<Row> result = sorted(input, orig);
-        saveOutput(result);
-    }
-
-    private Dataset<Row> sorted(final Map<String, String> input, final Dataset<Row> orig) {
-        final Dataset<Row> casted = fullCast(orig, input);
-        final Dataset<Row> result;
-        if (input.containsKey("sort")) {
-            final Column expr = functions.expr(input.get("sort"));
-            result = casted.sort(expr);
-        } else {
-            result = casted;
-        }
-        return result;
-    }
-
-    private Dataset<Row> fullCast(final Dataset<Row> orig, final Map<String, String> params) {
-        final List<Map<String, String>> cast = parseCastParameter(params.getOrDefault("cast", ""));
-        final Dataset<Row> columnsCasted = castTypes(orig, cast);
-        final List<Map<String, String>> convert = parseCastParameter(params.getOrDefault("convert", ""));
-        return castTypes(columnsCasted, remapTypesToColumns(columnsCasted, convert));
-    }
-
-    private List<Map<String, String>> parseCastParameter(final String cast) {
-        final String colSep = ",";
-        final String typeSep = ":";
-        return Stream.of(cast.split(colSep))
-                .filter(s -> !s.isEmpty())
-                .map(s -> Arrays.asList(s.split(typeSep)))
-                .map(l -> Collections.singletonMap(l.get(0), l.get(1)))
-                .collect(Collectors.toList());
-    }
-
-    private Dataset<Row> castTypes(final Dataset<Row> orig, final List<Map<String, String>> casts) {
-        Dataset<Row> copy = orig;
-        for (final Map<String, String> map : casts) {
-            for (final Map.Entry<String, String> entry : map.entrySet()) {
-                final String name = entry.getKey();
-                final String type = entry.getValue();
-                final Column cast = copy.col(name)
-                        .cast(type);
-                copy = copy.withColumn(name, cast);
-            }
-        }
-        return copy;
-    }
-
-    private void saveOutput(final Dataset<Row> df) {
-        final Map<String, String> output = new PrefixArgs("output", this.args);
-        final int num = Integer.parseUnsignedInt(output.getOrDefault("partitions", "1"));
-        final Dataset<Row> casted = fullCast(df, output);
-        casted
-                .coalesce(num)
-                .write()
-                .format(output.getOrDefault("format", DEFAULT_OUTPUT_FORMAT))
-                .options(output)
-                .save();
-    }
-
-    private List<Map<String, String>> remapTypesToColumns(final Map<String, List<String>> cols, final Iterable<Map<String, String>> types) {
-        final List<Map<String, String>> result = new ArrayList<>();
-        for (final Map<String, String> type : types) {
-            for (final Map.Entry<String, String> entry : type.entrySet()) {
-                final String from = entry.getKey();
-                final String to = entry.getValue();
-                if (cols.containsKey(from)) {
-                    final List<String> xs = cols.get(from);
-                    for (final String x : xs) {
-                        result.add(
-                                Collections.singletonMap(x, to)
-                        );
-                    }
-                }
-            }
-        }
-        return result;
-    }
-
-    private List<Map<String, String>> remapTypesToColumns(final Dataset<Row> df, final Iterable<Map<String, String>> types) {
-        return remapTypesToColumns(mapTypesToColumns(df), types);
-    }
-
-    private Map<String, List<String>> mapTypesToColumns(final Dataset<Row> df) {
-        return new MappedKeysMap<>(DataType::catalogString, new TypeToColumnsMap(df.schema()));
+        final Map<String, String> inOpts = new PrefixArgs("input", this.args);
+        final Map<String, String> outOpts = new PrefixArgs("output", this.args);
+        final Transformation<Row> raw = new Input(this.spark, inOpts);
+        final Terminal terminal = new StoredOutput<>(
+                new FullyCastedByParameters(
+                        new SortedByParameter<>(
+                                new FullyCastedByParameters(raw, inOpts), inOpts
+                        ), outOpts),
+                outOpts
+        );
+        terminal.run();
     }
 }
 
 
-@RequiredArgsConstructor
-final class MappedKeysMap<X, K, V> implements Map<X, V> {
-    private final Function<K, X> asString;
-    private final Map<K, V> orig;
-
-    @Delegate
-    private Map<X, V> value() {
-        final Function<Entry<K, V>, K> key = Entry::getKey;
-        return orig.entrySet()
-                .stream()
-                .collect(
-                        Collectors.toMap(key.andThen(asString), Entry::getValue)
-                );
-    }
-
-}
-
-@RequiredArgsConstructor
-final class JoinedList<K> implements List<K> {
-    private final List<List<K>> xs;
-
-    @SafeVarargs
-    JoinedList(final List<K>... xs) {
-        this(Arrays.asList(xs));
-    }
-
-    @Delegate
-    private List<K> value() {
-        return xs.stream()
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-    }
-}
-
-@RequiredArgsConstructor
-final class TypeToColumnsMap implements Map<DataType, List<String>> {
-    private final StructType schema;
-
-    @Delegate
-    private Map<DataType, List<String>> value() {
-        final Function<StructField, DataType> type = StructField::dataType;
-        final Function<StructField, String> name = StructField::name;
-        return Stream.of(this.schema
-                .fields())
-                .collect(
-                        Collectors.toMap(
-                                type,
-                                name.andThen(Collections::singletonList),
-                                (a, b) -> new JoinedList<>(a, b)
-                        )
-                );
-    }
-}
