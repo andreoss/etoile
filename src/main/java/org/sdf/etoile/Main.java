@@ -1,18 +1,22 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
+import lombok.experimental.Delegate;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.functions;
+import org.apache.spark.sql.types.DataType;
+import org.apache.spark.sql.types.StructField;
+import org.apache.spark.sql.types.StructType;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BinaryOperator;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -97,8 +101,7 @@ public final class Main implements Runnable {
                 .save();
     }
 
-    private List<Map<String, String>> remapTypesToColumns(final Dataset<Row> df, final Iterable<? extends Map<String, String>> types) {
-        final Map<String, List<String>> cols = mapTypesToColumns(df);
+    private List<Map<String, String>> remapTypesToColumns(final Map<String, List<String>> cols, final Iterable<Map<String, String>> types) {
         final List<Map<String, String>> result = new ArrayList<>();
         for (final Map<String, String> type : types) {
             for (final Map.Entry<String, String> entry : type.entrySet()) {
@@ -117,20 +120,65 @@ public final class Main implements Runnable {
         return result;
     }
 
+    private List<Map<String, String>> remapTypesToColumns(final Dataset<Row> df, final Iterable<Map<String, String>> types) {
+        return remapTypesToColumns(mapTypesToColumns(df), types);
+    }
+
     private Map<String, List<String>> mapTypesToColumns(final Dataset<Row> df) {
-        final BinaryOperator<List<String>> merge = (a, b) -> Stream.of(a, b)
+        return new MappedKeysMap<>(DataType::catalogString, new TypeToColumnsMap(df.schema()));
+    }
+}
+
+
+@RequiredArgsConstructor
+final class MappedKeysMap<X, K, V> implements Map<X, V> {
+    private final Function<K, X> asString;
+    private final Map<K, V> orig;
+
+    @Delegate
+    private Map<X, V> value() {
+        final Function<Entry<K, V>, K> key = Entry::getKey;
+        return orig.entrySet()
+                .stream()
+                .collect(
+                        Collectors.toMap(key.andThen(asString), Entry::getValue)
+                );
+    }
+
+}
+
+@RequiredArgsConstructor
+final class JoinedList<K> implements List<K> {
+    private final List<List<K>> xs;
+
+    @SafeVarargs
+    JoinedList(final List<K>... xs) {
+        this(Arrays.asList(xs));
+    }
+
+    @Delegate
+    private List<K> value() {
+        return xs.stream()
                 .flatMap(List::stream)
                 .collect(Collectors.toList());
-        return Stream.of(df.schema()
+    }
+}
+
+@RequiredArgsConstructor
+final class TypeToColumnsMap implements Map<DataType, List<String>> {
+    private final StructType schema;
+
+    @Delegate
+    private Map<DataType, List<String>> value() {
+        final Function<StructField, DataType> type = StructField::dataType;
+        final Function<StructField, String> name = StructField::name;
+        return Stream.of(this.schema
                 .fields())
                 .collect(
                         Collectors.toMap(
-                                field -> field.dataType()
-                                        .catalogString()
-                                        .toLowerCase(),
-                                field -> Collections.singletonList(field.name()
-                                        .toLowerCase()),
-                                merge
+                                type,
+                                name.andThen(Collections::singletonList),
+                                (a, b) -> new JoinedList<>(a, b)
                         )
                 );
     }
