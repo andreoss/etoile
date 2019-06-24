@@ -1,4 +1,4 @@
-package org.sdf.etoile;
+package org.sdf.etoile.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class MappedKeysMap<X, K, V> implements Map<X, V> {
+public final class MappedKeysMap<X, K, V> implements Map<X, V> {
     private final Function<K, X> asString;
     private final Map<K, V> orig;
 

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.types.DataType;
+import org.sdf.etoile.util.MappedKeysMap;
 
 import java.util.Map;
 
