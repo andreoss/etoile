@@ -24,7 +24,7 @@ final class FullyCastedByParameters implements Transformation<Row> {
                                 DataType::catalogString,
                                 new TypeToColumnsMap(casted)
                         ),
-                        new CastParameters("convert", params)
+                        new Pairs("convert", params)
                 )
         ).get();
     }
