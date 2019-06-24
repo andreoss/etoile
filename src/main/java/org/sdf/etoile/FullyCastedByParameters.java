@@ -15,14 +15,14 @@ final class FullyCastedByParameters implements Transformation<Row> {
 
     @Override
     public Dataset<Row> get() {
-        final Transformation<Row> columnsCasted = new ColumnsCastedByParameters(
+        final Transformation<Row> casted = new ColumnsCastedByParameters(
                 first, "cast", params
         );
-        return new ColumnsCastedToTypeMultiple(columnsCasted,
+        return new ColumnsCastedToTypeMultiple(casted,
                 new ColumnsToTypeMap(
                         new MappedKeysMap<>(
                                 DataType::catalogString,
-                                new TypeToColumnsMap(columnsCasted)
+                                new TypeToColumnsMap(casted)
                         ),
                         new CastParameters("convert", params)
                 )
