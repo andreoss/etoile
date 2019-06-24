@@ -1,4 +1,4 @@
-package org.sdf.etoile;
+package org.sdf.etoile.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-final class JoinedList<K> implements List<K> {
+public final class JoinedList<K> implements List<K> {
     private final List<List<K>> lists;
 
     @SafeVarargs
