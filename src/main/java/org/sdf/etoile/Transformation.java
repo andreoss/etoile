@@ -7,7 +7,6 @@ import java.util.function.Supplier;
 
 interface Transformation<Y> extends Supplier<Dataset<Y>> {
     final class Noop<Y> extends Envelope<Y> {
-
         Noop(final Transformation<Y> df) {
             super(() -> df);
         }

@@ -12,7 +12,7 @@ public final class JoinedList<K> implements List<K> {
     private final List<List<K>> lists;
 
     @SafeVarargs
-    JoinedList(final List<K>... xs) {
+    public JoinedList(final List<K>... xs) {
         this(Arrays.asList(xs));
     }
 
