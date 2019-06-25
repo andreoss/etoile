@@ -28,4 +28,9 @@ public class ArgsTest {
                 )
         );
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void failsOnUnparsableArg() {
+        new Args(new String[]{"--foo"}).get("foo");
+    }
 }

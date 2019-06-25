@@ -10,20 +10,22 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
-public final class Args implements Map<String, String> {
-    private static final Pattern ARG_RX = Pattern.compile("--(?<key>[a-z0-9\\.]+)=(?<value>.+)");
+final class Args implements Map<String, String> {
+    private static final Pattern ARG_RX = Pattern.compile(
+            "--(?<key>[a-z0-9\\.]+)=(?<value>.+)"
+    );
 
     private final Pattern pattern;
-    private final String[] args;
+    private final String[] arguments;
 
-    public Args(final String... args) {
-        this(ARG_RX, args);
+    Args(final String... arguments) {
+        this(ARG_RX, arguments);
     }
 
     @Delegate
     private Map<String, String> get() {
         final Map<String, String> result = new HashMap<>();
-        for (final String arg : args) {
+        for (final String arg : arguments) {
             final Matcher matcher = pattern.matcher(arg);
             if (matcher.matches()) {
                 result.put(
@@ -31,7 +33,13 @@ public final class Args implements Map<String, String> {
                         matcher.group("value")
                 );
             } else {
-                throw new IllegalArgumentException(arg + " does not match " + pattern);
+                throw new IllegalArgumentException(
+                        String.format(
+                                "%s does not match %s",
+                                arg,
+                                pattern
+                        )
+                );
             }
         }
         return Collections.unmodifiableMap(result);
