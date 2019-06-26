@@ -597,4 +597,34 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void canDropColumnFromOutput() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = writeCsv(input,
+                "id,val,name",
+                "0,2,go",
+                "1,1,at",
+                "2,0,se"
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--output.drop=name",
+                        "--output.path=" + output,
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "output sorted by id & val",
+                readAllLines(output),
+                Matchers.contains(
+                        Matchers.is("0,2"),
+                        Matchers.is("1,1"),
+                        Matchers.is("2,0")
+                )
+        );
+    }
 }

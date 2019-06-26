@@ -23,10 +23,15 @@ public final class Main implements Runnable {
         final Map<String, String> outOpts = new PrefixArgs("output", this.args);
         final Transformation<Row> raw = new Input(this.spark, inOpts);
         final Terminal terminal = new StoredOutput<>(
-                new FullyCastedByParameters(
-                        new SortedByParameter<>(
-                                new FullyCastedByParameters(raw, inOpts), inOpts
-                        ), outOpts),
+                new ColumnsDroppedByParameter<>(
+                        new FullyCastedByParameters(
+                                new SortedByParameter<>(
+                                        new FullyCastedByParameters(raw, inOpts), inOpts
+                                ),
+                                outOpts
+                        ),
+                        outOpts
+                ),
                 outOpts
         );
         terminal.run();
