@@ -16,8 +16,8 @@ final class CastParameters implements List<Map<String, String>> {
     private final String sep;
     private final String cast;
 
-    private CastParameters(final String cast) {
-        this(",", ":", cast);
+    private CastParameters(final String expressions) {
+        this(",", ":", expressions);
     }
 
     CastParameters(final String key, final Map<String, String> params) {

@@ -12,8 +12,8 @@ public final class ColumnsDropped<Y> implements Transformation<Row> {
     private final Transformation<Y> orig;
     private final List<String> columns;
 
-    ColumnsDropped(final Transformation<Y> orig, final String column) {
-        this(orig, Collections.singletonList(column));
+    ColumnsDropped(final Transformation<Y> input, final String column) {
+        this(input, Collections.singletonList(column));
     }
 
     @Override

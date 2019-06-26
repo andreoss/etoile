@@ -15,8 +15,8 @@ final class Sorted<Y> implements Transformation<Y> {
     private final Transformation<Y> df;
     private final List<Expression> expressions;
 
-    Sorted(final Transformation<Y> df, final String... expr) {
-        this(df, Arrays.stream(expr)
+    Sorted(final Transformation<Y> orig, final String... expr) {
+        this(orig, Arrays.stream(expr)
                 .map(SortExpression::new)
                 .collect(Collectors.toList()));
     }

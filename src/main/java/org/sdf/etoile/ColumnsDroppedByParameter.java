@@ -6,7 +6,10 @@ import java.util.Arrays;
 import java.util.Map;
 
 final class ColumnsDroppedByParameter<X> extends Transformation.Envelope<Row> {
-    ColumnsDroppedByParameter(final Transformation<X> df, final Map<String, String> params) {
+    ColumnsDroppedByParameter(
+            final Transformation<X> df,
+            final Map<String, String> params
+    ) {
         super(() -> {
                     final Transformation<Row> result;
                     if (params.containsKey("drop")) {

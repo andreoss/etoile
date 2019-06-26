@@ -26,7 +26,10 @@ public final class Main implements Runnable {
                 new ColumnsDroppedByParameter<>(
                         new FullyCastedByParameters(
                                 new SortedByParameter<>(
-                                        new FullyCastedByParameters(raw, inOpts), inOpts
+                                        new FullyCastedByParameters(
+                                                raw,
+                                                inOpts
+                                        ), inOpts
                                 ),
                                 outOpts
                         ),
