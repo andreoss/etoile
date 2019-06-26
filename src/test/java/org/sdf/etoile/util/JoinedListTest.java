@@ -1,10 +1,8 @@
-package org.sdf.etoile;
-
+package org.sdf.etoile.util;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.sdf.etoile.util.JoinedList;
 
 import java.util.Arrays;
 

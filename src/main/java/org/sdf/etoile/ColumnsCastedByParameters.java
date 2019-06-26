@@ -13,7 +13,7 @@ final class ColumnsCastedByParameters extends Transformation.Envelope<Row> {
         super(() ->
                 new ColumnsCastedToTypeMultiple(
                         df,
-                        new CastParameters(key, params)
+                        new Pairs(key, params)
                 )
         );
     }

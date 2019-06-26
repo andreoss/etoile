@@ -11,16 +11,16 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-final class CastParameters implements List<Map<String, String>> {
+final class Pairs implements List<Map<String, String>> {
     private final String colon;
     private final String sep;
     private final String cast;
 
-    private CastParameters(final String cast) {
+    private Pairs(final String cast) {
         this(",", ":", cast);
     }
 
-    CastParameters(final String key, final Map<String, String> params) {
+    Pairs(final String key, final Map<String, String> params) {
         this(params.getOrDefault(key, ""));
     }
 
