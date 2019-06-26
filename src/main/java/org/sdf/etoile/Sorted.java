@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.sdf.etoile.expr.Expression;
+import org.sdf.etoile.expr.SortExpression;
 
 import java.util.Arrays;
 import java.util.Collections;

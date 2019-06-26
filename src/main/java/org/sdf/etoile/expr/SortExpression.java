@@ -1,13 +1,11 @@
-package org.sdf.etoile;
+package org.sdf.etoile.expr;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Column;
 import org.apache.spark.sql.functions;
-import org.sdf.etoile.expr.Expression;
-import org.sdf.etoile.expr.OrderExpression;
 
 @RequiredArgsConstructor
-final class SortExpression implements Expression {
+public final class SortExpression implements Expression {
     private final String expr;
 
     @Override
