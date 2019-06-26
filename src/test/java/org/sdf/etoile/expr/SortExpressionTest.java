@@ -49,4 +49,9 @@ public final class SortExpressionTest {
                 Matchers.hasToString("foo ASC NULLS FIRST")
         );
     }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void canSpecifyOrder_failOnIncorrect() {
+        new SortExpression("foo:???").get();
+    }
 }
