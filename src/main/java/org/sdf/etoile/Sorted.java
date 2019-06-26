@@ -7,7 +7,6 @@ import org.sdf.etoile.expr.Expression;
 import org.sdf.etoile.expr.SortExpression;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,10 +19,6 @@ final class Sorted<Y> implements Transformation<Y> {
         this(df, Arrays.stream(expr)
                 .map(SortExpression::new)
                 .collect(Collectors.toList()));
-    }
-
-    private Sorted(final Transformation<Y> df, final Expression expr) {
-        this(df, Collections.singletonList(expr));
     }
 
     @Override
