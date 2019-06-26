@@ -5,16 +5,20 @@ import org.apache.spark.sql.Column;
 import org.apache.spark.sql.Dataset;
 import org.sdf.etoile.expr.Expression;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 final class Sorted<Y> implements Transformation<Y> {
     private final Transformation<Y> df;
     private final List<Expression> expressions;
 
-    Sorted(final Transformation<Y> df, final String expr) {
-        this(df, new SortExpression(expr));
+    Sorted(final Transformation<Y> df, final String... expr) {
+        this(df, Arrays.stream(expr)
+                .map(SortExpression::new)
+                .collect(Collectors.toList()));
     }
 
     private Sorted(final Transformation<Y> df, final Expression expr) {

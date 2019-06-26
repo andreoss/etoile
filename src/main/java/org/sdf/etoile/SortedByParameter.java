@@ -10,7 +10,11 @@ final class SortedByParameter<Y> extends Transformation.Envelope<Y> {
         super(
                 () -> {
                     if (param.containsKey("sort")) {
-                        return new Sorted<>(tran, param.get("sort"));
+                        return new Sorted<>(
+                                tran,
+                                param.get("sort")
+                                        .split(",")
+                        );
                     } else {
                         return new Noop<>(tran);
                     }
