@@ -473,6 +473,43 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void sortsInDescOrder() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        copyAvro(input, "unsorted.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input,
+                        "--input.sort=cast(NUMB1 as int):desc",
+                        "--output.path=" + output,
+                        "--output.delimiter=|",
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "files were written",
+                listCsvFiles(output),
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = readAllLines(output);
+        MatcherAssert.assertThat(
+                "contains 3 lines sorted by NUMB1",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("RRE|3|55"),
+                        Matchers.startsWith("wwer|5|12"),
+                        Matchers.startsWith("wrwrwrw|4|3")
+                )
+        );
+    }
+
+
     private void copyAvro(final File input, final String name) throws IOException {
         final File copy = Paths.get(input.getAbsolutePath(), name).toFile();
         try (final InputStream stream = this.getClass()
