@@ -16,8 +16,8 @@ final class Pairs implements List<Map<String, String>> {
     private final String sep;
     private final String cast;
 
-    private Pairs(final String cast) {
-        this(",", ":", cast);
+    private Pairs(final String expressions) {
+        this(",", ":", expressions);
     }
 
     Pairs(final String key, final Map<String, String> params) {

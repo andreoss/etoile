@@ -10,6 +10,9 @@ interface Transformation<Y> extends Supplier<Dataset<Y>> {
         Noop(final Transformation<Y> df) {
             super(() -> df);
         }
+        Noop(final Dataset<Y> ds) {
+            super(() -> ds);
+        }
     }
 
     @RequiredArgsConstructor

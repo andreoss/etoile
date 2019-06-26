@@ -12,18 +12,32 @@ import org.junit.rules.TemporaryFolder;
 import org.mockito.Mockito;
 import org.mockito.internal.util.io.IOUtil;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
+@SuppressWarnings("unchecked")
 public final class MainTest {
     @Rule
     public final TemporaryFolder temp = new TemporaryFolder();
     private SparkSession session;
+
+    @Before
+    public void setUp() {
+        session = SparkSession.builder()
+                .master("local[*]")
+                .getOrCreate();
+    }
 
     @Test(expected = NullPointerException.class)
     public void requiresArguments() {
@@ -104,7 +118,9 @@ public final class MainTest {
                         "4,x,d,y,5",
                         "5,x,c,y,5"
                 ),
-                input.toPath().resolve("test-input.csv").toFile()
+                input.toPath()
+                        .resolve("test-input.csv")
+                        .toFile()
         );
         new Main(
                 session,
@@ -126,7 +142,7 @@ public final class MainTest {
 
     private List<File> listCsvFiles(final File output) {
         return Arrays
-                .stream(output.listFiles((dir, name) -> name.endsWith("csv")))
+                .stream(Objects.requireNonNull(output.listFiles((dir, name) -> name.endsWith("csv"))))
                 .collect(Collectors.toList());
     }
 
@@ -140,7 +156,9 @@ public final class MainTest {
                 .toFile();
         IOUtil.writeText(
                 "1,2,3,4,5",
-                input.toPath().resolve("test-input.csv").toFile()
+                input.toPath()
+                        .resolve("test-input.csv")
+                        .toFile()
         );
         new Main(
                 session,
@@ -213,7 +231,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input, "id,ts,ts", "0,2000-06-13 13:31:59,2019-06-13 13:31:59", "1,1999-06-13 13:31:59,2019-06-13 13:31:59");
+        final File output = writeCsv(input,
+                "id,ts,ts",
+                "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
+                "1,1999-06-13 13:31:59,2019-06-13 13:31:59"
+        );
         new Main(
                 session,
                 new Args(
@@ -240,7 +262,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
+        final File output = writeCsv(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         new Main(
                 session,
                 new Args(
@@ -267,7 +293,11 @@ public final class MainTest {
     @Test
     public void canCastTypAllTimestampsToStringOnWrite() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
+        final File output = writeCsv(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         new Main(
                 session,
                 new Args(
@@ -332,7 +362,9 @@ public final class MainTest {
                 String.join("\n",
                         lines
                 ),
-                input.toPath().resolve("test-input.csv").toFile()
+                input.toPath()
+                        .resolve("test-input.csv")
+                        .toFile()
         );
         return output;
     }
@@ -340,7 +372,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input, "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz");
+        final File output = writeCsv(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         new Main(
                 session,
                 new Args(
@@ -473,22 +509,122 @@ public final class MainTest {
         );
     }
 
+    @Test
+    public void sortsInDescOrder() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+        copyAvro(input, "unsorted.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input,
+                        "--input.sort=cast(NUMB1 as int):desc",
+                        "--output.path=" + output,
+                        "--output.delimiter=|",
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "files were written",
+                listCsvFiles(output),
+                Matchers.hasSize(Matchers.greaterThan(0))
+        );
+        final List<String> lines = readAllLines(output);
+        MatcherAssert.assertThat(
+                "contains 3 lines sorted by NUMB1",
+                lines,
+                IsIterableContainingInOrder.contains(
+                        Matchers.startsWith("RRE|3|55"),
+                        Matchers.startsWith("wwer|5|12"),
+                        Matchers.startsWith("wrwrwrw|4|3")
+                )
+        );
+    }
+
+
     private void copyAvro(final File input, final String name) throws IOException {
-        final File copy = Paths.get(input.getAbsolutePath(), name).toFile();
+        final File copy = Paths.get(input.getAbsolutePath(), name)
+                .toFile();
         try (final InputStream stream = this.getClass()
                 .getClassLoader()
                 .getResourceAsStream(name);
              final OutputStream output = new FileOutputStream(copy)
         ) {
-            IOUtils.copy(stream, output);
+            IOUtils.copy(Objects.requireNonNull(stream), output);
         }
     }
 
+    @Test
+    public void canSortBySeveralColumns() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = writeCsv(input,
+                "id,val,char",
+                "1,3,o",
+                "2,2,g",
+                "2,1,u",
+                "0,0,y",
+                "3,4,y",
+                "3,0,a"
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.cast=id:int,val:int",
+                        "--input.sort=id,val",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "output sorted by id & val",
+                readAllLines(output),
+                Matchers.contains(
+                        Matchers.is("0;0;y"),
+                        Matchers.is("1;3;o"),
+                        Matchers.is("2;1;u"),
+                        Matchers.is("2;2;g"),
+                        Matchers.is("3;0;a"),
+                        Matchers.is("3;4;y")
+                )
+        );
+    }
 
-    @Before
-    public void setUp() {
-        session = SparkSession.builder()
-                .master("local[*]")
-                .getOrCreate();
+    @Test
+    public void canDropColumnFromOutput() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = writeCsv(input,
+                "id,val,name",
+                "0,2,go",
+                "1,1,at",
+                "2,0,se"
+        );
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--output.drop=name",
+                        "--output.path=" + output,
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "output sorted by id & val",
+                readAllLines(output),
+                Matchers.contains(
+                        Matchers.is("0,2"),
+                        Matchers.is("1,1"),
+                        Matchers.is("2,0")
+                )
+        );
     }
 }

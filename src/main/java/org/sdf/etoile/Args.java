@@ -16,7 +16,7 @@ final class Args implements Map<String, String> {
     );
 
     private final Pattern pattern;
-    private final String[] arguments;
+    private final String[] args;
 
     Args(final String... arguments) {
         this(ARG_RX, arguments);
@@ -25,7 +25,7 @@ final class Args implements Map<String, String> {
     @Delegate
     private Map<String, String> get() {
         final Map<String, String> result = new HashMap<>();
-        for (final String arg : arguments) {
+        for (final String arg : args) {
             final Matcher matcher = pattern.matcher(arg);
             if (matcher.matches()) {
                 result.put(
