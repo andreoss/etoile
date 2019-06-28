@@ -1,0 +1,9 @@
+*.iml
+.idea*
+target/
+*.class
+*.jar
+*.swp
+*.log
+.*
+[#]*
