@@ -1,43 +1,36 @@
 package org.sdf.etoile;
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import org.apache.spark.sql.Row;
+
 import java.util.Map;
 
-final class StoredOutput<T> extends Terminal.Envelope {
+final class StoredOutput<T> extends Output.Envelope<Row> {
 
     StoredOutput(
             final Transformation<T> input,
             final Map<String, String> parameters
     ) {
         super(() -> {
-                    final Path result = Paths.get(parameters.get("path"));
                     final String codec = parameters.getOrDefault(
                             "format", "csv"
                     );
-                    final Transformation<T> repart = new NumberedPartitions<>(
-                            input,
-                            partitions(parameters)
-                    );
                     if ("csv+header".equals(codec)) {
                         return new HeaderCsvOutput<>(
-                                repart,
-                                result,
+                                input,
                                 parameters
                         );
                     } else {
                         return new ParameterizedOutput<>(
-                                repart,
+                                new Transformation.Noop<>(
+                                        input.get()
+                                                .toDF()
+                                ),
                                 parameters,
-                                codec,
-                                result
+                                codec
                         );
                     }
                 }
         );
     }
 
-    private static int partitions(final Map<String, String> param) {
-        return Integer.parseUnsignedInt(param.getOrDefault("partitions", "1"));
-    }
 }

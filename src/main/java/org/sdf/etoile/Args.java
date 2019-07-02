@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 @RequiredArgsConstructor
 final class Args implements Map<String, String> {
     private static final Pattern ARG_RX = Pattern.compile(
-            "--(?<key>[a-z0-9\\.]+)=(?<value>.+)"
+            "--(?<key>[a-z0-9-\\.]+)=(?<value>.+)"
     );
 
     private final Pattern pattern;

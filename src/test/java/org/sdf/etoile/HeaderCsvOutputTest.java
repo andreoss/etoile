@@ -86,10 +86,11 @@ public final class HeaderCsvOutputTest {
         MatcherAssert.assertThat(
                 "writes csv with header",
                 new CsvText(
-                        new HeaderCsvOutput<>(
-                                new FakeInput(session, "id int, name string"),
-                                output
-                        )
+                        new Saved<>(
+                                output,
+                                new HeaderCsvOutput<>(
+                                        new FakeInput(session, "id int, name string")
+                                ))
                 ),
                 new TextIs(
                         "id,name\n"
@@ -105,16 +106,18 @@ public final class HeaderCsvOutputTest {
         MatcherAssert.assertThat(
                 "writes csv with header",
                 new CsvText(
-                        new HeaderCsvOutput<>(
-                                new FakeInput(
-                                        session,
-                                        "id int, name string",
-                                        Arrays.asList(
-                                                Factory.arrayOf(1, "foo"),
-                                                Factory.arrayOf(2, "bar")
+                        new Saved<>(
+                                output,
+                                new HeaderCsvOutput<>(
+                                        new FakeInput(
+                                                session,
+                                                "id int, name string",
+                                                Arrays.asList(
+                                                        Factory.arrayOf(1, "foo"),
+                                                        Factory.arrayOf(2, "bar")
+                                                )
                                         )
-                                ),
-                                output
+                                )
                         )
                 ),
                 new LinesAre(
@@ -129,8 +132,7 @@ public final class HeaderCsvOutputTest {
     public void checksParametersForHeaderOptions() throws IOException {
         new HeaderCsvOutput<>(
                 new FakeInput(session, "id int"),
-                temp.newFolder().toPath(),
                 Collections.singletonMap("header", "true")
-        ).result();
+        ).get();
     }
 }

@@ -579,11 +579,15 @@ public final class MainTest {
         );
     }
 
-    private File resolveCsvOutput() throws IOException {
-        return temp.newFolder("output")
+    private File resolveCsvOutput(final String dir) throws IOException {
+        return temp.newFolder()
                 .toPath()
-                .resolve("csv")
+                .resolve(dir)
                 .toFile();
+    }
+
+    private File resolveCsvOutput() throws IOException {
+        return resolveCsvOutput("csv");
     }
 
     @Test
@@ -851,5 +855,101 @@ public final class MainTest {
         );
     }
 
+
+    @Test
+    public void overwritesPreviousOutput() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id,val,char"
+        );
+        final File output = resolveCsvOutput();
+        Assert.assertTrue("should exist", output.mkdirs());
+        Assert.assertTrue("should exist", output.toPath()
+                .resolve("foo.csv")
+                .toFile()
+                .createNewFile());
+        Assert.assertTrue("should exist", output.toPath()
+                .resolve("bar.csv")
+                .toFile()
+                .createNewFile());
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--output.path=" + output,
+                        "--output.format=csv+header",
+                        "--output.delimiter=;",
+                        "--output.mode=overwrite"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;char\n"
+                )
+        );
+    }
+
+    @Test
+    public void appendsToPreviousOutput() throws IOException {
+        final List<File> inputs =
+                Arrays.asList(
+                        temp.newFolder("input-part1"),
+                        temp.newFolder("input-part2")
+                );
+        writeInputFile(inputs.get(0),
+                "id,val,char",
+                "1,foo,bar",
+                "3,abc,def"
+        );
+        writeInputFile(inputs.get(1),
+                "id,val,char",
+                "2,baz,gii",
+                "4,xyz,qwe"
+        );
+        final File output = resolveCsvOutput();
+        for (final File input : inputs) {
+            new Main(
+                    session,
+                    new Args(
+                            "--input.format=csv",
+                            "--input.header=true",
+                            "--input.path=" + input,
+                            "--output.path=" + output,
+                            "--output.format=csv+header",
+                            "--output.delimiter=;",
+                            "--output.mode=append"
+                    )
+            ).run();
+        }
+        final File aggreg = resolveCsvOutput("agg");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.delimiter=;",
+                        "--input.path=" + output,
+                        "--input.sort=id",
+                        "--output.path=" + aggreg,
+                        "--output.format=csv+header",
+                        "--output.mode=overwrite"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(aggreg),
+                new LinesAre(
+                        "id,val,char",
+                        "1,foo,bar",
+                        "2,baz,gii",
+                        "3,abc,def",
+                        "4,xyz,qwe\n"
+                )
+        );
+    }
 }
 
