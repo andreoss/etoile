@@ -26,32 +26,43 @@ public final class Main implements Runnable {
         final Map<String, String> inOpts = new PrefixArgs("input", this.args);
         final Map<String, String> outOpts = new PrefixArgs("output", this.args);
         final Transformation<Row> input = new Input(this.spark, inOpts);
-        new Saved<>(
-                Paths.get(outOpts.get("path")),
-                new Mode<>(
-                        outOpts.getOrDefault("mode", SaveMode.ErrorIfExists.name()),
-                        new StoredOutput<>(
-                                new NumberedPartitions<>(
-                                        new ColumnsDroppedByParameter<>(
-                                                new FullyCastedByParameters(
-                                                        new SortedByParameter<>(
-                                                                new FullyCastedByParameters(
-                                                                        input,
-                                                                        inOpts
-                                                                ), inOpts
-                                                        ),
-                                                        outOpts
-                                                ),
-                                                outOpts
-                                        ),
-                                        Integer.parseUnsignedInt(
-                                                outOpts.getOrDefault("partitions", "1")
-                                        )
-                                ),
-                                outOpts
-                        )
+        final Transformation<Row> casted = new FullyCastedByParameters(
+                input,
+                inOpts
+        );
+        final Transformation<Row> sorted = new SortedByParameter<>(
+                casted, inOpts
+        );
+        final Transformation<Row> castedAgain = new FullyCastedByParameters(
+                sorted,
+                outOpts
+        );
+        final Transformation<Row> dropped = new ColumnsDroppedByParameter<>(
+                castedAgain,
+                outOpts
+        );
+        final Transformation<Row> repartitioned = new NumberedPartitions<>(
+                dropped,
+                Integer.parseUnsignedInt(
+                        outOpts.getOrDefault("partitions", "1")
                 )
-        ).result();
+        );
+        final Output<Row> output = new FormatOutput<>(
+                repartitioned,
+                outOpts
+        );
+        final Output<Row> mode = new Mode<>(
+                outOpts.getOrDefault(
+                        "mode",
+                        SaveMode.ErrorIfExists.name()
+                ),
+                output
+        );
+        final Terminal saved = new Saved<>(
+                Paths.get(outOpts.get("path")),
+                mode
+        );
+        saved.result();
     }
 }
 

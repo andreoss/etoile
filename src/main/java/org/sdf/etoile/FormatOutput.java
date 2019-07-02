@@ -4,9 +4,9 @@ import org.apache.spark.sql.Row;
 
 import java.util.Map;
 
-final class StoredOutput<T> extends Output.Envelope<Row> {
+final class FormatOutput<T> extends Output.Envelope<Row> {
 
-    StoredOutput(
+    FormatOutput(
             final Transformation<T> input,
             final Map<String, String> parameters
     ) {
