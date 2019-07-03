@@ -14,7 +14,7 @@ import scala.Some;
 import java.sql.Types;
 
 public final class ExtraOracleDialect extends JdbcDialect {
-    private static final int DEFAULT_SCALE = 12;
+    private static final int DEFAULT_SCALE = 10;
     private static final int BINARY_FLOAT = 100;
     private static final int BINARY_DOUBLE = 101;
     private static final int TIMESTAMPTZ = -101;
@@ -46,14 +46,14 @@ public final class ExtraOracleDialect extends JdbcDialect {
                 scale = md.build()
                         .getLong("scale");
             } else {
-                scale = DecimalType.MAX_SCALE();
+                scale = 0L;
             }
             if (scale == 0L) {
                 result = decimalWithScale(DEFAULT_SCALE);
             } else if (scale == FLOAT_SCALE) {
-                result = decimalWithScale(DecimalType.MAX_SCALE());
+                result = decimalWithScale(DEFAULT_SCALE);
             } else {
-                result = decimalWithScale((int) scale);
+                result = Option.empty();
             }
         } else if (sqlType == BINARY_DOUBLE) {
             result = Some.apply(DoubleType$.MODULE$);
