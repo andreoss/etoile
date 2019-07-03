@@ -3,6 +3,7 @@ package org.sdf.etoile;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.jdbc.JdbcDialects;
 
 import java.util.Map;
 
@@ -13,6 +14,7 @@ public final class Main implements Runnable {
     private final Map<String, String> args;
 
     public static void main(final String[] args) {
+        JdbcDialects.registerDialect(new ExtraOracleDialect());
         new Main(SparkSession.builder()
                 .getOrCreate(), new Args(args)).run();
     }
