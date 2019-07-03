@@ -14,7 +14,7 @@ import scala.Some;
 import java.sql.Types;
 
 public final class ExtraOracleDialect extends JdbcDialect {
-    public static final int DEFAULT_SCALE = 12;
+    private static final int DEFAULT_SCALE = 12;
     private static final int BINARY_FLOAT = 100;
     private static final int BINARY_DOUBLE = 101;
     private static final int TIMESTAMPTZ = -101;
