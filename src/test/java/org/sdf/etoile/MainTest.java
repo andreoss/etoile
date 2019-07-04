@@ -5,6 +5,7 @@ import org.apache.spark.sql.SparkSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -50,10 +51,7 @@ public final class MainTest {
     @Test
     public void startsSpark() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+        final File output = resolveCsvOutput();
         copyAvro(input, "test.avro");
         new Main(
                 session,
@@ -109,19 +107,14 @@ public final class MainTest {
                 .toPath()
                 .resolve("output")
                 .toFile();
-        IOUtil.writeText(
-                String.join("\n",
-                        "a,b,c,d,e",
-                        "1,x,a,y,5",
-                        "2,x,b,y,5",
-                        "3,x,c,y,5",
-                        "4,x,d,y,5",
-                        "5,x,c,y,5"
-                ),
-                input.toPath()
-                        .resolve("test-input.csv")
-                        .toFile()
-        );
+        writeInputFile(input, String.join("\n",
+                "a,b,c,d,e",
+                "1,x,a,y,5",
+                "2,x,b,y,5",
+                "3,x,c,y,5",
+                "4,x,d,y,5",
+                "5,x,c,y,5"
+        ));
         new Main(
                 session,
                 new Args(
@@ -197,10 +190,7 @@ public final class MainTest {
     @Test
     public void writesSortedOutput() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+        final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
         new Main(
                 session,
@@ -231,11 +221,9 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ts,ts",
-                "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
-                "1,1999-06-13 13:31:59,2019-06-13 13:31:59"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,ts,ts", "0,2000-06-13 13:31:59,2019-06-13 13:31:59", "1,1999-06-13 13:31:59,2019-06-13 13:31:59"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -262,11 +250,9 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ctl_validfrom,name",
-                "0,2019-06-13 13:31:59,abc",
-                "1,2019-06-13 13:31:59,xyz"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -293,11 +279,9 @@ public final class MainTest {
     @Test
     public void canCastTypAllTimestampsToStringOnWrite() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ctl_validfrom,name",
-                "0,2019-06-13 13:31:59,abc",
-                "1,2019-06-13 13:31:59,xyz"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -325,10 +309,9 @@ public final class MainTest {
     @Test
     public void canCastAllIntsToTimestampOnRead() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ctl_validfrom,name",
-                "0,0,abc",
-                "1,0,xyz");
+        writeInputFile(input, String.join("\n",
+                "id,ctl_validfrom,name", "0,0,abc", "1,0,xyz"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -353,30 +336,22 @@ public final class MainTest {
         );
     }
 
-    private File writeCsv(final File input, final String... lines) throws IOException {
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+    private void writeInputFile(final File input, final String join) {
         IOUtil.writeText(
-                String.join("\n",
-                        lines
-                ),
+                join,
                 input.toPath()
                         .resolve("test-input.csv")
                         .toFile()
         );
-        return output;
     }
 
     @Test
     public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ctl_validfrom,name",
-                "0,2019-06-13 13:31:59,abc",
-                "1,2019-06-13 13:31:59,xyz"
-        );
+        final File output = resolveCsvOutput();
+        writeInputFile(input, String.join("\n",
+                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
+
         new Main(
                 session,
                 new Args(
@@ -404,11 +379,9 @@ public final class MainTest {
     @Test
     public void canCastType_StringToInt_andIntToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,ts",
-                "0,0",
-                "1,1000"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,ts", "0,0", "1,1000"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -439,10 +412,7 @@ public final class MainTest {
     @Test
     public void writesSortedOutput_castsByColumnName() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+        final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
         new Main(
                 session,
@@ -476,10 +446,7 @@ public final class MainTest {
     @Test
     public void writesSortedOutput_AndSortsNumerically() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+        final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
         new Main(
                 session,
@@ -512,10 +479,7 @@ public final class MainTest {
     @Test
     public void sortsInDescOrder() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = temp.newFolder("output")
-                .toPath()
-                .resolve("csv")
-                .toFile();
+        final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
         new Main(
                 session,
@@ -561,15 +525,9 @@ public final class MainTest {
     @Test
     public void canSortBySeveralColumns() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,val,char",
-                "1,3,o",
-                "2,2,g",
-                "2,1,u",
-                "0,0,y",
-                "3,4,y",
-                "3,0,a"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,val,char", "1,3,o", "2,2,g", "2,1,u", "0,0,y", "3,4,y", "3,0,a"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -597,15 +555,82 @@ public final class MainTest {
         );
     }
 
+    private File resolveCsvOutput() throws IOException {
+        return temp.newFolder("output")
+                .toPath()
+                .resolve("csv")
+                .toFile();
+    }
+
+    @Test
+    public void doesNotKeepHeaderInOutput() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input, String.join("\n",
+                "id,val,char"));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.cast=id:int,val:int",
+                        "--input.sort=id,val",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=;",
+                        "--output.header=true"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                readAllLines(output),
+                Matchers.empty()
+        );
+    }
+
+    @Test
+    public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
+        final File input = temp.newFolder("input");
+        final File partA = input.toPath().resolve("part-1").toFile();
+        final File partB = input.toPath().resolve("part-2").toFile();
+        Assert.assertTrue(partA.mkdirs());
+        Assert.assertTrue(partB.mkdirs());
+        writeInputFile(partA, String.join("\n",
+                "id,val,char"
+        ));
+
+        writeInputFile(partB, String.join("\n",
+                "id,val,char"
+        ));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input + "/*",
+                        "--input.cast=id:int,val:int",
+                        "--input.sort=id,val",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=;",
+                        "--output.header=true"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                readAllLines(output),
+                Matchers.empty()
+        );
+    }
+
     @Test
     public void canDropColumnFromOutput() throws IOException {
         final File input = temp.newFolder("input");
-        final File output = writeCsv(input,
-                "id,val,name",
-                "0,2,go",
-                "1,1,at",
-                "2,0,se"
-        );
+        writeInputFile(input, String.join("\n",
+                "id,val,name", "0,2,go", "1,1,at", "2,0,se"));
+        final File output = resolveCsvOutput();
         new Main(
                 session,
                 new Args(
@@ -628,3 +653,4 @@ public final class MainTest {
         );
     }
 }
+
