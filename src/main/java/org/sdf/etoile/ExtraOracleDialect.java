@@ -49,7 +49,7 @@ public final class ExtraOracleDialect extends JdbcDialect {
                 scale = 0L;
             }
             if (scale == 0L) {
-                result = decimalWithScale(DEFAULT_SCALE);
+                result = decimalWithScale((int) scale);
             } else if (scale == FLOAT_SCALE) {
                 result = decimalWithScale(DEFAULT_SCALE);
             } else {
