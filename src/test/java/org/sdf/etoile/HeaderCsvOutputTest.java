@@ -100,10 +100,6 @@ public final class HeaderCsvOutputTest {
         final Path output = temp.newFolder("output")
                 .toPath()
                 .resolve("csv");
-        final Row o = new GenericRowWithSchema(
-                new Object[]{1, "foo"},
-                StructType.fromDDL("id int, name string")
-        );
         MatcherAssert.assertThat(
                 "writes csv with header",
                 new CsvText(
