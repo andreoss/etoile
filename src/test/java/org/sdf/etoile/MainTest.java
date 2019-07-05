@@ -589,6 +589,107 @@ public final class MainTest {
         );
     }
 
+
+    @Test
+    public void convertsEmptyFileWithoutHeader() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input, String.join("\n"));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
+
+    @Test
+    public void convertsEmptyFileWithHeaderRequired() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input, String.join("\n"));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.header=true",
+                        "--output.header=true",
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
+
+    @Test
+    public void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                String.join("\n", "id,name,value"));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.header=true",
+                        "--output.header=true",
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "one file written",
+                listCsvFiles(output),
+                Matchers.hasSize(1)
+        );
+        MatcherAssert.assertThat(
+                "empty output",
+                readAllLines(output),
+                Matchers.empty()
+        );
+    }
+
+
+    @Test
+    public void doesNotKeepHeaderInOutput_MultipleFiles_AllEmpty() throws IOException {
+        final File input = temp.newFolder("input");
+        final File partA = input.toPath().resolve("part-1").toFile();
+        final File partB = input.toPath().resolve("part-2").toFile();
+        Assert.assertTrue(partA.mkdirs());
+        Assert.assertTrue(partB.mkdirs());
+        writeInputFile(partA, String.join("\n"));
+        writeInputFile(partB, String.join("\n"));
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input + "/*",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=;",
+                        "--output.header=true"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
+
     @Test
     public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
         final File input = temp.newFolder("input");
