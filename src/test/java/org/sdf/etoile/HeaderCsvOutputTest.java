@@ -32,6 +32,10 @@ final class CsvText extends TextEnvelope {
     public CsvText(final Terminal input) {
         this(input.result());
     }
+
+    public CsvText(final File output) {
+        this(output.toPath());
+    }
 }
 
 final class ConcatenatedText extends TextEnvelope {
