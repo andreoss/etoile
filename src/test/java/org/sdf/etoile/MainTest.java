@@ -660,7 +660,7 @@ public final class MainTest {
     public void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
-                 "id,name,value");
+                "id,name,value");
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -688,8 +688,12 @@ public final class MainTest {
     @Test
     public void doesNotKeepHeaderInOutput_MultipleFiles_AllEmpty() throws IOException {
         final File input = temp.newFolder("input");
-        final File partA = input.toPath().resolve("part-1").toFile();
-        final File partB = input.toPath().resolve("part-2").toFile();
+        final File partA = input.toPath()
+                .resolve("part-1")
+                .toFile();
+        final File partB = input.toPath()
+                .resolve("part-2")
+                .toFile();
         Assert.assertTrue(partA.mkdirs());
         Assert.assertTrue(partB.mkdirs());
         writeInputFile(partA);
@@ -717,8 +721,12 @@ public final class MainTest {
     @Test
     public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
         final File input = temp.newFolder("input");
-        final File first = input.toPath().resolve("part-1").toFile();
-        final File second = input.toPath().resolve("part-2").toFile();
+        final File first = input.toPath()
+                .resolve("part-1")
+                .toFile();
+        final File second = input.toPath()
+                .resolve("part-2")
+                .toFile();
         Assert.assertTrue(first.mkdirs());
         Assert.assertTrue(second.mkdirs());
         writeInputFile(first,
@@ -780,5 +788,68 @@ public final class MainTest {
                 )
         );
     }
+
+    @Test
+    public void writesHeaderForSpecialFormat_NonEmpty() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id,val,num",
+                "1,foo,1234.0",
+                "0,bar,0.1234",
+                "2,baz,12.34"
+        );
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--input.csv=num:decimal(38,12)",
+                        "--input.sort=num",
+                        "--output.path=" + output,
+                        "--output.format=csv+header",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "keeps header",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;num",
+                        "0;bar;0.1234",
+                        "2;baz;12.34",
+                        "1;foo;1234.0\n"
+                )
+        );
+    }
+
+    @Test
+    public void writesHeaderForSpecialFormat() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id,val,char"
+        );
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input,
+                        "--output.path=" + output,
+                        "--output.format=csv+header",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;char\n"
+                )
+        );
+    }
+
 }
 

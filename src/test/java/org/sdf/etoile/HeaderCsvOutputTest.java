@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 
@@ -124,4 +125,12 @@ public final class HeaderCsvOutputTest {
         );
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void checksParametersForHeaderOptions() throws IOException {
+        new HeaderCsvOutput<>(
+                new FakeInput(session, "id int"),
+                temp.newFolder().toPath(),
+                Collections.singletonMap("header", "true")
+        ).result();
+    }
 }
