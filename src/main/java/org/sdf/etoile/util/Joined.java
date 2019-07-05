@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
-public final class JoinedList<K> implements List<K> {
+public final class Joined<K> implements List<K> {
     private final List<List<K>> lists;
 
     @SafeVarargs
-    public JoinedList(final List<K>... xs) {
+    public Joined(final List<K>... xs) {
         this(Arrays.asList(xs));
     }
 

@@ -11,7 +11,7 @@ public final class JoinedListTest {
     public void joinsLists() {
         MatcherAssert.assertThat(
                 "joins two list",
-                new JoinedList<>(
+                new Joined<>(
                         Arrays.asList(1, 2, 3),
                         Arrays.asList(4, 5, 6)
                 ),
