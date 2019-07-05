@@ -1,4 +1,7 @@
 package org.sdf.etoile;
 
-interface Terminal extends Runnable {
+import java.nio.file.Path;
+
+interface Terminal {
+   Path result();
 }

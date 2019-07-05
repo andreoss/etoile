@@ -24,10 +24,23 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Objects;
 
+
+final class CsvText extends TextEnvelope {
+    public CsvText(final Path input) {
+        super(
+                new ConcatenatedText(input, "csv")
+        );
+    }
+
+    public CsvText(final Terminal input) {
+        this(input.result());
+    }
+}
+
 final class ConcatenatedText extends TextEnvelope {
-    ConcatenatedText(final Path directory, final String extenstion) {
+    ConcatenatedText(final Path directory, final String extension) {
         this(directory, (File f) -> f.getName()
-                .endsWith(extenstion));
+                .endsWith(extension));
     }
 
     ConcatenatedText(final Path directory, final Func<File, Boolean> filter) {
@@ -68,13 +81,14 @@ public final class HeaderCsvOutputTest {
         final Path output = temp.newFolder("output")
                 .toPath()
                 .resolve("csv");
-        new HeaderCsvOutput<>(
-                new FakeInput(session, "id int, name string"),
-                output
-        ).run();
         MatcherAssert.assertThat(
                 "writes csv with header",
-                new ConcatenatedText(output, "csv"),
+                new CsvText(
+                        new HeaderCsvOutput<>(
+                                new FakeInput(session, "id int, name string"),
+                                output
+                        )
+                ),
                 new TextIs(
                         "id,name\n"
                 )
@@ -90,20 +104,21 @@ public final class HeaderCsvOutputTest {
                 new Object[]{1, "foo"},
                 StructType.fromDDL("id int, name string")
         );
-        new HeaderCsvOutput<>(
-                new FakeInput(
-                        session,
-                        "id int, name string",
-                        Arrays.asList(
-                                Factory.arrayOf(1, "foo"),
-                                Factory.arrayOf(2, "bar")
-                        )
-                ),
-                output
-        ).run();
         MatcherAssert.assertThat(
                 "writes csv with header",
-                new ConcatenatedText(output, "csv"),
+                new CsvText(
+                        new HeaderCsvOutput<>(
+                                new FakeInput(
+                                        session,
+                                        "id int, name string",
+                                        Arrays.asList(
+                                                Factory.arrayOf(1, "foo"),
+                                                Factory.arrayOf(2, "bar")
+                                        )
+                                ),
+                                output
+                        )
+                ),
                 new LinesAre(
                         "id,name",
                         "1,foo",

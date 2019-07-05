@@ -2,6 +2,8 @@ package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Map;
 
 @RequiredArgsConstructor
@@ -29,11 +31,14 @@ final class StoredOutput<T> implements Terminal {
     }
 
     @Override
-    public void run() {
+    public Path result() {
+        final Path result = Paths.get(param.get("path"));
         ds.get()
                 .write()
                 .format(codec)
                 .options(param)
-                .save();
+                .save(result.toAbsolutePath()
+                        .toString());
+        return result;
     }
 }
