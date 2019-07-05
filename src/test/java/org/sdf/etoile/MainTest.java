@@ -107,14 +107,14 @@ public final class MainTest {
                 .toPath()
                 .resolve("output")
                 .toFile();
-        writeInputFile(input, String.join("\n",
+        writeInputFile(input,
                 "a,b,c,d,e",
                 "1,x,a,y,5",
                 "2,x,b,y,5",
                 "3,x,c,y,5",
                 "4,x,d,y,5",
                 "5,x,c,y,5"
-        ));
+        );
         new Main(
                 session,
                 new Args(
@@ -221,8 +221,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,ts,ts", "0,2000-06-13 13:31:59,2019-06-13 13:31:59", "1,1999-06-13 13:31:59,2019-06-13 13:31:59"));
+        writeInputFile(input,
+                "id,ts,ts",
+                "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
+                "1,1999-06-13 13:31:59,2019-06-13 13:31:59"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -250,8 +253,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
+        writeInputFile(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -279,8 +285,11 @@ public final class MainTest {
     @Test
     public void canCastTypAllTimestampsToStringOnWrite() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
+        writeInputFile(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -309,8 +318,11 @@ public final class MainTest {
     @Test
     public void canCastAllIntsToTimestampOnRead() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,ctl_validfrom,name", "0,0,abc", "1,0,xyz"));
+        writeInputFile(input,
+                "id,ctl_validfrom,name",
+                "0,0,abc",
+                "1,0,xyz"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -336,9 +348,9 @@ public final class MainTest {
         );
     }
 
-    private void writeInputFile(final File input, final String join) {
+    private void writeInputFile(final File input, final String... lines) {
         IOUtil.writeText(
-                join,
+                String.join("\n", lines),
                 input.toPath()
                         .resolve("test-input.csv")
                         .toFile()
@@ -349,9 +361,11 @@ public final class MainTest {
     public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
-        writeInputFile(input, String.join("\n",
-                "id,ctl_validfrom,name", "0,2019-06-13 13:31:59,abc", "1,2019-06-13 13:31:59,xyz"));
-
+        writeInputFile(input,
+                "id,ctl_validfrom,name",
+                "0,2019-06-13 13:31:59,abc",
+                "1,2019-06-13 13:31:59,xyz"
+        );
         new Main(
                 session,
                 new Args(
@@ -379,8 +393,11 @@ public final class MainTest {
     @Test
     public void canCastType_StringToInt_andIntToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,ts", "0,0", "1,1000"));
+        writeInputFile(input,
+                "id,ts",
+                "0,0",
+                "1,1000"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -525,8 +542,15 @@ public final class MainTest {
     @Test
     public void canSortBySeveralColumns() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,val,char", "1,3,o", "2,2,g", "2,1,u", "0,0,y", "3,4,y", "3,0,a"));
+        writeInputFile(input,
+                "id,val,char",
+                "1,3,o",
+                "2,2,g",
+                "2,1,u",
+                "0,0,y",
+                "3,4,y",
+                "3,0,a"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -565,8 +589,8 @@ public final class MainTest {
     @Test
     public void doesNotKeepHeaderInOutput() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,val,char"));
+        writeInputFile(input,
+                "id,val,char");
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -589,20 +613,120 @@ public final class MainTest {
         );
     }
 
+
     @Test
-    public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
+    public void convertsEmptyFileWithoutHeader() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input);
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
+
+    @Test
+    public void convertsEmptyFileWithHeaderRequired() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input);
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.header=true",
+                        "--output.header=true",
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
+
+    @Test
+    public void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                 "id,name,value");
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.header=true",
+                        "--output.header=true",
+                        "--input.format=csv",
+                        "--input.path=" + input,
+                        "--output.path=" + output
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "one file written",
+                listCsvFiles(output),
+                Matchers.hasSize(1)
+        );
+        MatcherAssert.assertThat(
+                "empty output",
+                readAllLines(output),
+                Matchers.empty()
+        );
+    }
+
+
+    @Test
+    public void doesNotKeepHeaderInOutput_MultipleFiles_AllEmpty() throws IOException {
         final File input = temp.newFolder("input");
         final File partA = input.toPath().resolve("part-1").toFile();
         final File partB = input.toPath().resolve("part-2").toFile();
         Assert.assertTrue(partA.mkdirs());
         Assert.assertTrue(partB.mkdirs());
-        writeInputFile(partA, String.join("\n",
-                "id,val,char"
-        ));
+        writeInputFile(partA);
+        writeInputFile(partB);
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input + "/*",
+                        "--output.path=" + output,
+                        "--output.format=csv",
+                        "--output.delimiter=;",
+                        "--output.header=true"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "no files written",
+                listCsvFiles(output),
+                Matchers.empty()
+        );
+    }
 
-        writeInputFile(partB, String.join("\n",
+    @Test
+    public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
+        final File input = temp.newFolder("input");
+        final File first = input.toPath().resolve("part-1").toFile();
+        final File second = input.toPath().resolve("part-2").toFile();
+        Assert.assertTrue(first.mkdirs());
+        Assert.assertTrue(second.mkdirs());
+        writeInputFile(first,
                 "id,val,char"
-        ));
+        );
+        writeInputFile(second,
+                "id,val,char"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
@@ -628,8 +752,12 @@ public final class MainTest {
     @Test
     public void canDropColumnFromOutput() throws IOException {
         final File input = temp.newFolder("input");
-        writeInputFile(input, String.join("\n",
-                "id,val,name", "0,2,go", "1,1,at", "2,0,se"));
+        writeInputFile(input,
+                "id,val,name",
+                "0,2,go",
+                "1,1,at",
+                "2,0,se"
+        );
         final File output = resolveCsvOutput();
         new Main(
                 session,
