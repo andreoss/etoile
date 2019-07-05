@@ -7,7 +7,8 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.types.DataType;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import org.sdf.etoile.util.Joined;
+import org.cactoos.collection.Joined;
+import org.cactoos.list.ListOf;
 
 import java.util.Collections;
 import java.util.List;
@@ -39,7 +40,7 @@ final class TypeToColumnsMap implements Map<DataType, List<String>> {
                         Collectors.toMap(
                                 type,
                                 name.andThen(Collections::singletonList),
-                                (a, b) -> new Joined<>(a, b)
+                                (a, b) -> new ListOf<>(new Joined<>(a, b))
                         )
                 );
     }
