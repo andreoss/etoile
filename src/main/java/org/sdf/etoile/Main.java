@@ -39,7 +39,7 @@ public final class Main implements Runnable {
                 ),
                 outOpts
         );
-        terminal.run();
+        terminal.result();
     }
 }
 
