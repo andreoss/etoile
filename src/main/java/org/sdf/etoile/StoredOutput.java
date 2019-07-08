@@ -26,7 +26,7 @@ final class StoredOutput<T> extends Terminal.Envelope {
                                 parameters
                         );
                     } else {
-                        return new ParametarizedOutput<>(
+                        return new ParameterizedOutput<>(
                                 repart,
                                 parameters,
                                 codec,

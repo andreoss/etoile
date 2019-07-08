@@ -28,7 +28,7 @@ public final class HeaderCsvOutput<T> implements Terminal {
             );
         }
         final Transformation<Row> stringified = new Stringified<>(this.orig);
-        return new ParametarizedOutput<>(
+        return new ParameterizedOutput<>(
                 new OrderedUnion<>(
                         new Header<>(stringified),
                         stringified
