@@ -2,9 +2,11 @@ package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 
+import java.nio.file.Paths;
 import java.util.Map;
 
 
@@ -23,23 +25,44 @@ public final class Main implements Runnable {
     public void run() {
         final Map<String, String> inOpts = new PrefixArgs("input", this.args);
         final Map<String, String> outOpts = new PrefixArgs("output", this.args);
-        final Transformation<Row> raw = new Input(this.spark, inOpts);
-        final Terminal terminal = new StoredOutput<>(
-                new ColumnsDroppedByParameter<>(
-                        new FullyCastedByParameters(
-                                new SortedByParameter<>(
-                                        new FullyCastedByParameters(
-                                                raw,
-                                                inOpts
-                                        ), inOpts
-                                ),
-                                outOpts
-                        ),
-                        outOpts
-                ),
+        final Transformation<Row> input = new Input(this.spark, inOpts);
+        final Transformation<Row> casted = new FullyCastedByParameters(
+                input,
+                inOpts
+        );
+        final Transformation<Row> sorted = new SortedByParameter<>(
+                casted, inOpts
+        );
+        final Transformation<Row> castedAgain = new FullyCastedByParameters(
+                sorted,
                 outOpts
         );
-        terminal.result();
+        final Transformation<Row> dropped = new ColumnsDroppedByParameter<>(
+                castedAgain,
+                outOpts
+        );
+        final Transformation<Row> repartitioned = new NumberedPartitions<>(
+                dropped,
+                Integer.parseUnsignedInt(
+                        outOpts.getOrDefault("partitions", "1")
+                )
+        );
+        final Output<Row> output = new FormatOutput<>(
+                repartitioned,
+                outOpts
+        );
+        final Output<Row> mode = new Mode<>(
+                outOpts.getOrDefault(
+                        "mode",
+                        SaveMode.ErrorIfExists.name()
+                ),
+                output
+        );
+        final Terminal saved = new Saved<>(
+                Paths.get(outOpts.get("path")),
+                mode
+        );
+        saved.result();
     }
 }
 

@@ -1,25 +1,21 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.spark.sql.DataFrameWriter;
 
-import java.nio.file.Path;
 import java.util.Map;
 
 @RequiredArgsConstructor
-public final class ParameterizedOutput<Y> implements Terminal {
+public final class ParameterizedOutput<Y> implements Output<Y> {
     private final Transformation<Y> tran;
     private final Map<String, String> param;
     private final String format;
-    private final Path output;
 
     @Override
-    public Path result() {
-        this.tran.get()
+    public DataFrameWriter<Y> get() {
+        return this.tran.get()
                 .write()
                 .format(format)
-                .options(param)
-                .save(output.toAbsolutePath()
-                        .toString());
-        return output;
+                .options(param);
     }
 }
