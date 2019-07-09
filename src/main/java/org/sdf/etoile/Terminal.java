@@ -2,11 +2,11 @@ package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
 
-import java.nio.file.Path;
+import java.net.URI;
 import java.util.function.Supplier;
 
 interface Terminal {
-    Path result();
+    URI result();
 
     @RequiredArgsConstructor
     abstract class Envelope implements Terminal {
@@ -17,7 +17,7 @@ interface Terminal {
         }
 
         @Override
-        public Path result() {
+        public URI result() {
             return this.orig.result();
         }
     }
