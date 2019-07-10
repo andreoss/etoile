@@ -10,14 +10,14 @@ public final class Saved<X> implements Terminal {
     private final URI path;
     private final Output<X> tran;
 
-    public Saved(final Path path, final Output<X> tran) {
-        this(path.toUri(), tran);
+    public Saved(final Path target, final Output<X> output) {
+        this(target.toUri(), output);
     }
 
     @Override
     public URI result() {
         this.tran.get()
-                .save(path.getPath());
+                .save(path.toString());
         return path;
     }
 }
