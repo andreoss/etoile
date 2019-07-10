@@ -100,7 +100,7 @@ public final class HeaderCsvOutputTest {
                         )
                 ),
                 new TextIs(
-                        "id,name\n"
+                        "id,name" + System.lineSeparator()
                 )
         );
     }
@@ -130,7 +130,7 @@ public final class HeaderCsvOutputTest {
                 new LinesAre(
                         "id,name",
                         "1,foo",
-                        "2,bar\n"
+                        "2,bar"
                 )
         );
     }

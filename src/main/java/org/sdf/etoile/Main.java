@@ -7,7 +7,6 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 
 import java.net.URI;
-import java.nio.file.Paths;
 import java.util.Map;
 
 

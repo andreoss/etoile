@@ -56,8 +56,8 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--input.path=" + input,
-                        "--output.path=" + output
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI()
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -80,8 +80,8 @@ public final class MainTest {
         new Main(
                 session,
                 new Args(
-                        "--input.path=" + input,
-                        "--output.path=" + output,
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
                         "--output.delimiter=X"
                 )
         ).run();
@@ -121,9 +121,9 @@ public final class MainTest {
                         "--input.format=csv",
                         "--input.header=true",
                         "--input.delimiter=,",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--output.partitions=1",
-                        "--output.path=" + output
+                        "--output.path=" + output.toURI()
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -158,8 +158,8 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.delimiter=,",
-                        "--input.path=" + input,
-                        "--output.path=" + output,
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=#"
                 )
@@ -196,9 +196,9 @@ public final class MainTest {
                 session,
                 new Args(
                         "--input.format=com.databricks.spark.avro",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=CTL_SEQNO",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv"
                 )
         ).run();
@@ -232,10 +232,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=ts1",
                         "--input.cast=ts1:timestamp,ts2:timestamp",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -264,10 +264,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=id",
                         "--input.cast=ctl_validfrom:timestamp",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -296,11 +296,11 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=id",
                         "--input.cast=ctl_validfrom:timestamp",
                         "--output.convert=timestamp:string",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -329,11 +329,11 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=id",
                         "--input.cast=ctl_validfrom:int,ctl_validfrom:timestamp",
                         "--input.convert=timestamp:string",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -371,11 +371,11 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=id",
                         "--input.cast=ctl_validfrom:timestamp",
                         "--output.cast=ctl_validfrom:string",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -404,10 +404,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=id",
                         "--input.cast=ts:int,ts:timestamp",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=|"
                 )
@@ -435,10 +435,10 @@ public final class MainTest {
                 session,
                 new Args(
                         "--input.format=com.databricks.spark.avro",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.cast=numb1:int",
                         "--input.sort=NUMB1",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.delimiter=|",
                         "--output.format=csv"
                 )
@@ -469,9 +469,9 @@ public final class MainTest {
                 session,
                 new Args(
                         "--input.format=com.databricks.spark.avro",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=cast(NUMB1 as int)",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.delimiter=|",
                         "--output.format=csv"
                 )
@@ -502,9 +502,9 @@ public final class MainTest {
                 session,
                 new Args(
                         "--input.format=com.databricks.spark.avro",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.sort=cast(NUMB1 as int):desc",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.delimiter=|",
                         "--output.format=csv"
                 )
@@ -557,10 +557,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.cast=id:int,val:int",
                         "--input.sort=id,val",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=;"
                 )
@@ -601,10 +601,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.cast=id:int,val:int",
                         "--input.sort=id,val",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=;",
                         "--output.header=true"
@@ -627,8 +627,8 @@ public final class MainTest {
                 session,
                 new Args(
                         "--input.format=csv",
-                        "--input.path=" + input,
-                        "--output.path=" + output
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI()
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -649,8 +649,8 @@ public final class MainTest {
                         "--input.header=true",
                         "--output.header=true",
                         "--input.format=csv",
-                        "--input.path=" + input,
-                        "--output.path=" + output
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI()
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -672,8 +672,8 @@ public final class MainTest {
                         "--input.header=true",
                         "--output.header=true",
                         "--input.format=csv",
-                        "--input.path=" + input,
-                        "--output.path=" + output
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI()
                 )
         ).run();
         MatcherAssert.assertThat(
@@ -709,7 +709,7 @@ public final class MainTest {
                         "--input.format=csv",
                         "--input.header=true",
                         "--input.path=" + input + "/*",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=;",
                         "--output.header=true"
@@ -748,7 +748,7 @@ public final class MainTest {
                         "--input.path=" + input + "/*",
                         "--input.cast=id:int,val:int",
                         "--input.sort=id,val",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv",
                         "--output.delimiter=;",
                         "--output.header=true"
@@ -776,9 +776,9 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--output.drop=name",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv"
                 )
         ).run();
@@ -808,10 +808,10 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
+                        "--input.path=" + input.toURI(),
                         "--input.csv=num:decimal(38,12)",
                         "--input.sort=num",
-                        "--output.path=" + output,
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv+header",
                         "--output.delimiter=;"
                 )
@@ -823,7 +823,7 @@ public final class MainTest {
                         "id;val;num",
                         "0;bar;0.1234",
                         "2;baz;12.34",
-                        "1;foo;1234.0\n"
+                        "1;foo;1234.0"
                 )
         );
     }
@@ -840,8 +840,8 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
-                        "--output.path=" + output,
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv+header",
                         "--output.delimiter=;"
                 )
@@ -850,7 +850,7 @@ public final class MainTest {
                 "header discarded on write",
                 new CsvText(output),
                 new LinesAre(
-                        "id;val;char\n"
+                        "id;val;char"
                 )
         );
     }
@@ -877,8 +877,8 @@ public final class MainTest {
                 new Args(
                         "--input.format=csv",
                         "--input.header=true",
-                        "--input.path=" + input,
-                        "--output.path=" + output,
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
                         "--output.format=csv+header",
                         "--output.delimiter=;",
                         "--output.mode=overwrite"
@@ -888,7 +888,7 @@ public final class MainTest {
                 "header discarded on write",
                 new CsvText(output),
                 new LinesAre(
-                        "id;val;char\n"
+                        "id;val;char"
                 )
         );
     }
@@ -917,8 +917,8 @@ public final class MainTest {
                     new Args(
                             "--input.format=csv",
                             "--input.header=true",
-                            "--input.path=" + input,
-                            "--output.path=" + output,
+                            "--input.path=" + input.toURI(),
+                            "--output.path=" + output.toURI(),
                             "--output.format=csv+header",
                             "--output.delimiter=;",
                             "--output.mode=append"
@@ -934,7 +934,7 @@ public final class MainTest {
                         "--input.delimiter=;",
                         "--input.path=" + output,
                         "--input.sort=id",
-                        "--output.path=" + aggreg,
+                        "--output.path=" + aggreg.toURI(),
                         "--output.format=csv+header",
                         "--output.mode=overwrite"
                 )
@@ -947,7 +947,7 @@ public final class MainTest {
                         "1,foo,bar",
                         "2,baz,gii",
                         "3,abc,def",
-                        "4,xyz,qwe\n"
+                        "4,xyz,qwe"
                 )
         );
     }
