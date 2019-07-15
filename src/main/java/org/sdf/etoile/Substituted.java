@@ -29,6 +29,7 @@ final class ValueReplacementByColumnMapFunction<V> implements MapFunction<Row, R
 
     @Override
     public Row call(final Row value) throws Exception {
+        System.err.println(value);
         final int inx = value.fieldIndex(col);
         final List<Object> xs = new ArrayList<>(JavaConversions.asJavaCollection(value.toSeq()));
         final V val = value.getAs(inx);
@@ -50,17 +51,16 @@ final class ValueReplacementByTypeMapFunction<V> implements MapFunction<Row, Row
         for (final Map.Entry<Type, Map<V, V>> ent : repl.entrySet()) {
             for (final StructField x : xs) {
                 final DataType dt = x.dataType();
-                if (!dt.equals(ent.getKey()
+                if (dt.sameType(ent.getKey()
                         .value())) {
-                    break;
+                    final Map<V, V> map = Objects.requireNonNull(this.repl.get(ent.getKey()));
+                    composed = new ComposedMapFunction<>(
+                            composed,
+                            new ValueReplacementByColumnMapFunction<>(
+                                    x.name(),
+                                    map
+                            ));
                 }
-                final Map<V, V> map = Objects.requireNonNull(this.repl.get(ent.getKey()));
-                composed = new ComposedMapFunction<>(
-                        composed,
-                        new ValueReplacementByColumnMapFunction<>(
-                                x.name(),
-                                map
-                        ));
             }
         }
         return composed.call(value);
