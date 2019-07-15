@@ -26,8 +26,17 @@ public final class Main implements Runnable {
         final Map<String, String> inOpts = new PrefixArgs("input", this.args);
         final Map<String, String> outOpts = new PrefixArgs("output", this.args);
         final Transformation<Row> input = new Input(this.spark, inOpts);
+        final Transformation<Row> replaced =
+                new ConditionalTransformation<>(
+                        () -> inOpts.containsKey("replace"),
+                        new ReplacedValues(
+                                input,
+                                new ReplecementMap(inOpts.getOrDefault("replace", ""))
+                        ),
+                        input
+                );
         final Transformation<Row> casted = new FullyCastedByParameters(
-                input,
+                replaced,
                 inOpts
         );
         final Transformation<Row> sorted = new SortedByParameter<>(
