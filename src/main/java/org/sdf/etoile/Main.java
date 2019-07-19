@@ -29,9 +29,9 @@ public final class Main implements Runnable {
         final Transformation<Row> replaced =
                 new ConditionalTransformation<>(
                         () -> inOpts.containsKey("replace"),
-                        new ReplacedValues(
+                        new Substituted(
                                 input,
-                                new ReplecementMap(inOpts.getOrDefault("replace", ""))
+                                new ReplacementMap(inOpts.getOrDefault("replace", ""))
                         ),
                         input
                 );
