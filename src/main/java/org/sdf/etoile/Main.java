@@ -31,7 +31,9 @@ public final class Main implements Runnable {
                         () -> inOpts.containsKey("replace"),
                         new Substituted(
                                 input,
-                                new ReplacementMap(inOpts.getOrDefault("replace", ""))
+                                new ReplacementMap(
+                                        inOpts.get("replace")
+                                )
                         ),
                         input
                 );

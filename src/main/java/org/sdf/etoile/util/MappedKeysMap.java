@@ -13,7 +13,10 @@ public final class MappedKeysMap<X, K, V> extends MapEnvelope<X, V> {
                     return orig.entrySet()
                             .stream()
                             .collect(
-                                    Collectors.toMap(key.andThen(asString), Entry::getValue)
+                                    Collectors.toMap(
+                                            key.andThen(asString),
+                                            Entry::getValue
+                                    )
                             );
 
                 }

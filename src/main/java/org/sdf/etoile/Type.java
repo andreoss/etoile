@@ -33,7 +33,7 @@ interface Type extends Serializable {
     final class Of implements Type {
         private final DataType dataType;
 
-        public Of(final String type) {
+        Of(final String type) {
             this(CatalystSqlParser$.MODULE$.parseDataType(type));
         }
 
