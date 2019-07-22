@@ -72,5 +72,13 @@ $ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6
     (or --output.drop="column,column")
     --output.path=file:///tmp/csv20                                                                                                               \
 ```
+Можно через параметр input.replace менять значение типов данных
+
+```
+$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
+    --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
+    --input.dbtable=schema_name.table_name                                                                                                        \
+    --input.replace=string:"$(printf '\type')"/value                                                                                                                 \
+    --output.path=file:///tmp/csv20
 
 
