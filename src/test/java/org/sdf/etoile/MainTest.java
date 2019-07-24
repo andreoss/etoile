@@ -2,6 +2,7 @@ package org.sdf.etoile;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
@@ -991,7 +992,7 @@ public final class MainTest extends SparkTestTemplate {
                 new Args(
                         "--input.format=com.databricks.spark.avro",
                         "--input.path=" + input.toURI(),
-                        "--input.replace=string:\u0001/MISSING",
+                        "--output.replace=string:\u0001/MISSING",
                         "--output.path=" + output.toURI(),
                         "--output.format=csv"
                 )
@@ -1008,6 +1009,5 @@ public final class MainTest extends SparkTestTemplate {
                 )
         );
     }
-
 }
 

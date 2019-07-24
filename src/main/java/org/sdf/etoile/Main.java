@@ -26,19 +26,8 @@ public final class Main implements Runnable {
         final Map<String, String> inOpts = new PrefixArgs("input", this.args);
         final Map<String, String> outOpts = new PrefixArgs("output", this.args);
         final Transformation<Row> input = new Input(this.spark, inOpts);
-        final Transformation<Row> replaced =
-                new ConditionalTransformation<>(
-                        () -> inOpts.containsKey("replace"),
-                        new Substituted(
-                                input,
-                                new ReplacementMap(
-                                        inOpts.get("replace")
-                                )
-                        ),
-                        input
-                );
         final Transformation<Row> casted = new FullyCastedByParameters(
-                replaced,
+                input,
                 inOpts
         );
         final Transformation<Row> sorted = new SortedByParameter<>(
@@ -62,15 +51,15 @@ public final class Main implements Runnable {
                 new ConditionalTransformation<>(
                         () -> outOpts.containsKey("replace"),
                         new Substituted(
-                                input,
+                                new Stringified<>(repartitioned),
                                 new ReplacementMap(
                                         outOpts.get("replace")
                                 )
                         ),
-                        input
+                        repartitioned
                 );
         final Output<Row> output = new FormatOutput<>(
-                repartitioned,
+                outReplaced,
                 outOpts
         );
         final Output<Row> mode = new Mode<>(
