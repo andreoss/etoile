@@ -966,7 +966,7 @@ public final class MainTest extends SparkTestTemplate {
                         "--input.format=csv",
                         "--input.header=true",
                         "--input.path=" + input.toURI(),
-                        "--input.replace=string:XXX/MISSING",
+                        "--output.replace=string:XXX/MISSING",
                         "--output.path=" + output.toURI(),
                         "--output.format=csv+header",
                         "--output.delimiter=;"
