@@ -2,6 +2,7 @@ package org.sdf.etoile;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
@@ -28,10 +29,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
-public final class MainTest {
+public final class MainTest extends SparkTestTemplate {
     @Rule
     public final TemporaryFolder temp = new TemporaryFolder();
-    private SparkSession session;
 
     @Before
     public void setUp() {
@@ -828,6 +828,7 @@ public final class MainTest {
         );
     }
 
+
     @Test
     public void writesHeaderForSpecialFormat() throws IOException {
         final File input = temp.newFolder("input");
@@ -893,7 +894,6 @@ public final class MainTest {
         );
     }
 
-    @Test
     public void appendsToPreviousOutput() throws IOException {
         final List<File> inputs =
                 Arrays.asList(
@@ -948,6 +948,64 @@ public final class MainTest {
                         "2,baz,gii",
                         "3,abc,def",
                         "4,xyz,qwe"
+                )
+        );
+    }
+
+    @Test
+    public void canReplacesValuesByType() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id,val,char",
+                "1,XXX,abc"
+        );
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input.toURI(),
+                        "--output.replace=string:XXX/MISSING",
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv+header",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;char",
+                        "1;MISSING;abc"
+                )
+        );
+    }
+
+    @Test
+    public void replacesMissingValues() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = resolveCsvOutput();
+        copyAvro(input, "missing.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input.toURI(),
+                        "--output.replace=string:\u0001/MISSING",
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "1,5321312.12466,MISSING",
+                        "2,MISSING,MISSING",
+                        "3,9921312.13499,2011-10-17 23:11:12.000000",
+                        "4,3321312.13499,2011-11-17 23:11:12.000000",
+                        "5,4421312.13499,2011-12-17 23:11:12.000000"
                 )
         );
     }

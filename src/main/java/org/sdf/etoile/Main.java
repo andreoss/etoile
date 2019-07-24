@@ -47,8 +47,19 @@ public final class Main implements Runnable {
                         outOpts.getOrDefault("partitions", "1")
                 )
         );
+        final Transformation<Row> outReplaced =
+                new ConditionalTransformation<>(
+                        () -> outOpts.containsKey("replace"),
+                        new Substituted(
+                                new Stringified<>(repartitioned),
+                                new ReplacementMap(
+                                        outOpts.get("replace")
+                                )
+                        ),
+                        repartitioned
+                );
         final Output<Row> output = new FormatOutput<>(
-                repartitioned,
+                outReplaced,
                 outOpts
         );
         final Output<Row> mode = new Mode<>(
