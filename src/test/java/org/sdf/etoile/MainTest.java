@@ -2,7 +2,6 @@ package org.sdf.etoile;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.spark.sql.SparkSession;
-import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
