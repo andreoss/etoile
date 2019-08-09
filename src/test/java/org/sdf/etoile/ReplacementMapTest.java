@@ -8,7 +8,12 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 
-public class ReplacementMapTest {
+public final class ReplacementMapTest {
+    
+    @Test(expected = IllegalArgumentException.class)
+    public void failsOnInvalidInput() {
+        new ReplacementMap("string:XXX:WTF");
+    }
 
 
     @Test
