@@ -6,7 +6,6 @@ import lombok.experimental.Delegate;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 @RequiredArgsConstructor
 final class PrefixArgs implements Map<String, String> {
@@ -15,16 +14,17 @@ final class PrefixArgs implements Map<String, String> {
 
     @Delegate
     private Map<String, String> get() {
-        final Set<String> keys = this.source.keySet();
+        final String fullPrefix = prefix + ".";
         final Map<String, String> result = new HashMap<>();
-        for (final String key : keys) {
-            final String fullPrefix = prefix + ".";
-            if (key.startsWith(prefix))  {
-               result.put(
-                       key.replaceFirst(fullPrefix, ""),
-                       this.source.get(key)
-               );
-           }
+        for (final Entry<String, String> entry : this.source.entrySet()) {
+            final String key = entry.getKey();
+            final String value = entry.getValue();
+            if (key.startsWith(prefix)) {
+                result.put(
+                        key.replaceFirst(fullPrefix, ""),
+                        value
+                );
+            }
         }
         return Collections.unmodifiableMap(result);
     }
