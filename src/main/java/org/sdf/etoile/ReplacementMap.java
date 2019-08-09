@@ -2,6 +2,8 @@ package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.Delegate;
+import org.apache.spark.api.java.JavaUtils;
+import scala.collection.JavaConversions;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -19,8 +21,7 @@ final class ReplacementMap implements Map<Type, Map<Object, Object>>,
     private static final Pattern SEP = Pattern.compile("\\s*,\\s*");
     private final String param;
 
-    @Nullable
-    private Map<Type, Map<Object, Object>> res;
+    private JavaUtils.SerializableMapWrapper<Type, Map<Object, Object>> res;
 
     @Delegate
     private Map<Type, Map<Object, Object>> make() {
@@ -60,7 +61,7 @@ final class ReplacementMap implements Map<Type, Map<Object, Object>>,
                 throw new UnsupportedOperationException(sub);
             }
         }
-        res = new HashMap<>(mutable);
+        res = JavaUtils.mapAsSerializableJavaMap(JavaConversions.mapAsScalaMap(mutable));
     }
 
     @SuppressWarnings("AssignmentToNull")
