@@ -13,6 +13,7 @@ public abstract class SparkTestTemplate {
     @Before
     public void setUp() {
         session = SparkSession.builder()
+                .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
                 .master("local[*]")
                 .getOrCreate();
     }

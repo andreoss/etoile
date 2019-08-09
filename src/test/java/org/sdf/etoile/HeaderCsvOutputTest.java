@@ -17,7 +17,9 @@ import org.llorllale.cactoos.matchers.TextIs;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Objects;
@@ -36,6 +38,10 @@ final class CsvText extends TextEnvelope {
 
     public CsvText(final File output) {
         this(output.toPath());
+    }
+
+    public CsvText(final URI uri) {
+        this(Paths.get(uri));
     }
 }
 
@@ -87,13 +93,14 @@ public final class HeaderCsvOutputTest {
                 "writes csv with header",
                 new CsvText(
                         new Saved<>(
-                                output,
+                                output.toUri(),
                                 new HeaderCsvOutput<>(
                                         new FakeInput(session, "id int, name string")
-                                ))
+                                )
+                        )
                 ),
                 new TextIs(
-                        "id,name\n"
+                        "id,name" + System.lineSeparator()
                 )
         );
     }
@@ -123,7 +130,7 @@ public final class HeaderCsvOutputTest {
                 new LinesAre(
                         "id,name",
                         "1,foo",
-                        "2,bar\n"
+                        "2,bar"
                 )
         );
     }

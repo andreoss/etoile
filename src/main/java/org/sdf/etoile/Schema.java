@@ -2,15 +2,28 @@ package org.sdf.etoile;
 
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
+import org.cactoos.list.Joined;
 import org.cactoos.list.ListOf;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-interface Schema extends Supplier<StructType> {
+public interface Schema extends Supplier<StructType> {
+
+    default Map<String, List<String>> mapTypeToName() {
+        return asMap().entrySet().stream()
+                .collect(
+                        Collectors.toMap(
+                                e -> e.getValue(),
+                                e -> Collections.singletonList(e.getValue()),
+                                (xs, ys) -> new Joined<>(xs, ys)
+                        )
+                );
+    }
 
     default Map<String, String> asMap() {
         return Arrays.stream(this.get()
