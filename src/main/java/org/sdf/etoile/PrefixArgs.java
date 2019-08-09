@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RequiredArgsConstructor
-public final class PrefixArgs implements Map<String, String> {
+final class PrefixArgs implements Map<String, String> {
     private final String prefix;
     private final Map<String, String> source;
 
