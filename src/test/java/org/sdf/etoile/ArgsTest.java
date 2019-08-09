@@ -9,7 +9,7 @@ public class ArgsTest {
     public void parsesInputArg() {
         MatcherAssert.assertThat(
                 "parses arguments",
-                new Args(new String[]{"--foo=bar"}),
+                new Args("--foo=bar"),
                 Matchers.hasEntry(
                         Matchers.is("foo"),
                         Matchers.is("bar")
@@ -20,8 +20,8 @@ public class ArgsTest {
     @Test
     public void parsesArgsWithSpaces() {
         MatcherAssert.assertThat(
-                "parses argument with spaces and parentesis",
-                new Args(new String[]{"--input.sort=cast(AAA as int)"}),
+                "parses argument with spaces and parenthesis",
+                new Args("--input.sort=cast(AAA as int)"),
                 Matchers.hasEntry(
                         Matchers.is("input.sort"),
                         Matchers.is("cast(AAA as int)")
