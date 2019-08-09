@@ -4,13 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 @RequiredArgsConstructor
 final class ColumnsCastedToTypeMultiple implements Transformation<Row> {
     private final Transformation<Row> first;
-    private final List<Map<String, String>> casts;
+    private final Collection<Map<String, String>> casts;
 
     @Override
     public Dataset<Row> get() {
