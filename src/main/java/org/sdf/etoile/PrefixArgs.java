@@ -1,31 +1,28 @@
 package org.sdf.etoile;
 
-import lombok.RequiredArgsConstructor;
-import lombok.experimental.Delegate;
+import org.cactoos.map.MapEnvelope;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-@RequiredArgsConstructor
-final class PrefixArgs implements Map<String, String> {
-    private final String prefix;
-    private final Map<String, String> source;
-
-    @Delegate
-    private Map<String, String> get() {
-        final String fullPrefix = prefix + ".";
-        final Map<String, String> result = new HashMap<>();
-        for (final Entry<String, String> entry : this.source.entrySet()) {
-            final String key = entry.getKey();
-            final String value = entry.getValue();
-            if (key.startsWith(prefix)) {
-                result.put(
-                        key.replaceFirst(fullPrefix, ""),
-                        value
-                );
+final class PrefixArgs extends MapEnvelope<String, String> {
+    PrefixArgs(final String prefix, final Map<String, String> source) {
+        super(() -> {
+            final String fullPrefix = prefix + ".";
+            final Map<String, String> result = new HashMap<>();
+            for (final Entry<String, String> entry : source.entrySet()) {
+                final String key = entry.getKey();
+                final String value = entry.getValue();
+                if (key.startsWith(prefix)) {
+                    result.put(
+                            key.replaceFirst(fullPrefix, ""),
+                            value
+                    );
+                }
             }
-        }
-        return Collections.unmodifiableMap(result);
+            return Collections.unmodifiableMap(result);
+        });
     }
+
 }
