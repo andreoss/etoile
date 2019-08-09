@@ -2,6 +2,7 @@ package org.sdf.etoile;
 
 
 import org.apache.spark.sql.Row;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Test;
@@ -10,6 +11,15 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 
 public final class SubstitutedTest extends SparkTestTemplate {
+    @Test(expected = IllegalArgumentException.class)
+    public void checksIfMapIsSerializable() {
+        new Substituted(() -> {
+            throw new IllegalStateException("ok");
+        },
+                new MapOf<>()
+        );
+    }
+
     @Test
     public void replacesStringValue() {
         final Transformation<Row> replaced = new Substituted(
