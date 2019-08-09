@@ -6,9 +6,10 @@ import lombok.ToString;
 import org.apache.spark.sql.catalyst.parser.CatalystSqlParser$;
 import org.apache.spark.sql.types.DataType;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 
-interface Type {
+interface Type extends Serializable {
 
     DataType value();
 
@@ -42,3 +43,4 @@ interface Type {
         }
     }
 }
+
