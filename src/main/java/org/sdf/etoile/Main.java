@@ -6,7 +6,7 @@ import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 
-import java.nio.file.Paths;
+import java.net.URI;
 import java.util.Map;
 
 
@@ -59,7 +59,7 @@ public final class Main implements Runnable {
                 output
         );
         final Terminal saved = new Saved<>(
-                Paths.get(outOpts.get("path")),
+                URI.create(outOpts.get("path")),
                 mode
         );
         saved.result();
