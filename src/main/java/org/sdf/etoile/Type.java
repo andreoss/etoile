@@ -6,10 +6,9 @@ import lombok.ToString;
 import org.apache.spark.sql.catalyst.parser.CatalystSqlParser$;
 import org.apache.spark.sql.types.DataType;
 
-import java.io.Serializable;
 import java.sql.Timestamp;
 
-interface Type extends Serializable {
+interface Type {
 
     DataType value();
 
@@ -18,7 +17,7 @@ interface Type extends Serializable {
     }
 
     default Class<?> klass() {
-        if (sql().equals("string")) {
+        if ("string".equals(sql())) {
             return String.class;
         }
         if (sql().startsWith("timestamp")) {
