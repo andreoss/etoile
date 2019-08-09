@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -15,39 +16,45 @@ final class ReplacementMap extends
     private static final Pattern SEP = Pattern.compile("\\s*,\\s*");
 
     ReplacementMap(final String param) {
-        super(build(param));
+        super(mkMap(param));
     }
 
-    private static Map<Type, Map<Object, Object>> build(final String param) {
+    private static Map<Type, Map<Object, Object>> mkMap(final String param) {
         final Map<Type, Map<Object, Object>> result;
         if (param == null) {
             result = Collections.emptyMap();
         } else {
             final Map<Type, Map<Object, Object>> mutable = new HashMap<>();
-            final List<String> subs = Arrays.stream(SEP.split(param))
-                    .filter(x -> !x.isEmpty())
-                    .collect(Collectors.toList());
+            final List<String> subs = split(param);
             for (final String sub : subs) {
                 final String[] elems = sub.split(":", 2);
+                if (elems.length != 2) {
+                    throw new IllegalArgumentException(
+                            String.format("`%s` is invalid", sub)
+                    );
+                }
                 final String[] pair = elems[1].split("/", 2);
-                check(sub, elems, pair);
-                parseNull(pair, 0);
-                parseNull(pair, 1);
+                if (pair.length != 2) {
+                    throw new IllegalArgumentException(
+                            String.format("`%s` is invalid", sub)
+                    );
+                }
                 final Type key = new Type.Of(elems[0]);
+                final Map<Object, Object> m = mutable
+                        .computeIfAbsent(key, s -> new HashMap<>());
                 if (key.klass()
                         .equals(String.class)) {
-                    mutable.computeIfAbsent(key, s -> new HashMap<>())
-                            .put(pair[0], pair[1]);
+                    m
+                            .put(
+                                    parseNullable(String::valueOf, 0, pair),
+                                    parseNullable(String::valueOf, 1, pair)
+                            );
                 } else if (key.klass()
                         .equals(Timestamp.class)) {
-                    @Nullable final Timestamp value;
-                    if (pair[1] != null) {
-                        value = Timestamp.valueOf(pair[1]);
-                    } else {
-                        value = null;
-                    }
-                    mutable.computeIfAbsent(key, s -> new HashMap<>())
-                            .put(Timestamp.valueOf(pair[0]), value);
+                    m
+                            .put(
+                                    parseNullable(Timestamp::valueOf, 0, pair),
+                                    parseNullable(Timestamp::valueOf, 1, pair));
                 } else {
                     throw new UnsupportedOperationException(sub);
                 }
@@ -57,22 +64,30 @@ final class ReplacementMap extends
         return result;
     }
 
-    @SuppressWarnings("AssignmentToNull")
-    private static void parseNull(final String[] repl, final int i) {
-        if ("null".equals(repl[i])) {
-            repl[i] = null;
-        }
+    private static List<String> split(final String param) {
+        return Arrays.stream(SEP.split(param.trim()))
+                .collect(Collectors.toList());
     }
 
-    private static void check(
-            final String x,
-            final String[] elems,
-            final String[] pair
+    private static <T> T parseNullable(
+            final Function<String, T> parse,
+            final int i, final String[] pair
     ) {
-        if ((elems.length != 2) || (pair.length != 2)) {
-            throw new IllegalArgumentException(
-                    String.format("`%s` is invalid", x)
-            );
+        nullifyString(pair, i);
+        @Nullable final T result;
+        final String s = pair[i];
+        if (null != s) {
+            result = parse.apply(s);
+        } else {
+            result = null;
+        }
+        return result;
+    }
+
+    @SuppressWarnings("AssignmentToNull")
+    private static void nullifyString(final String[] arr, final int i) {
+        if ("null".equalsIgnoreCase(arr[i])) {
+            arr[i] = null;
         }
     }
 
