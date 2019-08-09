@@ -6,10 +6,10 @@ import org.junit.Test;
 
 public final class PrefixArgsTest {
     @Test
-    public void shouldFilterByPerfix() {
+    public void shouldFilterByPrefix() {
         MatcherAssert.assertThat(
                 "parses arguments",
-                new PrefixArgs("source", new Args(new String[]{"--source.path=/tmp"})),
+                new PrefixArgs("source", new Args("--source.path=/tmp")),
                 Matchers.hasEntry(
                         Matchers.is("path"),
                         Matchers.is("/tmp")
