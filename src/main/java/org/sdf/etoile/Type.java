@@ -18,7 +18,7 @@ interface Type extends Serializable {
     }
 
     default Class<?> klass() {
-        if (sql().equals("string")) {
+        if ("string".equals(sql())) {
             return String.class;
         }
         if (sql().startsWith("timestamp")) {
@@ -43,3 +43,4 @@ interface Type extends Serializable {
         }
     }
 }
+

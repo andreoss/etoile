@@ -2,7 +2,6 @@ package org.sdf.etoile;
 
 import org.apache.spark.sql.Row;
 
-import java.io.Serializable;
 import java.util.Map;
 
 final class Substituted extends Transformation.Envelope<Row> {
@@ -14,14 +13,7 @@ final class Substituted extends Transformation.Envelope<Row> {
                 input,
                 new Substitute(dict)
         ));
-        if (!(dict instanceof Serializable)) {
-            throw new IllegalArgumentException(
-                    String.format("%s is not Serializable",
-                            dict.getClass()
-                                    .getCanonicalName()
-                    )
-            );
-        }
+        Verify.isSerializable(dict);
     }
 }
 
