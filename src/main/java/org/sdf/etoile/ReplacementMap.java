@@ -61,7 +61,9 @@ final class ReplacementMap implements Map<Type, Map<Object, Object>>,
                 throw new UnsupportedOperationException(sub);
             }
         }
-        res = JavaUtils.mapAsSerializableJavaMap(JavaConversions.mapAsScalaMap(mutable));
+        res = JavaUtils.mapAsSerializableJavaMap(
+                JavaConversions.mapAsScalaMap(mutable)
+        );
     }
 
     @SuppressWarnings("AssignmentToNull")
