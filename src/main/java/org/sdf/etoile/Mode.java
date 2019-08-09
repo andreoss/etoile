@@ -10,8 +10,8 @@ final class Mode<X> implements Output<X> {
     private final SaveMode type;
     private final Output<X> orig;
 
-    Mode(final String type, final Output<X> orig) {
-        this(EnumUtil.parseIgnoreCase(SaveMode.class, type), orig);
+    Mode(final String mode, final Output<X> original) {
+        this(EnumUtil.parseIgnoreCase(SaveMode.class, mode), original);
     }
 
     @Override
