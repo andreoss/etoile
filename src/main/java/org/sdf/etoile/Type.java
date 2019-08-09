@@ -1,6 +1,7 @@
 package org.sdf.etoile;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 import org.apache.spark.sql.catalyst.parser.CatalystSqlParser$;
@@ -30,6 +31,7 @@ interface Type extends Serializable {
     @EqualsAndHashCode
     @ToString
     @RequiredArgsConstructor
+    @Generated
     final class Of implements Type {
         private final DataType dataType;
 

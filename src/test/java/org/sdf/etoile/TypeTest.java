@@ -16,7 +16,23 @@ public final class TypeTest {
                 Matchers.is(StringType$.MODULE$)
         );
     }
+    @Test
+    public void shouldNotBeequalWithDifferentType() {
+        MatcherAssert.assertThat(
+                "not equals",
+                new Type.Of(StringType$.MODULE$),
+                Matchers.not(new Type.Of("timestamp"))
+        );
+    }
 
+    @Test
+    public void shouldNotBeEqualWithDifferentObject() {
+        MatcherAssert.assertThat(
+                "not equals to ???",
+                new Type.Of(StringType$.MODULE$),
+                Matchers.not(Matchers.equalTo(new Object()))
+        );
+    }
     @Test
     public void equalsWithSameType() {
         MatcherAssert.assertThat(
