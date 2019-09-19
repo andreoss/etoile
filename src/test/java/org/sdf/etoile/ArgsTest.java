@@ -1,12 +1,13 @@
 package org.sdf.etoile;
 
-import org.hamcrest.Matchers;
 import org.hamcrest.MatcherAssert;
-import org.junit.Test;
+import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public class ArgsTest {
+final class ArgsTest {
     @Test
-    public void parsesInputArg() {
+    void parsesInputArg() {
         MatcherAssert.assertThat(
                 "parses arguments",
                 new Args("--foo=bar"),
@@ -18,7 +19,7 @@ public class ArgsTest {
     }
 
     @Test
-    public void parsesArgsWithSpaces() {
+    void parsesArgsWithSpaces() {
         MatcherAssert.assertThat(
                 "parses argument with spaces and parenthesis",
                 new Args("--input.sort=cast(AAA as int)"),
@@ -29,8 +30,10 @@ public class ArgsTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void failsOnUnparsableArg() {
-        new Args(new String[]{"--foo"}).get("foo");
+    @Test
+    void failsOnUnparsableArg() {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                () -> new Args(new String[]{"--foo"}).get("foo")
+        );
     }
 }

@@ -3,16 +3,17 @@ package org.sdf.etoile;
 import org.apache.spark.sql.Row;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-public final class SavedTest extends SparkTestTemplate {
+final class SavedTest extends SparkTestTemplate {
     @Test
-    public void savesInCorrectPath() throws IOException {
+    void savesInCorrectPath() throws IOException {
         final URI path = temp.newFolder().toURI();
         final Saved<Row> saved = new Saved<>(
                 path,
@@ -37,8 +38,8 @@ public final class SavedTest extends SparkTestTemplate {
         );
     }
 
-    @Test(expected = IOException.class)
-    public void failsForUnreachableUri() throws IOException {
+    @Test
+    void failsForUnreachableUri() throws IOException {
         final URI path = temp.newFolder().toURI();
         final Saved<Row> saved = new Saved<>(
                 URI.create("hdfs://" + path.getPath()),
@@ -56,15 +57,12 @@ public final class SavedTest extends SparkTestTemplate {
                         )
                 )
         );
-        try {
-            saved.result();
-        } catch (final Exception ex) {
-            MatcherAssert.assertThat(
-                    "fails on hdfs uri",
-                    ex.getMessage(),
-                    Matchers.startsWith("Incomplete HDFS URI")
-            );
-            throw ex;
-        }
+        MatcherAssert.assertThat(
+                "fails on hdfs uri",
+                Assertions.assertThrows(Exception.class, saved::result),
+                Matchers.hasProperty("message",
+                        Matchers.startsWith("Incomplete HDFS URI")
+                )
+        );
     }
 }

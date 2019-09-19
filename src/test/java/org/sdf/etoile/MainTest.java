@@ -5,11 +5,8 @@ import org.apache.spark.sql.SparkSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsIterableContainingInOrder;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.mockito.internal.util.io.IOUtil;
 
@@ -29,26 +26,18 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("unchecked")
 public final class MainTest extends SparkTestTemplate {
-    @Rule
-    public final TemporaryFolder temp = new TemporaryFolder();
-
-    @Before
-    public void setUp() {
-        session = SparkSession.builder()
-                .master("local[*]")
-                .getOrCreate();
-    }
-
-    @Test(expected = NullPointerException.class)
-    public void requiresArguments() {
-        new Main(
-                Mockito.mock(SparkSession.class),
-                Collections.emptyMap()
-        ).run();
+    @Test
+    void requiresArguments() {
+        Assertions.assertThrows(NullPointerException.class,
+                new Main(
+                        Mockito.mock(SparkSession.class),
+                        Collections.emptyMap()
+                )::run
+        );
     }
 
     @Test
-    public void startsSpark() throws IOException {
+    void startsSpark() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "test.avro");
@@ -69,7 +58,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canSetAColumnSep() throws IOException {
+    void canSetAColumnSep() throws IOException {
         final File input = temp.newFolder("input");
         final File output = temp.getRoot()
                 .toPath()
@@ -100,7 +89,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canSpecifyNumberOfPartitions() throws IOException {
+    void canSpecifyNumberOfPartitions() throws IOException {
         final File input = temp.newFolder("input");
         final File output = temp.getRoot()
                 .toPath()
@@ -140,7 +129,7 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void canUseCustomFormat() throws IOException {
+    void canUseCustomFormat() throws IOException {
         final File input = temp.newFolder("input");
         final File output = temp.getRoot()
                 .toPath()
@@ -187,7 +176,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void writesSortedOutput() throws IOException {
+    void writesSortedOutput() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
@@ -218,7 +207,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastType_StringToTimestamp_TwoColumns() throws IOException {
+    void canCastType_StringToTimestamp_TwoColumns() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,ts,ts",
@@ -250,7 +239,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastType_StringToTimestamp() throws IOException {
+    void canCastType_StringToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,ctl_validfrom,name",
@@ -282,7 +271,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastTypAllTimestampsToStringOnWrite() throws IOException {
+    void canCastTypAllTimestampsToStringOnWrite() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,ctl_validfrom,name",
@@ -315,7 +304,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastAllIntsToTimestampOnRead() throws IOException {
+    void canCastAllIntsToTimestampOnRead() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,ctl_validfrom,name",
@@ -357,7 +346,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
+    void canCastType_StringToTimestamp_andTimestampToString() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         writeInputFile(input,
@@ -390,7 +379,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canCastType_StringToInt_andIntToTimestamp() throws IOException {
+    void canCastType_StringToInt_andIntToTimestamp() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,ts",
@@ -426,7 +415,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void writesSortedOutput_castsByColumnName() throws IOException {
+    void writesSortedOutput_castsByColumnName() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
@@ -460,7 +449,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void writesSortedOutput_AndSortsNumerically() throws IOException {
+    void writesSortedOutput_AndSortsNumerically() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
@@ -493,7 +482,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void sortsInDescOrder() throws IOException {
+    void sortsInDescOrder() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "unsorted.avro");
@@ -539,7 +528,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canSortBySeveralColumns() throws IOException {
+    void canSortBySeveralColumns() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,char",
@@ -590,7 +579,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void doesNotKeepHeaderInOutput() throws IOException {
+    void doesNotKeepHeaderInOutput() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,char");
@@ -618,7 +607,7 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void convertsEmptyFileWithoutHeader() throws IOException {
+    void convertsEmptyFileWithoutHeader() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input);
         final File output = resolveCsvOutput();
@@ -638,7 +627,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void convertsEmptyFileWithHeaderRequired() throws IOException {
+    void convertsEmptyFileWithHeaderRequired() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input);
         final File output = resolveCsvOutput();
@@ -660,7 +649,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
+    void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,name,value");
@@ -689,7 +678,7 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void doesNotKeepHeaderInOutput_MultipleFiles_AllEmpty() throws IOException {
+    void doesNotKeepHeaderInOutput_MultipleFiles_AllEmpty() throws IOException {
         final File input = temp.newFolder("input");
         final File partA = input.toPath()
                 .resolve("part-1")
@@ -697,8 +686,8 @@ public final class MainTest extends SparkTestTemplate {
         final File partB = input.toPath()
                 .resolve("part-2")
                 .toFile();
-        Assert.assertTrue(partA.mkdirs());
-        Assert.assertTrue(partB.mkdirs());
+        Assertions.assertTrue(partA.mkdirs());
+        Assertions.assertTrue(partB.mkdirs());
         writeInputFile(partA);
         writeInputFile(partB);
         final File output = resolveCsvOutput();
@@ -722,7 +711,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
+    void doesNotKeepHeaderInOutput_MultipleFiles() throws IOException {
         final File input = temp.newFolder("input");
         final File first = input.toPath()
                 .resolve("part-1")
@@ -730,8 +719,8 @@ public final class MainTest extends SparkTestTemplate {
         final File second = input.toPath()
                 .resolve("part-2")
                 .toFile();
-        Assert.assertTrue(first.mkdirs());
-        Assert.assertTrue(second.mkdirs());
+        Assertions.assertTrue(first.mkdirs());
+        Assertions.assertTrue(second.mkdirs());
         writeInputFile(first,
                 "id,val,char"
         );
@@ -761,7 +750,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canDropColumnFromOutput() throws IOException {
+    void canDropColumnFromOutput() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,name",
@@ -793,7 +782,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void writesHeaderForSpecialFormat_NonEmpty() throws IOException {
+    void writesHeaderForSpecialFormat_NonEmpty() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,num",
@@ -829,7 +818,7 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void writesHeaderForSpecialFormat() throws IOException {
+    void writesHeaderForSpecialFormat() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,char"
@@ -857,18 +846,18 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void overwritesPreviousOutput() throws IOException {
+    void overwritesPreviousOutput() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,char"
         );
         final File output = resolveCsvOutput();
-        Assert.assertTrue("should exist", output.mkdirs());
-        Assert.assertTrue("should exist", output.toPath()
+        Assertions.assertTrue(output.mkdirs());
+        Assertions.assertTrue(output.toPath()
                 .resolve("foo.csv")
                 .toFile()
                 .createNewFile());
-        Assert.assertTrue("should exist", output.toPath()
+        Assertions.assertTrue(output.toPath()
                 .resolve("bar.csv")
                 .toFile()
                 .createNewFile());
@@ -893,7 +882,8 @@ public final class MainTest extends SparkTestTemplate {
         );
     }
 
-    public void appendsToPreviousOutput() throws IOException {
+    @Test
+    void appendsToPreviousOutput() throws IOException {
         final List<File> inputs =
                 Arrays.asList(
                         temp.newFolder("input-part1"),
@@ -952,7 +942,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void canReplacesValuesByType() throws IOException {
+    void canReplacesValuesByType() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id,val,char",
@@ -982,7 +972,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void handlesColumnExprs() throws IOException {
+    void handlesColumnExprs() throws IOException {
         final File input = temp.newFolder("input");
         writeInputFile(input,
                 "id\tval\tnum",
@@ -1015,7 +1005,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void handlesExpressionsWithAvro() throws IOException {
+    void handlesExpressionsWithAvro() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "missing.avro");
@@ -1043,7 +1033,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    public void handlesExpressionsWithSpecialFormat() throws IOException {
+    void handlesExpressionsWithSpecialFormat() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "missing.avro");
@@ -1071,7 +1061,7 @@ public final class MainTest extends SparkTestTemplate {
 
 
     @Test
-    public void replacesMissingValues() throws IOException {
+    void replacesMissingValues() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
         copyAvro(input, "missing.avro");

@@ -2,11 +2,11 @@ package org.sdf.etoile;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class HeaderTest extends SparkTestTemplate {
+final class HeaderTest extends SparkTestTemplate {
     @Test
-    public void returnsHeaderAsDataset() {
+    void returnsHeaderAsDataset() {
         MatcherAssert.assertThat(
                 "returns header of dataset as dataset",
                 new Collected<>(new Header<>(

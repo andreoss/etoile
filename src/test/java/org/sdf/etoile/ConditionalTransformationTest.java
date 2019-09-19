@@ -2,12 +2,12 @@ package org.sdf.etoile;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public class ConditionalTransformationTest extends SparkTestTemplate {
+final class ConditionalTransformationTest extends SparkTestTemplate {
 
     @Test
-    public void returnsLeftIfConditionIsFalse() {
+    void returnsLeftIfConditionIsFalse() {
         MatcherAssert.assertThat(
                 "uses left transformation if false",
                 new SchemaOf<>(
@@ -26,7 +26,7 @@ public class ConditionalTransformationTest extends SparkTestTemplate {
     }
 
     @Test
-    public void returnsRightIfConditionMeets() {
+    void returnsRightIfConditionMeets() {
         MatcherAssert.assertThat(
                 "uses right transformation if true",
                 new SchemaOf<>(

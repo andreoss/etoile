@@ -2,13 +2,13 @@ package org.sdf.etoile.util;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-public final class MappedKeysMapTest {
+final class MappedKeysMapTest {
     @Test
-    public void mapsKeys() {
+    void mapsKeys() {
         MatcherAssert.assertThat(
                 "maps keys",
                 new MappedKeysMap<>(
