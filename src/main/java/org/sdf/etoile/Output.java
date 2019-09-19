@@ -1,7 +1,6 @@
 package org.sdf.etoile;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.Delegate;
 import org.apache.spark.sql.DataFrameWriter;
 
 import java.util.function.Supplier;
@@ -11,11 +10,14 @@ interface Output<X> {
 
     @RequiredArgsConstructor
     abstract class Envelope<X> implements Output<X> {
-        @Delegate
         private final Output<X> delegate;
 
         Envelope(final Supplier<Output<X>> factory) {
             this(factory.get());
+        }
+
+        public final DataFrameWriter<X> get() {
+            return this.delegate.get();
         }
     }
 }
