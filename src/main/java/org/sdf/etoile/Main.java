@@ -5,6 +5,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
+import org.apache.spark.sql.types.StringType$;
 
 import java.net.URI;
 import java.util.Map;
@@ -33,13 +34,20 @@ public final class Main implements Runnable {
 
     @Override
     public void run() {
+        this.spark.udf().register(
+                "missing", new MissingUDF(), StringType$.MODULE$
+        );
         final Transformation<Row> input = new Input(this.spark, inOpts);
         final Transformation<Row> casted = new FullyCastedByParameters(
                 input,
                 inOpts
         );
+        final Transformation<Row> exprs = new ExpressionTransformed(
+                casted,
+                inOpts
+        );
         final Transformation<Row> sorted = new SortedByParameter<>(
-                casted, inOpts
+                exprs, inOpts
         );
         final Transformation<Row> castedAgain = new FullyCastedByParameters(
                 sorted,

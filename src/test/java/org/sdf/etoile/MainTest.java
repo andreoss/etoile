@@ -982,6 +982,95 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
+    public void handlesColumnExprs() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id\tval\tnum",
+                "1\tfoo\t1234.6"
+        );
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input.toURI(),
+                        "--input.delimiter=\t",
+                        "--input.csv=num:decimal(38,12)",
+                        "--input.expr=num:ceil(num)",
+                        "--input.sort=num",
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv+header",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "keeps header",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;num",
+                        "1;foo;1235"
+                )
+        );
+    }
+
+    @Test
+    public void handlesExpressionsWithAvro() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = resolveCsvOutput();
+        copyAvro(input, "missing.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=com.databricks.spark.avro",
+                        "--input.path=" + input.toURI(),
+                        "--input.expr=type_number:missing(type_number),type_timestamp:missing(type_timestamp)",
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "1,5321312.12466,MISSING",
+                        "2,MISSING,MISSING",
+                        "3,9921312.13499,2011-10-17 23:11:12.000000",
+                        "4,3321312.13499,2011-11-17 23:11:12.000000",
+                        "5,4421312.13499,2011-12-17 23:11:12.000000"
+                )
+        );
+    }
+
+    @Test
+    public void handlesExpressionsWithSpecialFormat() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = resolveCsvOutput();
+        copyAvro(input, "missing.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=avro+missing",
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "1,5321312.12466,MISSING",
+                        "2,MISSING,MISSING",
+                        "3,9921312.13499,2011-10-17 23:11:12.000000",
+                        "4,3321312.13499,2011-11-17 23:11:12.000000",
+                        "5,4421312.13499,2011-12-17 23:11:12.000000"
+                )
+        );
+    }
+
+
+    @Test
     public void replacesMissingValues() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
