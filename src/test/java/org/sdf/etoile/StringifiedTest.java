@@ -3,14 +3,14 @@ package org.sdf.etoile;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
 
-public class StringifiedTest extends SparkTestTemplate {
+final class StringifiedTest extends SparkTestTemplate {
     @Test
-    public void stringifiesSchema() {
+    void stringifiesSchema() {
         MatcherAssert.assertThat(
                 "all columns are string",
                 new SchemaOf<>(

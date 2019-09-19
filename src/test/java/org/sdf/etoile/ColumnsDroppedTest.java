@@ -5,28 +5,28 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
-public final class ColumnsDroppedTest {
+final class ColumnsDroppedTest {
     private SparkSession session;
 
-    @Before
-    public void setUp() {
+    @BeforeEach
+    void setUp() {
         session = SparkSession.builder()
                 .master("local[1]")
                 .getOrCreate();
     }
 
     @Test
-    public void dropsColumnsFromDataset() {
+    void dropsColumnsFromDataset() {
         final Transformation<Row> x = new ColumnsDropped<>(
                 new FakeInput(session, "id int, removed string"),
                 "removed"
         );
-
         MatcherAssert.assertThat(
                 "column was dropped",
                 x.get()
@@ -38,17 +38,17 @@ public final class ColumnsDroppedTest {
         );
     }
 
-    @Test(expected = AnalysisException.class)
-    public void failsOnUnresolvebleColumn() {
+    @Test
+    void failsOnUnresolvebleColumn() {
         final Transformation<Row> x = new ColumnsDropped<>(
                 new FakeInput(session, "id int, removed string"),
                 "notfound"
         );
-        x.get();
+        Assertions.assertThrows(AnalysisException.class, x::get);
     }
 
     @Test
-    public void dropsSeveralColumns() {
+    void dropsSeveralColumns() {
         final Transformation<Row> x = new ColumnsDropped<>(
                 new FakeInput(session, "id int, removed string, alsoremoved timestamp"),
                 Arrays.asList("removed", "alsoremoved")

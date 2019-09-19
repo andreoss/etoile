@@ -3,11 +3,11 @@ package org.sdf.etoile;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class PairsTest {
+final class PairsTest {
     @Test
-    public void parsesStringToPairs() {
+    void parsesStringToPairs() {
         MatcherAssert.assertThat(
                 "splits string into pairs",
                 new Pairs(",", ":", "a:b,c:d,foo:bar"),

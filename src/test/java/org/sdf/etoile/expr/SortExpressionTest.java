@@ -2,12 +2,13 @@ package org.sdf.etoile.expr;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
-public final class SortExpressionTest {
+final class SortExpressionTest {
 
     @Test
-    public void canUseColumnName() {
+    void canUseColumnName() {
         final Expression exp = new SortExpression("foo");
         MatcherAssert.assertThat(
                 "returns column",
@@ -17,7 +18,7 @@ public final class SortExpressionTest {
     }
 
     @Test
-    public void canUseCast() {
+    void canUseCast() {
         final Expression exp = new SortExpression("cast(foo as int)");
         MatcherAssert.assertThat(
                 "returns column",
@@ -27,7 +28,7 @@ public final class SortExpressionTest {
     }
 
     @Test
-    public void canSpecifyOrder() {
+    void canSpecifyOrder() {
         final Expression exp = new SortExpression(
                 "foo:desc"
         );
@@ -39,7 +40,7 @@ public final class SortExpressionTest {
     }
 
     @Test
-    public void canSpecifyOrder_Asc() {
+    void canSpecifyOrder_Asc() {
         final Expression exp = new SortExpression(
                 "foo:asc"
         );
@@ -50,8 +51,8 @@ public final class SortExpressionTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void canSpecifyOrder_failOnIncorrect() {
-        new SortExpression("foo:???").get();
+    @Test
+    void canSpecifyOrder_failOnIncorrect() {
+        Assertions.assertThrows(IllegalArgumentException.class, new SortExpression("foo:???")::get);
     }
 }

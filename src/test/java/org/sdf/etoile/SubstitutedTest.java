@@ -5,23 +5,27 @@ import org.apache.spark.sql.Row;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 import java.util.Arrays;
 
-public final class SubstitutedTest extends SparkTestTemplate {
-    @Test(expected = IllegalArgumentException.class)
-    public void checksIfMapIsSerializable() {
-        new Substituted(() -> {
-            throw new IllegalStateException("ok");
-        },
-                new MapOf<>()
+final class SubstitutedTest extends SparkTestTemplate {
+    @Test
+    void checksIfMapIsSerializable() {
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new Substituted(() -> {
+                    throw new IllegalStateException("ok");
+                },
+                        new MapOf<>()
+                )
         );
     }
 
     @Test
-    public void replacesStringValue() {
+    void replacesStringValue() {
         final Transformation<Row> replaced = new Substituted(
                 new FakeInput(
                         session,
@@ -47,7 +51,7 @@ public final class SubstitutedTest extends SparkTestTemplate {
     }
 
     @Test
-    public void replacesMultipleStringValues() {
+    void replacesMultipleStringValues() {
         final Transformation<Row> replaced = new Substituted(
                 new FakeInput(
                         session,
@@ -74,7 +78,7 @@ public final class SubstitutedTest extends SparkTestTemplate {
     }
 
     @Test
-    public void replacesTsValue() {
+    void replacesTsValue() {
         final Transformation<Row> replaced = new Substituted(
                 new FakeInput(
                         session,

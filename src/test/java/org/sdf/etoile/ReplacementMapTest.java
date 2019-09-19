@@ -4,25 +4,32 @@ package org.sdf.etoile;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 
-public final class ReplacementMapTest {
+final class ReplacementMapTest {
 
-    @Test(expected = IllegalArgumentException.class)
-    public void failsOnInvalidInput() {
-        new ReplacementMap("string:XXX:WTF");
+    @Test
+    void failsOnInvalidInput() {
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new ReplacementMap("string:XXX:WTF")
+        );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void failsOnInvalidInput2() {
-        new ReplacementMap("string:XXX");
+    @Test
+    void failsOnInvalidInput2() {
+        Assertions.assertThrows(
+                IllegalArgumentException.class,
+                () -> new ReplacementMap("string:XXX")
+        );
     }
 
 
     @Test
-    public void buildsMapForStringAndTrimsSeveralKeys() {
+    void buildsMapForStringAndTrimsSeveralKeys() {
         MatcherAssert.assertThat(
                 "trims string and creates map",
                 new ReplacementMap(
@@ -43,7 +50,7 @@ public final class ReplacementMapTest {
     }
 
     @Test
-    public void buildsMapForStringAndTrims() {
+    void buildsMapForStringAndTrims() {
         MatcherAssert.assertThat(
                 "trims string and creates map",
                 new ReplacementMap("  string:XXX/MISSING    "),
@@ -57,7 +64,7 @@ public final class ReplacementMapTest {
     }
 
     @Test
-    public void buildsMapForString() {
+    void buildsMapForString() {
         MatcherAssert.assertThat(
                 "creates map",
                 new ReplacementMap("string:XXX/MISSING"),
@@ -70,18 +77,18 @@ public final class ReplacementMapTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void throwsOnUnsupportedType() {
-        new ReplacementMap("decimal:-1/0");
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void throwsOnMalformedString() {
-        new ReplacementMap("decimal->-1/0");
+    @Test
+    void throwsOnUnsupportedType() {
+        Assertions.assertThrows(UnsupportedOperationException.class, () -> new ReplacementMap("decimal:-1/0"));
     }
 
     @Test
-    public void handlesNulls() {
+    void throwsOnMalformedString() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new ReplacementMap("decimal->-1/0"));
+    }
+
+    @Test
+    void handlesNulls() {
         MatcherAssert.assertThat(
                 "creates map",
                 new ReplacementMap("timestamp:null/1999-01-01 00:00:00"),
@@ -96,7 +103,7 @@ public final class ReplacementMapTest {
     }
 
     @Test
-    public void buildsMapForTimestamp() {
+    void buildsMapForTimestamp() {
         MatcherAssert.assertThat(
                 "creates map",
                 new ReplacementMap("timestamp:1999-01-01 00:00:00/null"),
@@ -109,6 +116,4 @@ public final class ReplacementMapTest {
                 )
         );
     }
-
-
 }

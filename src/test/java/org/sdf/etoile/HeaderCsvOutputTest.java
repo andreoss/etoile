@@ -1,6 +1,5 @@
 package org.sdf.etoile;
 
-import org.apache.spark.sql.SparkSession;
 import org.cactoos.Func;
 import org.cactoos.collection.Filtered;
 import org.cactoos.collection.Mapped;
@@ -9,10 +8,8 @@ import org.cactoos.text.Joined;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.llorllale.cactoos.matchers.TextIs;
 
 import java.io.File;
@@ -26,21 +23,21 @@ import java.util.Objects;
 
 
 final class CsvText extends TextEnvelope {
-    public CsvText(final Path input) {
+    private CsvText(final Path input) {
         super(
                 new ConcatenatedText(input, "csv")
         );
     }
 
-    public CsvText(final Terminal input) {
+    CsvText(final Terminal input) {
         this(input.result());
     }
 
-    public CsvText(final File output) {
+    CsvText(final File output) {
         this(output.toPath());
     }
 
-    public CsvText(final URI uri) {
+    private CsvText(final URI uri) {
         this(Paths.get(uri));
     }
 }
@@ -51,7 +48,7 @@ final class ConcatenatedText extends TextEnvelope {
                 .endsWith(extension));
     }
 
-    ConcatenatedText(final Path directory, final Func<File, Boolean> filter) {
+    private ConcatenatedText(final Path directory, final Func<File, Boolean> filter) {
         super(
                 new Joined(
                         new TextOf(""),
@@ -72,20 +69,9 @@ final class ConcatenatedText extends TextEnvelope {
     }
 }
 
-public final class HeaderCsvOutputTest {
-    @Rule
-    public final TemporaryFolder temp = new TemporaryFolder();
-    private SparkSession session;
-
-    @Before
-    public void setUp() {
-        session = SparkSession.builder()
-                .master("local[1]")
-                .getOrCreate();
-    }
-
+final class HeaderCsvOutputTest extends SparkTestTemplate {
     @Test
-    public void addsHeaderForEmptyOutput() throws IOException {
+    void addsHeaderForEmptyOutput() throws IOException {
         final Path output = temp.newFolder("output")
                 .toPath()
                 .resolve("csv");
@@ -106,7 +92,7 @@ public final class HeaderCsvOutputTest {
     }
 
     @Test
-    public void addsHeader() throws IOException {
+    void addsHeader() throws IOException {
         final Path output = temp.newFolder("output")
                 .toPath()
                 .resolve("csv");
@@ -135,11 +121,13 @@ public final class HeaderCsvOutputTest {
         );
     }
 
-    @Test(expected = IllegalArgumentException.class)
-    public void checksParametersForHeaderOptions() throws IOException {
-        new HeaderCsvOutput<>(
-                new FakeInput(session, "id int"),
-                Collections.singletonMap("header", "true")
-        ).get();
+    @Test
+    void checksParametersForHeaderOptions() throws IOException {
+        Assertions.assertThrows(IllegalArgumentException.class,
+                new HeaderCsvOutput<>(
+                        new FakeInput(session, "id int"),
+                        Collections.singletonMap("header", "true")
+                )::get
+        );
     }
 }

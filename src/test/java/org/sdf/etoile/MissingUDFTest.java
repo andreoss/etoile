@@ -2,11 +2,11 @@ package org.sdf.etoile;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class MissingUDFTest {
+final class MissingUDFTest {
     @Test
-    public void trimsValuesLeft() {
+    void trimsValuesLeft() {
         MatcherAssert.assertThat(
                 "[spaces]\\u0001 = MISSING",
                 new MissingUDF().call("    \u0001"),
@@ -15,7 +15,7 @@ public final class MissingUDFTest {
     }
 
     @Test
-    public void doesNothingWithNonEmptyString() {
+    void doesNothingWithNonEmptyString() {
         MatcherAssert.assertThat(
                 "X = X",
                 new MissingUDF().call("X"),
@@ -24,7 +24,7 @@ public final class MissingUDFTest {
     }
 
     @Test
-    public void trimsValuesRight() {
+    void trimsValuesRight() {
         MatcherAssert.assertThat(
                 "\\u0001[spaces] = MISSING",
                 new MissingUDF().call("\u0001   "),
@@ -33,7 +33,7 @@ public final class MissingUDFTest {
     }
 
     @Test
-    public void replacesMissingValueWithConstant() {
+    void replacesMissingValueWithConstant() {
         MatcherAssert.assertThat(
                 "\\u0001 = MISSING",
                 new MissingUDF().call("\u0001"),

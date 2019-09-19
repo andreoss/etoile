@@ -2,11 +2,11 @@ package org.sdf.etoile;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-public final class PrefixArgsTest {
+final class PrefixArgsTest {
     @Test
-    public void shouldFilterByPrefix() {
+    void shouldFilterByPrefix() {
         MatcherAssert.assertThat(
                 "parses arguments",
                 new PrefixArgs("source", new Args("--source.path=/tmp")),

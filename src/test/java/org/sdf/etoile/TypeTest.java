@@ -3,21 +3,23 @@ package org.sdf.etoile;
 import org.apache.spark.sql.types.StringType$;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
 
-public final class TypeTest {
+final class TypeTest {
     @Test
-    public void convertsDatatypeToJavaTypeDatatype() {
+    void convertsDatatypeToJavaTypeDatatype() {
         MatcherAssert.assertThat(
                 "string is String",
                 new Type.Of("string").value(),
                 Matchers.is(StringType$.MODULE$)
         );
     }
+
     @Test
-    public void shouldNotBeequalWithDifferentType() {
+    void shouldNotBeequalWithDifferentType() {
         MatcherAssert.assertThat(
                 "not equals",
                 new Type.Of(StringType$.MODULE$),
@@ -26,15 +28,16 @@ public final class TypeTest {
     }
 
     @Test
-    public void shouldNotBeEqualWithDifferentObject() {
+    void shouldNotBeEqualWithDifferentObject() {
         MatcherAssert.assertThat(
                 "not equals to ???",
                 new Type.Of(StringType$.MODULE$),
                 Matchers.not(Matchers.equalTo(new Object()))
         );
     }
+
     @Test
-    public void equalsWithSameType() {
+    void equalsWithSameType() {
         MatcherAssert.assertThat(
                 "equals",
                 new Type.Of(StringType$.MODULE$),
@@ -42,13 +45,16 @@ public final class TypeTest {
         );
     }
 
-    @Test(expected = UnsupportedOperationException.class)
-    public void cannotParseUnknownType() {
-        new Type.Of("struct<a:string>").klass();
-    }
-    
     @Test
-    public void hasToSting() {
+    void cannotParseUnknownType() {
+        Assertions.assertThrows(
+                UnsupportedOperationException.class,
+                new Type.Of("struct<a:string>")::klass
+        );
+    }
+
+    @Test
+    void hasToSting() {
         MatcherAssert.assertThat(
                 new Type.Of("struct<a:string>"),
                 Matchers.hasToString(
@@ -56,19 +62,19 @@ public final class TypeTest {
                 )
         );
     }
-    
+
 
     @Test
-    public void parsesTimestamp() {
+    void parsesTimestamp() {
         MatcherAssert.assertThat(
                 "timestamp is Timestamp",
                 new Type.Of("timestamp").klass(),
                 Matchers.is(Timestamp.class)
         );
     }
-    
+
     @Test
-    public void convertsDatatypeToJavaTypeForString() {
+    void convertsDatatypeToJavaTypeForString() {
         MatcherAssert.assertThat(
                 "string is String",
                 new Type.Of("string").klass(),
@@ -77,7 +83,7 @@ public final class TypeTest {
     }
 
     @Test
-    public void convertsDatatypeToJavaTypeForTimestamp() {
+    void convertsDatatypeToJavaTypeForTimestamp() {
         MatcherAssert.assertThat(
                 "timestamp is Timestamp",
                 new Type.Of("timestamp").klass(),
