@@ -45,8 +45,12 @@ public final class Main implements Runnable {
                 sorted,
                 outOpts
         );
+        final Transformation<Row> expressed = new Transformed(
+                sorted,
+                inOpts
+        );
         final Transformation<Row> dropped = new ColumnsDroppedByParameter<>(
-                castedAgain,
+                expressed,
                 outOpts
         );
         final Transformation<Row> repartitioned = new NumberedPartitions<>(

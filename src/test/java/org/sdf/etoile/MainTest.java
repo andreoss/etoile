@@ -982,6 +982,39 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
+    public void handlesColumnExprs() throws IOException {
+        final File input = temp.newFolder("input");
+        writeInputFile(input,
+                "id\tval\tnum",
+                "1\tfoo\t1234.6"
+        );
+        final File output = resolveCsvOutput();
+        new Main(
+                session,
+                new Args(
+                        "--input.format=csv",
+                        "--input.header=true",
+                        "--input.path=" + input.toURI(),
+                        "--input.delimiter=\t",
+                        "--input.csv=num:decimal(38,12)",
+                        "--input.expr=num:ceil(num)",
+                        "--input.sort=num",
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv+header",
+                        "--output.delimiter=;"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "keeps header",
+                new CsvText(output),
+                new LinesAre(
+                        "id;val;num",
+                        "1;foo;1235"
+                )
+        );
+    }
+
+    @Test
     public void replacesMissingValues() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
