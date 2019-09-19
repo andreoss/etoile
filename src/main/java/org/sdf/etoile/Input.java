@@ -15,19 +15,20 @@ final class Input implements Transformation<Row> {
 
     @Override
     public Dataset<Row> get() {
+        final Dataset<Row> result;
         final String format = params.getOrDefault("format", AVRO);
         if (format.equals("avro+missing")) {
             final Dataset<Row> raw = this.spark.read()
                     .format(AVRO)
                     .options(params)
                     .load();
-
-            return new Demissingified(raw).get();
-
+            result = new Demissingified(raw).get();
+        } else {
+            result = this.spark.read()
+                    .format(format)
+                    .options(params)
+                    .load();
         }
-        return this.spark.read()
-                .format(format)
-                .options(params)
-                .load();
+        return result;
     }
 }
