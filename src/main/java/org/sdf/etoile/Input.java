@@ -9,14 +9,24 @@ import java.util.Map;
 
 @RequiredArgsConstructor
 final class Input implements Transformation<Row> {
-    private static final String CODEC = "com.databricks.spark.avro";
+    private static final String AVRO = "com.databricks.spark.avro";
     private final SparkSession spark;
     private final Map<String, String> params;
 
     @Override
     public Dataset<Row> get() {
+        final String format = params.getOrDefault("format", AVRO);
+        if (format.equals("avro+missing")) {
+            final Dataset<Row> raw = this.spark.read()
+                    .format(AVRO)
+                    .options(params)
+                    .load();
+
+            return new Demissingified(raw).get();
+
+        }
         return this.spark.read()
-                .format(params.getOrDefault("format", CODEC))
+                .format(format)
                 .options(params)
                 .load();
     }

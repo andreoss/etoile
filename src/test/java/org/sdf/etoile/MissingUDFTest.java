@@ -15,6 +15,15 @@ public final class MissingUDFTest {
     }
 
     @Test
+    public void doesNothingWithNonEmptyString() {
+        MatcherAssert.assertThat(
+                "X = X",
+                new MissingUDF().call("X"),
+                Matchers.equalTo("X")
+        );
+    }
+
+    @Test
     public void trimsValuesRight() {
         MatcherAssert.assertThat(
                 "\\u0001[spaces] = MISSING",

@@ -1043,6 +1043,34 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
+    public void handlesExpressionsWithSpecialFormat() throws IOException {
+        final File input = temp.newFolder("input");
+        final File output = resolveCsvOutput();
+        copyAvro(input, "missing.avro");
+        new Main(
+                session,
+                new Args(
+                        "--input.format=avro+missing",
+                        "--input.path=" + input.toURI(),
+                        "--output.path=" + output.toURI(),
+                        "--output.format=csv"
+                )
+        ).run();
+        MatcherAssert.assertThat(
+                "header discarded on write",
+                new CsvText(output),
+                new LinesAre(
+                        "1,5321312.12466,MISSING",
+                        "2,MISSING,MISSING",
+                        "3,9921312.13499,2011-10-17 23:11:12.000000",
+                        "4,3321312.13499,2011-11-17 23:11:12.000000",
+                        "5,4421312.13499,2011-12-17 23:11:12.000000"
+                )
+        );
+    }
+
+
+    @Test
     public void replacesMissingValues() throws IOException {
         final File input = temp.newFolder("input");
         final File output = resolveCsvOutput();
