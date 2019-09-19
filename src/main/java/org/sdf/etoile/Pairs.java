@@ -20,7 +20,7 @@ final class Pairs extends CollectionEnvelope<Map<String, String>> {
         );
     }
 
-    public Pairs(final String expressions) {
+    Pairs(final String expressions) {
         this(",", ":", expressions);
     }
 

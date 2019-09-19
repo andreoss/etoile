@@ -9,7 +9,7 @@ abstract class MapFunctionEnvelop<X, Y>
         implements MapFunction<X, Y>, Serializable {
     private final MapFunction<X, Y> map;
 
-    public final Y call(X value) throws Exception {
+    public final Y call(final X value) throws Exception {
         return this.map.call(value);
     }
 }
