@@ -5,7 +5,7 @@ import org.cactoos.Func;
 import org.cactoos.collection.Filtered;
 import org.cactoos.collection.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.text.JoinedText;
+import org.cactoos.text.Joined;
 import org.cactoos.text.TextEnvelope;
 import org.cactoos.text.TextOf;
 import org.hamcrest.MatcherAssert;
@@ -53,7 +53,7 @@ final class ConcatenatedText extends TextEnvelope {
 
     ConcatenatedText(final Path directory, final Func<File, Boolean> filter) {
         super(
-                new JoinedText(
+                new Joined(
                         new TextOf(""),
                         new Mapped<>(
                                 TextOf::new,
