@@ -32,6 +32,6 @@ final class Input implements Transformation<Row> {
     }
 
     private String removeModifier(final String format) {
-        return format.replace("+missing$", "");
+        return format.replaceFirst("[+]missing$", "");
     }
 }
