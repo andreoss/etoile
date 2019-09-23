@@ -10,7 +10,7 @@ public final class MissingUDF implements UDF1<Object, String> {
     private final String token;
     private final String replacement;
 
-    private MissingUDF() {
+    public MissingUDF() {
         this("\u0001", "MISSING");
     }
 
