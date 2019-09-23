@@ -1040,7 +1040,7 @@ public final class MainTest extends SparkTestTemplate {
         new Main(
                 session,
                 new Args(
-                        "--input.format=avro+missing",
+                        "--input.format=com.databricks.spark.avro+missing",
                         "--input.path=" + input.toURI(),
                         "--output.path=" + output.toURI(),
                         "--output.format=csv"

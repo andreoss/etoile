@@ -1,11 +1,10 @@
 package org.sdf.etoile;
 
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-
-import java.util.Map;
 
 @RequiredArgsConstructor
 final class Input implements Transformation<Row> {
@@ -17,18 +16,22 @@ final class Input implements Transformation<Row> {
     public Dataset<Row> get() {
         final Dataset<Row> result;
         final String format = params.getOrDefault("format", AVRO);
-        if (format.equals("avro+missing")) {
+        if (format.endsWith("+missing")) {
             final Dataset<Row> raw = this.spark.read()
-                    .format(AVRO)
-                    .options(params)
-                    .load();
+                .format(removeModifier(format))
+                .options(params)
+                .load();
             result = new Demissingified(raw).get();
         } else {
             result = this.spark.read()
-                    .format(format)
-                    .options(params)
-                    .load();
+                .format(format)
+                .options(params)
+                .load();
         }
         return result;
+    }
+
+    private String removeModifier(final String format) {
+        return format.replaceFirst("[+]missing$", "");
     }
 }
