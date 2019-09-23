@@ -1,18 +1,24 @@
 package org.sdf.etoile;
 
+import java.util.regex.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.api.java.UDF1;
 
-import java.util.regex.Pattern;
-
+@RequiredArgsConstructor
 public final class MissingUDF implements UDF1<Object, String> {
-    private static final String MISSING = "\u0001";
     private static final Pattern TRIMMED = Pattern.compile("^\\s+|\\s+$");
+    private final String token;
+    private final String replacement;
+
+    private MissingUDF() {
+        this("\u0001", "MISSING");
+    }
 
     @Override
     public String call(final Object value) {
         final String result;
         if (isMissing(value)) {
-            result = "MISSING";
+            result = replacement;
         } else {
             result = String.valueOf(value);
         }
@@ -20,10 +26,11 @@ public final class MissingUDF implements UDF1<Object, String> {
     }
 
     private boolean isMissing(final Object value) {
-        return MISSING.equals(trimmed(value));
+        return token.equals(trimmed(value));
     }
 
     private String trimmed(final Object value) {
-        return TRIMMED.matcher(String.valueOf(value)).replaceAll("");
+        return TRIMMED.matcher(String.valueOf(value))
+            .replaceAll("");
     }
 }
