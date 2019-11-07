@@ -1,36 +1,87 @@
+/*
+ * Copyright(C) 2019
+ */
 package org.sdf.etoile;
 
+import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 
-import java.util.function.Supplier;
+/**
+ * Transformation of {@link Dataset}.
+ *
+ * @param <Y> Underlying data type.
+ * @since 0.1.0
+ */
+interface Transformation<Y> {
+    /**
+     * Convert it back to dataset.
+     *
+     * @return The Spark dataset
+     */
+    Dataset<Y> get();
 
-interface Transformation<Y> extends Supplier<Dataset<Y>> {
-    final class Noop<Y> extends Envelope<Y> {
-        Noop(final Transformation<Y> df) {
-            super(() -> df);
+    /**
+     * A @{link Transformation} which does nothing.
+     *
+     * @param <Y> Underlying type
+     * @since 0.1.0
+     */
+    final class Noop<Y> extends Transformation.Envelope<Y> {
+        /**
+         * Ctor.
+         *
+         * @param tran A transformation
+         */
+        Noop(final Transformation<Y> tran) {
+            super(() -> tran);
         }
-        Noop(final Dataset<Y> ds) {
-            super(() -> ds);
+
+        /**
+         * Ctor.
+         *
+         * @param set A dataset
+         */
+        Noop(final Dataset<Y> set) {
+            super(() -> set);
         }
     }
 
+    /**
+     * An Envelope for @{link Transformation}.
+     *
+     * @param <Y> Underlying data type
+     * @since 0.1.0
+     */
     @RequiredArgsConstructor
     abstract class Envelope<Y> implements Transformation<Y> {
-        private final Supplier<Transformation<Y>> df;
+        /**
+         * A factory for Transformation.
+         */
+        private final Supplier<Transformation<Y>> factory;
 
-        Envelope(final Dataset<Y> ds) {
-            this(() -> ds);
+        /**
+         * Secondary ctor.
+         *
+         * @param set A dataset
+         */
+        Envelope(final Dataset<Y> set) {
+            this(() -> set);
         }
 
+        /**
+         * Secondary ctor.
+         *
+         * @param trans A wrapped transformation.
+         */
         Envelope(final Transformation<Y> trans) {
             this(() -> trans);
         }
 
         @Override
         public final Dataset<Y> get() {
-            return this.df.get()
-                    .get();
+            return this.factory.get()
+                .get();
         }
     }
 }

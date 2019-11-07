@@ -1,25 +1,40 @@
+/*
+ * Copyright(C) 2019
+ */
 package org.sdf.etoile;
 
+import java.util.Map;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 
-import java.util.Map;
-
+/**
+ * A {@link Transformation} with "missing" values removed.
+ *
+ * Convertes each column to string and applies UDF.
+ * @see MissingUDF
+ * @see Stringified
+ * @since 0.3.1
+ */
 final class Demissingified extends Transformation.Envelope<Row> {
+    /**
+     * Ctor.
+     *
+     * @param original Original tranformation.
+     */
     Demissingified(final Dataset<Row> original) {
         super(() -> {
             final Schema schema = new SchemaOf<>(() -> original);
             final Map<String, String> map = new MapOf<>(
-                    name -> new MapEntry<>(
-                            name, String.format("missing(`%s`)", name)
-                    ),
-                    schema.fieldNames()
+                name -> new MapEntry<>(
+                    name, String.format("missing(%s)", name)
+                ),
+                schema.fieldNames()
             );
             return new ExpressionTransformed(
-                    new Stringified<>(() -> original), new ListOf<>(map)
+                new Stringified<>(() -> original), new ListOf<>(map)
             );
         });
     }

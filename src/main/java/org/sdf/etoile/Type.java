@@ -1,48 +1,47 @@
+/*
+ * Copyright(C) 2019
+ */
 package org.sdf.etoile;
-
-import lombok.EqualsAndHashCode;
-import lombok.Generated;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
-import org.apache.spark.sql.catalyst.parser.CatalystSqlParser$;
-import org.apache.spark.sql.types.DataType;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
+import org.apache.spark.sql.types.DataType;
 
+/**
+ * Type of column.
+ * @since 0.2.5
+ */
 interface Type extends Serializable {
 
-    DataType value();
-
-    default String sql() {
-        return value().catalogString();
+    /**
+     * Convert to Java type.
+     * @return Java type.
+     */
+    default Class<?> asJava() {
+        final Class<?> result;
+        if ("string".equals(this.asSql())) {
+            result = String.class;
+        } else if (this.asSql().startsWith("timestamp")) {
+            result = Timestamp.class;
+        } else {
+            throw new UnsupportedOperationException();
+        }
+        return result;
     }
 
-    default Class<?> klass() {
-        if ("string".equals(sql())) {
-            return String.class;
-        }
-        if (sql().startsWith("timestamp")) {
-            return Timestamp.class;
-        }
-        throw new UnsupportedOperationException();
+    /**
+     * Convert to SQL type.
+     * @return SQL type.
+     */
+    default String asSql() {
+        return this.asSpark().catalogString();
     }
 
-    @EqualsAndHashCode
-    @ToString
-    @RequiredArgsConstructor
-    @Generated
-    final class Of implements Type {
-        private final DataType dataType;
+    /**
+     * Convert to Spark type.
+     * @return Spark type.
+     */
+    DataType asSpark();
 
-        Of(final String type) {
-            this(CatalystSqlParser$.MODULE$.parseDataType(type));
-        }
-
-        @Override
-        public DataType value() {
-            return this.dataType;
-        }
-    }
 }
 
