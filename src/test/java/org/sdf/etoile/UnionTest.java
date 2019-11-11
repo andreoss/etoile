@@ -17,7 +17,7 @@ final class UnionTest extends SparkTestTemplate {
 
     @Test
     void unionOfTwo() throws IOException {
-        int id = 1;
+        int id = 0;
         final String schema = "id int, name string";
         MatcherAssert.assertThat(
             "union of two datasets",

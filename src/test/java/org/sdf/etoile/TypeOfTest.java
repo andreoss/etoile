@@ -65,7 +65,7 @@ final class TypeOfTest {
         MatcherAssert.assertThat(
             new TypeOf("struct<a:string>"),
             Matchers.hasToString(
-                "TypeOf(type=StructType(StructField(a,StringType,true)))"
+                "TypeOf(type=struct<a:string>)"
             )
         );
     }
