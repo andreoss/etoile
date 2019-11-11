@@ -16,6 +16,6 @@ final class Substitute extends MapFunctionEnvelop<Row, Row> {
      * @param replacements Dictionary
      */
     Substitute(final Map<Type, Map<Object, Object>> replacements) {
-        super(new ValueReplacementByTypeMapFunction<>(replacements));
+        super(new TypeValueSubsituteMapFunction<>(replacements));
     }
 }

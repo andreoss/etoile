@@ -13,7 +13,8 @@ import scala.collection.JavaConversions;
  * @param <B> Value type.
  * @since 0.3.0
  */
-public abstract class SerializableMapEnvelope<A, B> extends JavaUtils.SerializableMapWrapper<A, B> {
+public abstract class SerializableMapEnvelope<A, B>
+    extends JavaUtils.SerializableMapWrapper<A, B> {
     /**
      * Ctor.
      * @param underlying Unrderlying map.

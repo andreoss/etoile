@@ -85,7 +85,8 @@ public final class ExtraOracleDialect extends JdbcDialect {
      * @param metabuilder Metadata of column
      * @return Spark data type.
      */
-    private static Option<DataType> handleNumeric(final MetadataBuilder metabuilder) {
+    private static Option<DataType> handleNumeric(
+        final MetadataBuilder metabuilder) {
         final long scale;
         if (metabuilder == null) {
             scale = 0L;
@@ -97,7 +98,9 @@ public final class ExtraOracleDialect extends JdbcDialect {
             result = Some.apply(ExtraOracleDialect.decimalWithScale((int) 0L));
         } else if (scale == ExtraOracleDialect.FLOAT_SCALE) {
             result = Some.apply(
-                ExtraOracleDialect.decimalWithScale(ExtraOracleDialect.DEFAULT_SCALE)
+                ExtraOracleDialect.decimalWithScale(
+                    ExtraOracleDialect.DEFAULT_SCALE
+                )
             );
         } else {
             result = Option.empty();

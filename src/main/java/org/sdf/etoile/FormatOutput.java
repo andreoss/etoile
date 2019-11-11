@@ -19,7 +19,8 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
      * @param input Original trainformation.
      * @param parameters Parameters.
      */
-    FormatOutput(final Transformation<T> input, final Map<String, String> parameters) {
+    FormatOutput(final Transformation<T> input,
+        final Map<String, String> parameters) {
         super(
             () -> {
                 final Output<Row> result;

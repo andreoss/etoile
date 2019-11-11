@@ -30,7 +30,7 @@ public final class Header<Y> extends Transformation.Envelope<Row> {
      */
     public Header(final Dataset<Y> dataset) {
         super(() -> {
-            final Schema schema = new SchemaOf<>(new Stringified<>(() -> dataset));
+            final Schema schema = new SchemaOf<>(new Stringified<>(dataset));
             return new Rows(
                 dataset.sparkSession(),
                 schema,

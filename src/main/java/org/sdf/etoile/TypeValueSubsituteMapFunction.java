@@ -21,7 +21,7 @@ import scala.collection.JavaConversions;
  * @since 0.3.0
  */
 @RequiredArgsConstructor
-final class ValueReplacementByTypeMapFunction<V> implements MapFunction<Row, Row> {
+final class TypeValueSubsituteMapFunction<V> implements MapFunction<Row, Row> {
     /**
      * Dictionary.
      */
@@ -30,7 +30,9 @@ final class ValueReplacementByTypeMapFunction<V> implements MapFunction<Row, Row
     @Override
     public Row call(final Row value) throws Exception {
         MapFunction<Row, Row> composed = row -> row;
-        final Collection<StructField> fields = JavaConversions.asJavaCollection(value.schema());
+        final Collection<StructField> fields = JavaConversions.asJavaCollection(
+            value.schema()
+        );
         for (final Map.Entry<Type, Map<V, V>> ent : this.repl.entrySet()) {
             for (final StructField field : fields) {
                 final DataType type = field.dataType();

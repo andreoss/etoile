@@ -20,16 +20,17 @@ final class SortedByParameter<Y> extends Transformation.Envelope<Y> {
     /**
      * Ctor.
      * @param original Original transformation.
-     * @param param Parameters.
+     * @param params Parameters.
      */
     SortedByParameter(final Transformation<Y> original,
-        final Map<String, String> param) {
+        final Map<String, String> params) {
         super(
             () -> {
                 final Transformation<Y> result;
-                if (param.containsKey(SortedByParameter.PARAM_NAME)) {
+                if (params.containsKey(SortedByParameter.PARAM_NAME)) {
+                    final String prm = params.get(SortedByParameter.PARAM_NAME);
                     result = new Sorted<>(
-                        original, param.get(SortedByParameter.PARAM_NAME).split(",")
+                        original, prm.split(",")
                     );
                 } else {
                     result = new Transformation.Noop<>(original);

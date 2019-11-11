@@ -23,7 +23,9 @@ final class Args extends MapEnvelope<String, String> {
      * @param arguments Command-line argumnets.
      */
     Args(final String... arguments) {
-        this(Pattern.compile("--(?<key>[a-z0-9-\\.]+)=(?<value>.+)"), arguments);
+        this(
+            Pattern.compile("--(?<key>[a-z0-9-\\.]+)=(?<value>.+)"), arguments
+        );
     }
 
     /**

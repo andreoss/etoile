@@ -121,7 +121,8 @@ public final class Main implements Runnable {
      * @param dataset A dataset
      * @return A dataset with values replaced
      */
-    private Transformation<Row> replacedIfNeeded(final Transformation<Row> dataset) {
+    private Transformation<Row> replacedIfNeeded(
+        final Transformation<Row> dataset) {
         final String replace = "replace";
         return new ConditionalTransformation<>(
             () -> this.target.containsKey(replace),

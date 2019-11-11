@@ -18,8 +18,8 @@ final class ColumnsCastedByParameters extends Transformation.Envelope<Row> {
      * @param key Key of paramaters.
      * @param params Parameters.
      */
-    ColumnsCastedByParameters(final Transformation<Row> original, final String key,
-        final Map<String, String> params) {
+    ColumnsCastedByParameters(final Transformation<Row> original,
+        final String key, final Map<String, String> params) {
         super(
             () ->
                 new ColumnsCastedToTypeMultiple(

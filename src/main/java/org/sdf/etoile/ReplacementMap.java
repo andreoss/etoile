@@ -20,7 +20,8 @@ import javax.annotation.Nullable;
  * @since 0.2.5
  * @todo Refactor to a simplier interface.
  */
-final class ReplacementMap extends SerializableMapEnvelope<Type, Map<Object, Object>> {
+final class ReplacementMap extends
+    SerializableMapEnvelope<Type, Map<Object, Object>> {
     /**
      * Separator.
      */
@@ -50,7 +51,9 @@ final class ReplacementMap extends SerializableMapEnvelope<Type, Map<Object, Obj
                 final String[] elems = sub.split(":", 2);
                 final String[] pair = ReplacementMap.parseToPair(sub, elems);
                 final Type key = new TypeOf(elems[0]);
-                final Map<Object, Object> rplc = mutable.computeIfAbsent(key, s -> new HashMap<>());
+                final Map<Object, Object> rplc = mutable.computeIfAbsent(
+                    key, s -> new HashMap<>()
+                );
                 if (key.asJava().equals(String.class)) {
                     rplc.put(
                         ReplacementMap.parseNullable(String::valueOf, 0, pair),

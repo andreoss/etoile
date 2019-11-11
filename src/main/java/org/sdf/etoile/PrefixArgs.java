@@ -23,9 +23,9 @@ final class PrefixArgs extends MapEnvelope<String, String> {
         super(
             () -> {
                 final Map<String, String> result = new HashMap<>();
-                for (final Map.Entry<String, String> entry : source.entrySet()) {
-                    final String key = entry.getKey();
-                    final String value = entry.getValue();
+                for (final Map.Entry<String, String> ent : source.entrySet()) {
+                    final String key = ent.getKey();
+                    final String value = ent.getValue();
                     if (key.startsWith(prefix)) {
                         result.put(
                             key.replaceFirst(String.format("%s.", prefix), ""),

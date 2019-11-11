@@ -31,10 +31,10 @@ public final class WithoutColumns<Y> implements Transformation<Row> {
      * Ctor.
      *
      * @param input An transformation.
-     * @param columns Columns to drop.
+     * @param cols Columns to drop.
      */
-    WithoutColumns(final Transformation<Y> input, final String... columns) {
-        this(input, new ListOf<>(columns));
+    WithoutColumns(final Transformation<Y> input, final String... cols) {
+        this(input, new ListOf<>(cols));
     }
 
     @Override

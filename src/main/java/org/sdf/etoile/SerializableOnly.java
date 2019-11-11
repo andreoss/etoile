@@ -8,8 +8,8 @@ import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 
 /**
- * Supplier which throws {@link IllegalArgumentException } exception for non-serializable objects.
- *
+ * Supplier of non-serializable object.
+ * Throws {@link IllegalArgumentException } if not serializable.
  * @param <T> Object type
  * @since 0.2.0
  */
