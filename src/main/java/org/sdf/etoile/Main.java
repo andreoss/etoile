@@ -55,7 +55,11 @@ public final class Main implements Runnable {
      * @param args An array of command line arguments.
      */
     public static void main(final String... args) {
-        JdbcDialects.registerDialect(new ExtraOracleDialect());
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            JdbcDialects.registerDialect(new ExtraOracleDialect());
+        } catch (final ClassNotFoundException ignored) {
+        }
         new Main(
             SparkSession.builder()
                 .getOrCreate(),
