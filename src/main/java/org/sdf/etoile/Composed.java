@@ -15,6 +15,11 @@ import org.apache.spark.api.java.function.MapFunction;
  */
 final class Composed<A, B, C> extends MapFunctionEnvelop<A, C> {
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -303840972102172626L;
+
+    /**
      * Ctor.
      *
      * @param first First function to apply.

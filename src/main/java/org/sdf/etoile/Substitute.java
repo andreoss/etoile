@@ -12,6 +12,11 @@ import org.apache.spark.sql.Row;
  */
 final class Substitute extends MapFunctionEnvelop<Row, Row> {
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -303840972102172626L;
+
+    /**
      * Ctor.
      * @param replacements Dictionary
      */

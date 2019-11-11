@@ -20,6 +20,11 @@ import scala.collection.JavaConversions;
 @RequiredArgsConstructor
 final class ValueReplacementByColumnMapFunction<V> implements MapFunction<Row, Row> {
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -303840972102172626L;
+
+    /**
      * Column name.
      */
     private final String col;

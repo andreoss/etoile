@@ -23,6 +23,11 @@ import javax.annotation.Nullable;
 final class ReplacementMap extends
     SerializableMapEnvelope<Type, Map<Object, Object>> {
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -303840972102172626L;
+
+    /**
      * Separator.
      */
     private static final Pattern SEP = Pattern.compile("\\s*,\\s*");

@@ -27,18 +27,18 @@ public final class TypeOf implements Type {
     /**
      * Spark type.
      */
-    private final DataType type;
+    private final String type;
 
     /**
      * Ctor.
-     * @param sql SQL type.
+     * @param type Spark type.
      */
-    TypeOf(final String sql) {
-        this(CatalystSqlParser$.MODULE$.parseDataType(sql));
+    public TypeOf(final DataType type) {
+        this(type.catalogString());
     }
 
     @Override
     public DataType asSpark() {
-        return this.type;
+        return CatalystSqlParser$.MODULE$.parseDataType(this.type);
     }
 }

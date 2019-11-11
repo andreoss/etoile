@@ -23,6 +23,11 @@ import scala.collection.JavaConversions;
 @RequiredArgsConstructor
 final class TypeValueSubsituteMapFunction<V> implements MapFunction<Row, Row> {
     /**
+     * Serial version UID.
+     */
+    private static final long serialVersionUID = -303840972102172626L;
+
+    /**
      * Dictionary.
      */
     private final Map<Type, Map<V, V>> repl;
