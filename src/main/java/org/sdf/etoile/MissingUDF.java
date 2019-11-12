@@ -11,7 +11,7 @@ public final class MissingUDF implements UDF1<Object, String> {
     private final String replacement;
 
     public MissingUDF() {
-        this("\u0001", "MISSING");
+        this("\u0001", "DEFAULT_VALUE");
     }
 
     @Override

@@ -38,7 +38,7 @@ public final class Main implements Runnable {
             .register(
                 "missing", new MissingUDF(
                     this.inOpts.getOrDefault("missing", "\u0001"),
-                    this.outOpts.getOrDefault("missing", "MISSING")
+                    this.outOpts.getOrDefault("missing", "DEFAULT_VALUE")
                 ), StringType$.MODULE$
             );
         final Transformation<Row> input = new Input(this.spark, inOpts);

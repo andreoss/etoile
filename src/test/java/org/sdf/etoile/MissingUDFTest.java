@@ -8,9 +8,9 @@ final class MissingUDFTest {
     @Test
     void trimsValuesLeft() {
         MatcherAssert.assertThat(
-                "[spaces]\\u0001 = MISSING",
+                "[spaces]\\u0001 = DEFAULT_VALUE",
                 new MissingUDF().call("    \u0001"),
-                Matchers.equalTo("MISSING")
+                Matchers.equalTo("DEFAULT_VALUE")
         );
     }
 
@@ -26,18 +26,18 @@ final class MissingUDFTest {
     @Test
     void trimsValuesRight() {
         MatcherAssert.assertThat(
-                "\\u0001[spaces] = MISSING",
+                "\\u0001[spaces] = DEFAULT_VALUE",
                 new MissingUDF().call("\u0001   "),
-                Matchers.equalTo("MISSING")
+                Matchers.equalTo("DEFAULT_VALUE")
         );
     }
 
     @Test
     void replacesMissingValueWithConstant() {
         MatcherAssert.assertThat(
-                "\\u0001 = MISSING",
+                "\\u0001 = DEFAULT_VALUE",
                 new MissingUDF().call("\u0001"),
-                Matchers.equalTo("MISSING")
+                Matchers.equalTo("DEFAULT_VALUE")
         );
     }
 }

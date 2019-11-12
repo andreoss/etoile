@@ -33,16 +33,16 @@ final class ReplacementMapTest {
         MatcherAssert.assertThat(
                 "trims string and creates map",
                 new ReplacementMap(
-                        "  string:XXX/MISSING, string:YYY/MISSING "
+                        "  string:XXX/DEFAULT_VALUE, string:YYY/DEFAULT_VALUE "
                 ),
                 Matchers.hasEntry(
                         Matchers.is(new Type.Of("string")),
                         Matchers.allOf(
                                 IsMapContaining.hasEntry(
-                                        "YYY", "MISSING"
+                                        "YYY", "DEFAULT_VALUE"
                                 ),
                                 IsMapContaining.hasEntry(
-                                        "XXX", "MISSING"
+                                        "XXX", "DEFAULT_VALUE"
                                 )
                         )
                 )
@@ -53,11 +53,11 @@ final class ReplacementMapTest {
     void buildsMapForStringAndTrims() {
         MatcherAssert.assertThat(
                 "trims string and creates map",
-                new ReplacementMap("  string:XXX/MISSING    "),
+                new ReplacementMap("  string:XXX/DEFAULT_VALUE    "),
                 Matchers.hasEntry(
                         Matchers.is(new Type.Of("string")),
                         IsMapContaining.hasEntry(
-                                "XXX", "MISSING"
+                                "XXX", "DEFAULT_VALUE"
                         )
                 )
         );
@@ -67,11 +67,11 @@ final class ReplacementMapTest {
     void buildsMapForString() {
         MatcherAssert.assertThat(
                 "creates map",
-                new ReplacementMap("string:XXX/MISSING"),
+                new ReplacementMap("string:XXX/DEFAULT_VALUE"),
                 Matchers.hasEntry(
                         Matchers.is(new Type.Of("string")),
                         IsMapContaining.hasEntry(
-                                "XXX", "MISSING"
+                                "XXX", "DEFAULT_VALUE"
                         )
                 )
         );

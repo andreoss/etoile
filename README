@@ -3,7 +3,7 @@
 Для выходных данных аналогично, с префиксом output
 
 ```
-$ spark2-submit --master local étoilé-0.1.6-SNAPSHOT.jar \
+$ spark2-submit --master local étoilé.jar \
     --input.path=hdfs://tmp/avro                            \
     --output.path=file:///tmp/csv10                         \
     --output.delimiter=","                                  \
@@ -14,7 +14,7 @@ $ spark2-submit --master local étoilé-0.1.6-SNAPSHOT.jar \
 через параметр input.sort
 
 ```
-$ spark2-submit --master local[1] étoilé-0.1.6-SNAPSHOT.jar   \
+$ spark2-submit --master local[1] étoilé.jar   \
     --input.path=hdfs://tmp/avro                                 \
     --input.sort='cast(CTL_VALIDFROM as timestamp)'              \
     (or --input.sort='column,column' )
@@ -26,7 +26,7 @@ $ spark2-submit --master local[1] étoilé-0.1.6-SNAPSHOT.jar   \
 Можно конвертировать в csv таблицы из oracle
 
 ```
-$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar   \
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar   \
     --input.url="jdbc://"                                                                                                                         \
     --input.format="jdbc"                                                                                                                         \
     --input.dbtable=schema_name.table_name                                                                                                        \
@@ -39,7 +39,7 @@ $ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6
 Через параметр input.cast или output.cast можно менять тип колонок в таблице
 
 ```
-$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.path=hdfs://tmp/avro                                                                                                                  \
@@ -51,7 +51,7 @@ $ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6
 Можно через параметр input.convert менять тип колонок для всей таблицы, без указания конкретной колонки
 
 ```
-$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.path=hdfs://tmp/avro                                                                                                                  \
@@ -64,7 +64,7 @@ $ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6
 Можно через параметр output.drop удалять ненужную колонку или колонки
 
 ```
-$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.path=hdfs://tmp/avro                                                                                                                  \
@@ -76,7 +76,7 @@ $ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6
 Если нужно получить строку с символом, который нельзя набрать на клавиатуре, то используется "printf" (пример: --input.replace=string:"$(printf '\type')"/value)
 
 ```
-$ spark2-submit --jars étoilé-0.1.6-SNAPSHOT.jar --master local étoilé-0.1.6-SNAPSHOT.jar
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar
     --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
     --input.dbtable=schema_name.table_name                                                                                                        \
     --input.replace=string:"$('type')"/value                                                                                                                 \
