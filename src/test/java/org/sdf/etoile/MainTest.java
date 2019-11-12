@@ -955,7 +955,7 @@ public final class MainTest extends SparkTestTemplate {
                         "--input.format=csv",
                         "--input.header=true",
                         "--input.path=" + input.toURI(),
-                        "--output.replace=string:XXX/MISSING",
+                        "--output.replace=string:XXX/DEFAULT_VALUE",
                         "--output.path=" + output.toURI(),
                         "--output.format=csv+header",
                         "--output.delimiter=;"
@@ -966,7 +966,7 @@ public final class MainTest extends SparkTestTemplate {
                 new CsvText(output),
                 new LinesAre(
                         "id;val;char",
-                        "1;MISSING;abc"
+                        "1;DEFAULT_VALUE;abc"
                 )
         );
     }
@@ -1023,8 +1023,8 @@ public final class MainTest extends SparkTestTemplate {
                 "header discarded on write",
                 new CsvText(output),
                 new LinesAre(
-                        "1,5321312.12466,MISSING",
-                        "2,MISSING,MISSING",
+                        "1,5321312.12466,DEFAULT_VALUE",
+                        "2,DEFAULT_VALUE,DEFAULT_VALUE",
                         "3,9921312.13499,2011-10-17 23:11:12.000000",
                         "4,3321312.13499,2011-11-17 23:11:12.000000",
                         "5,4421312.13499,2011-12-17 23:11:12.000000"
@@ -1050,8 +1050,8 @@ public final class MainTest extends SparkTestTemplate {
                 "header discarded on write",
                 new CsvText(output),
                 new LinesAre(
-                        "1,5321312.12466,MISSING",
-                        "2,MISSING,MISSING",
+                        "1,5321312.12466,DEFAULT_VALUE",
+                        "2,DEFAULT_VALUE,DEFAULT_VALUE",
                         "3,9921312.13499,2011-10-17 23:11:12.000000",
                         "4,3321312.13499,2011-11-17 23:11:12.000000",
                         "5,4421312.13499,2011-12-17 23:11:12.000000"
@@ -1070,7 +1070,7 @@ public final class MainTest extends SparkTestTemplate {
                 new Args(
                         "--input.format=com.databricks.spark.avro",
                         "--input.path=" + input.toURI(),
-                        "--output.replace=string:\u0001/MISSING",
+                        "--output.replace=string:\u0001/DEFAULT_VALUE",
                         "--output.path=" + output.toURI(),
                         "--output.format=csv"
                 )
@@ -1079,8 +1079,8 @@ public final class MainTest extends SparkTestTemplate {
                 "header discarded on write",
                 new CsvText(output),
                 new LinesAre(
-                        "1,5321312.12466,MISSING",
-                        "2,MISSING,MISSING",
+                        "1,5321312.12466,DEFAULT_VALUE",
+                        "2,DEFAULT_VALUE,DEFAULT_VALUE",
                         "3,9921312.13499,2011-10-17 23:11:12.000000",
                         "4,3321312.13499,2011-11-17 23:11:12.000000",
                         "5,4421312.13499,2011-12-17 23:11:12.000000"
