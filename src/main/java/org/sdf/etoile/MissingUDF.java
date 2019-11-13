@@ -14,6 +14,11 @@ import org.apache.spark.sql.api.java.UDF1;
  */
 public final class MissingUDF implements UDF1<Object, String> {
     /**
+     * Default name of UDF.
+     */
+    public static final String MISSING_UDF_NAME = "missing";
+
+    /**
      * Serial version UID.
      */
     private static final long serialVersionUID = 5416439547387768779L;
@@ -32,7 +37,7 @@ public final class MissingUDF implements UDF1<Object, String> {
      * Default ctor.
      */
     public MissingUDF() {
-        this("\u0001", "MISSING");
+        this("\u0001", "DEFAULT_VALUE");
     }
 
     /**
@@ -40,7 +45,7 @@ public final class MissingUDF implements UDF1<Object, String> {
      * @param pttrn Pattern.
      * @param rplcmnt Replacement.
      */
-    private MissingUDF(final String pttrn, final String rplcmnt) {
+    public MissingUDF(final String pttrn, final String rplcmnt) {
         this.pattern = pttrn;
         this.replecement = rplcmnt;
     }

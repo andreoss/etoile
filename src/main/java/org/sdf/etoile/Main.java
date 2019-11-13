@@ -69,9 +69,13 @@ public final class Main implements Runnable {
 
     @Override
     public void run() {
+        final String udfarg = "missing";
         this.spark.udf()
             .register(
-                "missing", new MissingUDF(), StringType$.MODULE$
+                MissingUDF.MISSING_UDF_NAME, new MissingUDF(
+                    this.source.getOrDefault(udfarg, "\u0001"),
+                    this.target.getOrDefault(udfarg, "DEFAULT_VALUE")
+                ), StringType$.MODULE$
             );
         final Transformation<Row> input = new Input(this.spark, this.source);
         final Transformation<Row> casted = new FullyCastedByParameters(

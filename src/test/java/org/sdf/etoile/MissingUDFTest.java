@@ -18,7 +18,7 @@ final class MissingUDFTest {
     /**
      * Default literal.
      */
-    private static final String MISSING = "MISSING";
+    private static final String MISSING = "DEFAULT_VALUE";
 
     /**
      * Should trim value if needed.
