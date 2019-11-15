@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019
+ * Copyright(C) 2019. See COPYING for more.
  */
 package org.sdf.etoile.util;
 
