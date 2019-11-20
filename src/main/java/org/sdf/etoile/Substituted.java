@@ -1,19 +1,29 @@
+/*
+ * Copyright(C) 2019. See COPYING for more.
+ */
 package org.sdf.etoile;
 
+import java.util.Map;
 import org.apache.spark.sql.Row;
 
-import java.util.Map;
-
+/**
+ * A {@link Transformation} with values substituted.
+ * @since 0.3.0
+ */
 final class Substituted extends Transformation.Envelope<Row> {
-    Substituted(
-            final Transformation<Row> input,
-            final Map<Type, Map<Object, Object>> dict
-    ) {
-        super(() -> new MappedTransformation(
+    /**
+     * Ctor.
+     * @param input Input tranformation.
+     * @param dict Dictionary.
+     */
+    Substituted(final Transformation<Row> input,
+        final Map<Type, Map<Object, Object>> dict) {
+        super(
+            () -> new MappedTransformation(
                 input,
-                new Substitute(dict)
-        ));
-        Verify.isSerializable(dict);
+                new Substitute(new SerializableOnly<>(dict).get())
+            )
+        );
     }
 }
 

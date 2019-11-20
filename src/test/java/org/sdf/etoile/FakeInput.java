@@ -1,5 +1,11 @@
+/*
+ * Copyright(C) 2019. See COPYING for more.
+ */
 package org.sdf.etoile;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -7,40 +13,69 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.apache.spark.sql.types.StructType;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
+/**
+ * Fake Input.
+ *
+ * @since 0.2.0
+ */
 @RequiredArgsConstructor
 final class FakeInput implements Transformation<Row> {
+    /**
+     * Spark session.
+     */
     private final SparkSession session;
-    private final StructType ddl;
+
+    /**
+     * Schema.
+     */
+    private final StructType schema;
+
+    /**
+     * Rows.
+     */
     private final List<Row> rows;
 
-    private FakeInput(final SparkSession session, final StructType ddl) {
-        this(session, ddl, Collections.emptyList());
-    }
-
+    /**
+     * Secondary ctor.
+     *
+     * @param session Spark session
+     * @param ddl Ddl expression for schema
+     */
     FakeInput(final SparkSession session, final String ddl) {
         this(session, StructType.fromDDL(ddl));
     }
 
-    public FakeInput(final SparkSession session, final String ddl, final List<Object[]> rows) {
+    /**
+     * Secondary ctor.
+     * Creates empty Tranformation.
+     *
+     * @param session Spark session
+     * @param schm Schema of dataset
+     */
+    private FakeInput(final SparkSession session, final StructType schm) {
+        this(session, schm, Collections.emptyList());
+    }
+
+    /**
+     * Secondary ctor.
+     *
+     * @param session Spark session
+     * @param ddl Ddl extpression
+     * @param rows Rows
+     */
+    FakeInput(final SparkSession session, final String ddl, final List<Object[]> rows) {
         this(
-                session,
-                StructType.fromDDL(ddl),
-                rows.stream()
-                        .map(row -> new GenericRowWithSchema(row, StructType.fromDDL(ddl)))
-                        .collect(Collectors.toList())
+            session,
+            StructType.fromDDL(ddl),
+            rows.stream()
+                .map(row -> new GenericRowWithSchema(row, StructType.fromDDL(ddl)))
+                .collect(Collectors.toList())
         );
     }
 
     @Override
     public Dataset<Row> get() {
-        return session.createDataFrame(
-                rows,
-                ddl
-        );
+        return this.session.createDataFrame(this.rows, this.schema);
     }
 
 }

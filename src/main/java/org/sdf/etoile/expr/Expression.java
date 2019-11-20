@@ -1,8 +1,21 @@
+/*
+ * Copyright(C) 2019. See COPYING for more.
+ */
 package org.sdf.etoile.expr;
 
 import org.apache.spark.sql.Column;
 
-import java.util.function.Supplier;
-
-public interface Expression extends Supplier<Column> {
+/**
+ * An expression.
+ *
+ * @since 0.2.0
+ */
+@FunctionalInterface
+public interface Expression {
+    /**
+     * Expression as column.
+     *
+     * @return A column.
+     */
+    Column get();
 }

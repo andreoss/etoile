@@ -1,3 +1,6 @@
+/*
+ * Copyright(C) 2019. See COPYING for more.
+ */
 package org.sdf.etoile;
 
 import java.net.URI;
@@ -9,13 +12,36 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.apache.spark.sql.types.StringType$;
 
-
+/**
+ * Application.
+ *
+ * @todo Reduce coupling (1h)
+ * @checkstyle ClassDataAbstractionCouplingCheck (100 lines)
+ * @since 0.0.1
+ */
 @RequiredArgsConstructor
 public final class Main implements Runnable {
+    /**
+     * A Spark session.
+     */
     private final SparkSession spark;
-    private final Map<String, String> inOpts;
-    private final Map<String, String> outOpts;
 
+    /**
+     * Options for input.
+     */
+    private final Map<String, String> source;
+
+    /**
+     * Options for output.
+     */
+    private final Map<String, String> target;
+
+    /**
+     * Ctor.
+     *
+     * @param session A Spark session
+     * @param args Command line arguments
+     */
     public Main(final SparkSession session, final Map<String, String> args) {
         this(session,
             new PrefixArgs("input", args),
@@ -23,8 +49,17 @@ public final class Main implements Runnable {
         );
     }
 
-    public static void main(final String[] args) {
-        JdbcDialects.registerDialect(new ExtraOracleDialect());
+    /**
+     * Main method.
+     *
+     * @param args An array of command line arguments.
+     */
+    public static void main(final String... args) {
+        try {
+            Class.forName("oracle.jdbc.driver.OracleDriver");
+            JdbcDialects.registerDialect(new ExtraOracleDialect());
+        } catch (final ClassNotFoundException ignored) {
+        }
         new Main(
             SparkSession.builder()
                 .getOrCreate(),
@@ -34,67 +69,79 @@ public final class Main implements Runnable {
 
     @Override
     public void run() {
+        final String udfarg = "missing";
         this.spark.udf()
             .register(
-                "missing", new MissingUDF(
-                    this.inOpts.getOrDefault("missing", "\u0001"),
-                    this.outOpts.getOrDefault("missing", "DEFAULT_VALUE")
+                MissingUDF.MISSING_UDF_NAME, new MissingUDF(
+                    this.source.getOrDefault(udfarg, "\u0001"),
+                    this.target.getOrDefault(udfarg, "DEFAULT_VALUE")
                 ), StringType$.MODULE$
             );
-        final Transformation<Row> input = new Input(this.spark, inOpts);
+        final Transformation<Row> input = new Input(this.spark, this.source);
         final Transformation<Row> casted = new FullyCastedByParameters(
             input,
-            inOpts
+            this.source
         );
         final Transformation<Row> exprs = new ExpressionTransformed(
             casted,
-            inOpts
+            this.source
         );
         final Transformation<Row> sorted = new SortedByParameter<>(
-            exprs, inOpts
+            exprs,
+            this.source
         );
-        final Transformation<Row> castedAgain = new FullyCastedByParameters(
+        final Transformation<Row> recasted = new FullyCastedByParameters(
             sorted,
-            outOpts
+            this.target
         );
         final Transformation<Row> dropped = new ColumnsDroppedByParameter<>(
-            castedAgain,
-            outOpts
+            recasted,
+            this.target
         );
-        final Transformation<Row> repartitioned = new NumberedPartitions<>(
+        final Transformation<Row> reparted = new NumberedPartitions<>(
             dropped,
             Integer.parseUnsignedInt(
-                outOpts.getOrDefault("partitions", "1")
+                this.target.getOrDefault("partitions", "1")
             )
         );
-        final Transformation<Row> outReplaced =
-            new ConditionalTransformation<>(
-                () -> outOpts.containsKey("replace"),
-                new Substituted(
-                    new Stringified<>(repartitioned),
-                    new ReplacementMap(
-                        outOpts.get("replace")
-                    )
-                ),
-                repartitioned
-            );
+        final Transformation<Row> replaced = this.replacedIfNeeded(reparted);
         final Output<Row> output = new FormatOutput<>(
-            outReplaced,
-            outOpts
+            replaced,
+            this.target
         );
         final Output<Row> mode = new Mode<>(
-            outOpts.getOrDefault(
+            this.target.getOrDefault(
                 "mode",
                 SaveMode.ErrorIfExists.name()
             ),
             output
         );
         final Terminal saved = new Saved<>(
-            URI.create(outOpts.get("path")),
+            URI.create(this.target.get("path")),
             mode
         );
         saved.result();
     }
+
+    /**
+     * Replaced values in dataset if required by parameters.
+     *
+     * @param dataset A dataset
+     * @return A dataset with values replaced
+     */
+    private Transformation<Row> replacedIfNeeded(
+        final Transformation<Row> dataset) {
+        final String replace = "replace";
+        return new ConditionalTransformation<>(
+            () -> this.target.containsKey(replace),
+            new Substituted(
+                new Stringified<>(dataset),
+                new ReplacementMap(
+                    this.target.get(replace)
+                )
+            ),
+            dataset
+        );
+    }
+
 }
-
-
