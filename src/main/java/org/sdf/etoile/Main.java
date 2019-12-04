@@ -121,8 +121,9 @@ public final class Main implements Runnable {
                 )
             );
         final Transformation<Row> renamed = new Renamed(aliases, replaced);
+        final Transformation<Row> normalized = this.normalizedIfNeeded(renamed);
         final Output<Row> output = new FormatOutput<>(
-            renamed,
+            normalized,
             this.target
         );
         final Output<Row> mode = new Mode<>(
@@ -137,6 +138,14 @@ public final class Main implements Runnable {
             mode
         );
         saved.result();
+    }
+
+    private Transformation<Row> normalizedIfNeeded(final Transformation<Row> orig) {
+        Transformation<Row> result = orig;
+        if (Boolean.parseBoolean(this.target.getOrDefault("hive-names", "false"))) {
+            result = new HiveCompatable(orig);
+        }
+        return result;
     }
 
     /**
