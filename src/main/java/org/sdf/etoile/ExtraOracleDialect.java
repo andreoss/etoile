@@ -6,11 +6,9 @@ package org.sdf.etoile;
 import java.sql.Types;
 import org.apache.spark.sql.jdbc.JdbcDialect;
 import org.apache.spark.sql.types.DataType;
+import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.DecimalType;
-import org.apache.spark.sql.types.DoubleType$;
-import org.apache.spark.sql.types.FloatType$;
 import org.apache.spark.sql.types.MetadataBuilder;
-import org.apache.spark.sql.types.StringType$;
 import org.apache.spark.sql.types.TimestampType$;
 import scala.Option;
 import scala.Some;
@@ -62,7 +60,7 @@ public final class ExtraOracleDialect extends JdbcDialect {
         final int size, final MetadataBuilder metabuilder) {
         final Option<DataType> result;
         if (sql == Types.ROWID) {
-            result = Some.apply(StringType$.MODULE$);
+            result = Some.apply(DataTypes.StringType);
         } else if (
             sql == Types.TIMESTAMP_WITH_TIMEZONE
                 || sql == ExtraOracleDialect.TIMESTAMPTZ
@@ -71,9 +69,9 @@ public final class ExtraOracleDialect extends JdbcDialect {
         } else if (sql == Types.NUMERIC) {
             result = ExtraOracleDialect.handleNumeric(metabuilder);
         } else if (sql == ExtraOracleDialect.BINARY_DOUBLE) {
-            result = Some.apply(DoubleType$.MODULE$);
+            result = Some.apply(DataTypes.DoubleType);
         } else if (sql == ExtraOracleDialect.BINARY_FLOAT) {
-            result = Some.apply(FloatType$.MODULE$);
+            result = Some.apply(DataTypes.FloatType);
         } else {
             result = super.getCatalystType(sql, name, size, metabuilder);
         }
