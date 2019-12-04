@@ -43,6 +43,8 @@ final class Input implements Transformation<Row> {
                 .options(this.params)
                 .load();
             result = new Demissingified(raw).get();
+        } else if ("hive".equalsIgnoreCase(format) && this.params.containsKey("table")) {
+            result = this.spark.table(this.params.get("table"));
         } else {
             result = this.spark.read()
                 .format(format)

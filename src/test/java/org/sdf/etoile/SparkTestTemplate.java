@@ -37,6 +37,7 @@ abstract class SparkTestTemplate {
     void setUp() {
         this.session = SparkSession.builder()
             .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+            .enableHiveSupport()
             .master("local[*]")
             .getOrCreate();
     }
