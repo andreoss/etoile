@@ -4,6 +4,7 @@
 package org.sdf.etoile;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Row;
@@ -11,6 +12,12 @@ import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.apache.spark.sql.types.StringType$;
+import org.cactoos.Text;
+import org.cactoos.collection.Filtered;
+import org.cactoos.list.Mapped;
+import org.cactoos.scalar.Not;
+import org.cactoos.text.IsBlank;
+import org.cactoos.text.Split;
 
 /**
  * Application.
@@ -105,8 +112,17 @@ public final class Main implements Runnable {
             )
         );
         final Transformation<Row> replaced = this.replacedIfNeeded(reparted);
+        final List<String> aliases =
+            new Mapped<>(
+                Text::asString,
+                new Filtered<>(
+                    x -> new Not(new IsBlank(x)).value(),
+                    new Split(this.target.getOrDefault("rename", ""), ",")
+                )
+            );
+        final Transformation<Row> renamed = new Renamed(aliases, replaced);
         final Output<Row> output = new FormatOutput<>(
-            replaced,
+            renamed,
             this.target
         );
         final Output<Row> mode = new Mode<>(
