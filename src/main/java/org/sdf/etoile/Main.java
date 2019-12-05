@@ -4,7 +4,6 @@
 package org.sdf.etoile;
 
 import java.net.URI;
-import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Row;
@@ -12,12 +11,6 @@ import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 import org.apache.spark.sql.types.StringType$;
-import org.cactoos.Text;
-import org.cactoos.collection.Filtered;
-import org.cactoos.list.Mapped;
-import org.cactoos.scalar.Not;
-import org.cactoos.text.IsBlank;
-import org.cactoos.text.Split;
 
 /**
  * Application.
@@ -67,11 +60,7 @@ public final class Main implements Runnable {
             JdbcDialects.registerDialect(new ExtraOracleDialect());
         } catch (final ClassNotFoundException ignored) {
         }
-        new Main(
-            SparkSession.builder()
-                .getOrCreate(),
-            new Args(args)
-        ).run();
+        new Main(SparkSession.builder().getOrCreate(), new Args(args)).run();
     }
 
     @Override
@@ -85,42 +74,29 @@ public final class Main implements Runnable {
                 ), StringType$.MODULE$
             );
         final Transformation<Row> input = new Input(this.spark, this.source);
-        final Transformation<Row> casted = new FullyCastedByParameters(
+        final Transformation<Row> sorted = new ProcessedInput(
             input,
-            this.source
-        );
-        final Transformation<Row> exprs = new ExpressionTransformed(
-            casted,
-            this.source
-        );
-        final Transformation<Row> sorted = new SortedByParameter<>(
-            exprs,
             this.source
         );
         final Transformation<Row> recasted = new FullyCastedByParameters(
             sorted,
             this.target
         );
-        final Transformation<Row> dropped = new ColumnsDroppedByParameter<>(
+        final Transformation<Row> processed = new ColumnsDroppedByParameter<>(
             recasted,
             this.target
         );
         final Transformation<Row> reparted = new NumberedPartitions<>(
-            dropped,
+            processed,
             Integer.parseUnsignedInt(
                 this.target.getOrDefault("partitions", "1")
             )
         );
         final Transformation<Row> replaced = this.replacedIfNeeded(reparted);
-        final List<String> aliases =
-            new Mapped<>(
-                Text::asString,
-                new Filtered<>(
-                    x -> new Not(new IsBlank(x)).value(),
-                    new Split(this.target.getOrDefault("rename", ""), ",")
-                )
-            );
-        final Transformation<Row> renamed = new Renamed(aliases, replaced);
+        final Transformation<Row> renamed = new Renamed(
+            replaced,
+            new Aliases(this.target.getOrDefault("rename", ""))
+        );
         final Transformation<Row> normalized = this.normalizedIfNeeded(renamed);
         final Output<Row> output = new FormatOutput<>(
             normalized,
@@ -140,6 +116,12 @@ public final class Main implements Runnable {
         saved.result();
     }
 
+    /**
+     * Rename columns if specified by parameter.
+     *
+     * @param orig Dataset.
+     * @return Dataset with columns renamed.
+     */
     private Transformation<Row> normalizedIfNeeded(final Transformation<Row> orig) {
         Transformation<Row> result = orig;
         if (Boolean.parseBoolean(this.target.getOrDefault("hive-names", "false"))) {

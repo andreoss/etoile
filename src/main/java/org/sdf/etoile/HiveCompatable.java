@@ -18,6 +18,9 @@ import org.apache.spark.sql.Row;
  */
 @RequiredArgsConstructor
 public final class HiveCompatable implements Transformation<Row> {
+    /**
+     * Symbols to replace.
+     */
     private static final Pattern PATTERN = Pattern.compile("[$#%]");
 
     /**
@@ -43,3 +46,4 @@ public final class HiveCompatable implements Transformation<Row> {
         return new Renamed(this.original, renames).get();
     }
 }
+

@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
  * Second test for {@link Main}.
  * @since 0.4.0
  */
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class MainSecondTest extends SparkTestTemplate {
     /**
      * Files for tests.
@@ -37,8 +38,7 @@ final class MainSecondTest extends SparkTestTemplate {
                 String.format("--input.path=%s", this.data.input().toURI()),
                 String.format("--output.path=%s", output.toURI()),
                 "--output.hive-names=true",
-                "--output.header=true",
-                "--output.format=csv"
+                "--output.header=true"
             )
         ).run();
         MatcherAssert.assertThat(
@@ -72,8 +72,7 @@ final class MainSecondTest extends SparkTestTemplate {
                 String.format("--input.path=%s", this.data.input().toURI()),
                 String.format("--output.path=%s", output.toURI()),
                 "--output.rename=id as num, name as nm",
-                "--output.header=true",
-                "--output.format=csv"
+                "--output.header=true"
             )
         ).run();
         MatcherAssert.assertThat(

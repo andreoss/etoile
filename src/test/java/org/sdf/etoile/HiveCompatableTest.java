@@ -11,7 +11,7 @@ import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link HiveCompatable}
+ * Test for {@link HiveCompatable}.
  *
  * @since 0.4.0
  */
