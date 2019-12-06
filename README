@@ -65,21 +65,27 @@ $ spark2-submit --jars étoilé.jar --master local étoilé.jar
 
 ```
 $ spark2-submit --jars étoilé.jar --master local étoilé.jar
-    --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
-    --input.dbtable=schema_name.table_name                                                                                                        \
-    --input.path=hdfs://tmp/avro                                                                                                                  \
     --output.drop="column"                                                                                                                        \
     (or --output.drop="column,column")
-    --output.path=file:///tmp/csv20                                                                                                               \
 ```
 Можно через параметр input.replace менять значение типов данных.
 Если нужно получить строку с символом, который нельзя набрать на клавиатуре, то используется "printf" (пример: --input.replace=string:"$(printf '\type')"/value)
 
 ```
-$ spark2-submit --jars étoilé.jar --master local étoilé.jar
-    --input.url="jdbc://"                                                                                                                         \                                                                                                                      \
-    --input.dbtable=schema_name.table_name                                                                                                        \
-    --input.replace=string:"$('type')"/value                                                                                                                 \
-    --output.path=file:///tmp/csv20
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar                                                                                  \
+    --input.replace=string:"$('type')"/value                                                                                                       \
 
+```
+Можно через параметр output.hive-names заменить спецсимволы (#,$) в названиях колонок в оракловой таблице.                                         \
+
+```
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar                                                                                 \
+    --output.hive-names=true                                                                                                                      \
+
+```
+Можно через параметр --output.rename переименовать любую колонку в таблице                                                                        \
+
+```
+$ spark2-submit --jars étoilé.jar --master local étoilé.jar                                                                                 \
+     --output.rename=id as num, name as nm                                                                                                        \
 

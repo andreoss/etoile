@@ -18,6 +18,11 @@ import org.apache.spark.sql.SparkSession;
 @RequiredArgsConstructor
 final class Input implements Transformation<Row> {
     /**
+     * Parameter for table instead of "path".
+     */
+    private static final String TABLE_PARAM = "table";
+
+    /**
      * Default format.
      */
     private static final String AVRO = AvroOutputWriter.class
@@ -43,6 +48,8 @@ final class Input implements Transformation<Row> {
                 .options(this.params)
                 .load();
             result = new Demissingified(raw).get();
+        } else if (this.params.containsKey(Input.TABLE_PARAM)) {
+            result = this.spark.table(this.params.get(Input.TABLE_PARAM));
         } else {
             result = this.spark.read()
                 .format(format)
