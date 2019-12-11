@@ -42,7 +42,7 @@ final class Input implements Transformation<Row> {
     public Dataset<Row> get() {
         final Dataset<Row> result;
         final String format = this.params.getOrDefault("format", Input.AVRO);
-        if ("avro+missing".equals(format)) {
+        if (format.endsWith("+missing")) {
             final Dataset<Row> raw = this.spark.read()
                 .format(Input.AVRO)
                 .options(this.params)
