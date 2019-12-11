@@ -44,10 +44,10 @@ final class Input implements Transformation<Row> {
         final String format = this.params.getOrDefault("format", Input.AVRO);
         if (format.endsWith("+missing")) {
             final Dataset<Row> raw = this.spark.read()
-                .format(Input.AVRO)
-                .options(this.params)
-                .load();
-            result = new Demissingified(raw).get();
+                    .format(Input.AVRO)
+                    .options(this.params)
+                    .load();
+            result = (new Demissingified(raw)).get();
         } else if (this.params.containsKey(Input.TABLE_PARAM)) {
             result = this.spark.table(this.params.get(Input.TABLE_PARAM));
         } else {
