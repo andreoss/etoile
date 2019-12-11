@@ -5,6 +5,7 @@ package org.sdf.etoile;
 
 import com.databricks.spark.avro.AvroOutputWriter;
 import java.util.Map;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
@@ -42,9 +43,9 @@ final class Input implements Transformation<Row> {
     public Dataset<Row> get() {
         final Dataset<Row> result;
         final String format = this.params.getOrDefault("format", Input.AVRO);
-        if ("avro+missing".equals(format)) {
+        if (format.endsWith("+missing")) {
             final Dataset<Row> raw = this.spark.read()
-                .format(Input.AVRO)
+                .format(Input.removeModifier(format))
                 .options(this.params)
                 .load();
             result = new Demissingified(raw).get();
@@ -57,5 +58,19 @@ final class Input implements Transformation<Row> {
                 .load();
         }
         return result;
+    }
+
+    /**
+     * Remove modifier.
+     *
+     * @param format Original
+     * @return Without modifier
+     */
+    private static String removeModifier(final String format) {
+        String fmt = Pattern.compile("[+]missing$").matcher(format).replaceFirst("");
+        if ("avro".equalsIgnoreCase(fmt)) {
+            fmt = Input.AVRO;
+        }
+        return fmt;
     }
 }
