@@ -76,12 +76,82 @@ final class MainSecondTest extends SparkTestTemplate {
             )
         ).run();
         MatcherAssert.assertThat(
-            "columns should be renamed",
+            "missing values should be repleaced",
             new CsvText(this.data.output()),
             new LinesAre(
                 "num,nm",
                 lines[0],
                 lines[1]
+            )
+        );
+    }
+
+    @Test
+    void handlesMissingFormatModifierWithCustomValues() {
+        final String[] lines = {
+            "id,name",
+            "2,XXX",
+            "3,baz",
+        };
+        this.data.writeInput(
+            lines[0],
+            lines[1],
+            lines[2]
+        );
+        final File output = this.data.output();
+        new Main(
+            this.session,
+            new Args(
+                "--input.format=csv+missing",
+                "--input.header=true",
+                "--input.missing=XXX",
+                "--output.missing=YYY",
+                String.format("--input.path=%s", this.data.input().toURI()),
+                String.format("--output.path=%s", output.toURI()),
+                "--output.header=true"
+            )
+        ).run();
+        MatcherAssert.assertThat(
+            "missing values should be replaced by specified values",
+            new CsvText(this.data.output()),
+            new LinesAre(
+                lines[0],
+                "2,YYY",
+                lines[2]
+            )
+        );
+    }
+
+    @Test
+    void handlesMissingFormatModifier() {
+        final String[] lines = {
+            "id,name",
+            "0,\u0001",
+            "1,bar",
+        };
+        this.data.writeInput(
+            lines[0],
+            lines[1],
+            lines[2]
+        );
+        final File output = this.data.output();
+        new Main(
+            this.session,
+            new Args(
+                "--input.format=csv+missing",
+                "--input.header=true",
+                String.format("--input.path=%s", this.data.input().toURI()),
+                String.format("--output.path=%s", output.toURI()),
+                "--output.header=true"
+            )
+        ).run();
+        MatcherAssert.assertThat(
+            "columns should be renamed",
+            new CsvText(this.data.output()),
+            new LinesAre(
+                lines[0],
+                "0,DEFAULT_VALUE",
+                lines[2]
             )
         );
     }
