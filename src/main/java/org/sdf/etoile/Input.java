@@ -118,10 +118,11 @@ final class Input implements Transformation<Row> {
         final Dataset<Row> result;
         final String format = this.params.getOrDefault("format", Input.AVRO);
         if (format.endsWith("+missing")) {
-            final Transformation<Row> raw = new Formatted(
-                this.spark, Input.removeModifier(format), this.params
-            );
-            result = new Demissingified(raw).get();
+            result = new Demissingified(
+                new Formatted(
+                    this.spark, Input.removeModifier(format), this.params
+                )
+            ).get();
         } else if (this.params.containsKey(Input.TABLE_PARAM)) {
             result = this.spark.table(this.params.get(Input.TABLE_PARAM));
         } else {
