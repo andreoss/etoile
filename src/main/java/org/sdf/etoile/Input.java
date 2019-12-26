@@ -4,6 +4,7 @@
 package org.sdf.etoile;
 
 import com.databricks.spark.avro.AvroOutputWriter;
+import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -12,9 +13,82 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
 /**
+ * Input with certain format, options and path.
+ *
+ * @since 0.5.0
+ */
+@RequiredArgsConstructor
+final class Formatted implements Transformation<Row> {
+    /**
+     * Default format.
+     */
+    private static final String FORMAT = AvroOutputWriter.class
+        .getPackage().getName();
+
+    /**
+     * Spark session.
+     */
+    private final SparkSession spark;
+
+    /**
+     * Format of data.
+     */
+    private final String format;
+
+    /**
+     * Options.
+     */
+    private final Map<String, String> opts;
+
+    /**
+     * Paths to load.
+     */
+    private final String[] paths;
+
+    /**
+     * Secondary ctor.
+     * @param spark Spark session.
+     * @param format Format.
+     * @param opts Options.
+     */
+    public Formatted(final SparkSession spark, final String format, final Map<String, String> opts) {
+        this(spark, format, opts, new String[]{});
+    }
+
+    @Override
+    public Dataset<Row> get() {
+        return this.spark.read().format(this.format).options(this.opts).load(this.paths);
+    }
+}
+
+/**
+ * Avro input.
+ *
+ * @since 0.5.0
+ */
+final class Avro extends TransformationEnvelope<Row> {
+    /**
+     * Format.
+     */
+    private static final String FORMAT = AvroOutputWriter.class
+        .getPackage().getName();
+
+    public Avro(final SparkSession session, final String... path) {
+        super(
+            () -> new Formatted(
+                session,
+                Avro.FORMAT,
+                Collections.emptyMap(),
+                path
+            )
+        );
+    }
+}
+
+/**
  * Input from parameters.
  *
- * @since 0.1.0
+ * @since 0.5.0
  */
 @RequiredArgsConstructor
 final class Input implements Transformation<Row> {
@@ -44,18 +118,16 @@ final class Input implements Transformation<Row> {
         final Dataset<Row> result;
         final String format = this.params.getOrDefault("format", Input.AVRO);
         if (format.endsWith("+missing")) {
-            final Dataset<Row> raw = this.spark.read()
-                .format(Input.removeModifier(format))
-                .options(this.params)
-                .load();
+            final Transformation<Row> raw = new Formatted(
+                this.spark, Input.removeModifier(format), this.params
+            );
             result = new Demissingified(raw).get();
         } else if (this.params.containsKey(Input.TABLE_PARAM)) {
             result = this.spark.table(this.params.get(Input.TABLE_PARAM));
         } else {
-            result = this.spark.read()
-                .format(format)
-                .options(this.params)
-                .load();
+            result = new Formatted(
+                this.spark, format, this.params
+            ).get();
         }
         return result;
     }

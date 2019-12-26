@@ -4,7 +4,6 @@
 package org.sdf.etoile;
 
 import java.util.Map;
-import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
@@ -24,9 +23,9 @@ final class Demissingified extends TransformationEnvelope<Row> {
      *
      * @param original Original tranformation.
      */
-    Demissingified(final Dataset<Row> original) {
+    Demissingified(final Transformation<Row> original) {
         super(() -> {
-            final Schema schema = new SchemaOf<>(() -> original);
+            final Schema schema = new SchemaOf<>(original);
             final Map<String, String> map = new MapOf<>(
                 name -> new MapEntry<>(
                     name, String.format("missing(%s)", name)
@@ -34,7 +33,7 @@ final class Demissingified extends TransformationEnvelope<Row> {
                 schema.fieldNames()
             );
             return new ExpressionTransformed(
-                new Stringified<>(() -> original), new ListOf<>(map)
+                new Stringified<>(original), new ListOf<>(map)
             );
         });
     }
