@@ -10,7 +10,7 @@ import org.apache.spark.sql.Row;
  * A {@link Transformation} with values substituted.
  * @since 0.3.0
  */
-final class Substituted extends Transformation.Envelope<Row> {
+final class Substituted extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      * @param input Input tranformation.

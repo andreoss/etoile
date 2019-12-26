@@ -14,7 +14,7 @@ import org.apache.spark.sql.Row;
  *
  * @since 0.3.0
  */
-final class ColumnsDroppedByParameter<X> extends Transformation.Envelope<Row> {
+final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
     /**
      * Key for parameters.
      */

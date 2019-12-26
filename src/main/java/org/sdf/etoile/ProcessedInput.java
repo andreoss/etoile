@@ -11,7 +11,7 @@ import org.apache.spark.sql.Row;
  *
  * @since 0.4.0
  */
-final class ProcessedInput extends Transformation.Envelope<Row> {
+final class ProcessedInput extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      * @param input Raw input.

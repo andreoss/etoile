@@ -13,7 +13,7 @@ import org.apache.spark.sql.functions;
  * @param <Y> Underlying data type.
  * @since 0.3.1
  */
-final class OrderedUnion<Y> extends Transformation.Envelope<Row> {
+final class OrderedUnion<Y> extends TransformationEnvelope<Row> {
 
     /**
      * Ctor.

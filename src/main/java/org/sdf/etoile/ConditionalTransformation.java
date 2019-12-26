@@ -11,7 +11,7 @@ import java.util.function.BooleanSupplier;
  * @see Transformation
  * @since 0.1.0
  */
-final class ConditionalTransformation<T> extends Transformation.Envelope<T> {
+final class ConditionalTransformation<T> extends TransformationEnvelope<T> {
     /**
      * Ctor.
      * @param cond A condition

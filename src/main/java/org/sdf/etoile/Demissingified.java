@@ -18,7 +18,7 @@ import org.cactoos.map.MapOf;
  * @see Stringified
  * @since 0.3.1
  */
-final class Demissingified extends Transformation.Envelope<Row> {
+final class Demissingified extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      *

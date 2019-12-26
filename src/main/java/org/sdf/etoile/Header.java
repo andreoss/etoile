@@ -13,7 +13,7 @@ import org.apache.spark.sql.catalyst.expressions.GenericRow;
  * @param <Y> Underlying type of original tranformation.
  * @since 0.2.1
  */
-public final class Header<Y> extends Transformation.Envelope<Row> {
+public final class Header<Y> extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      *
