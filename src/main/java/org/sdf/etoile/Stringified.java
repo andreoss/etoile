@@ -23,7 +23,7 @@ public final class Stringified<Y> extends TransformationEnvelope<Row> {
      * @param original Dataset.
      */
     public Stringified(final Dataset<Y> original) {
-        this(new Transformation.Noop<>(original));
+        this(new Noop<>(original));
     }
 
     /**

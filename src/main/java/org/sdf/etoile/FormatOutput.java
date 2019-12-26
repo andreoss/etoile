@@ -29,7 +29,7 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
                     result = new HeaderCsvOutput<>(input, parameters);
                 } else {
                     result = new ParameterizedOutput<>(
-                        new Transformation.Noop<>(input.get().toDF()),
+                        new Noop<>(input.get().toDF()),
                         parameters,
                         codec
                     );

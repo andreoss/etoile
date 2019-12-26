@@ -19,30 +19,4 @@ interface Transformation<Y> {
      */
     Dataset<Y> get();
 
-    /**
-     * A @{link Transformation} which does nothing.
-     *
-     * @param <Y> Underlying type
-     * @since 0.1.0
-     */
-    final class Noop<Y> extends TransformationEnvelope<Y> {
-        /**
-         * Ctor.
-         *
-         * @param tran A transformation
-         */
-        Noop(final Transformation<Y> tran) {
-            super(() -> tran);
-        }
-
-        /**
-         * Ctor.
-         *
-         * @param set A dataset
-         */
-        Noop(final Dataset<Y> set) {
-            super(() -> set);
-        }
-    }
-
 }

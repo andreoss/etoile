@@ -35,7 +35,7 @@ final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
                         Arrays.asList(params.get(ColumnsDroppedByParameter.KEY).split(","))
                     );
                 } else {
-                    result = new Transformation.Noop<>(
+                    result = new Noop<>(
                         original.get().toDF()
                     );
                 }

@@ -33,7 +33,7 @@ final class SortedByParameter<Y> extends TransformationEnvelope<Y> {
                         original, prm.split(",")
                     );
                 } else {
-                    result = new Transformation.Noop<>(original);
+                    result = new Noop<>(original);
                 }
                 return result;
             }
