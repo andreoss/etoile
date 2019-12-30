@@ -28,7 +28,7 @@ final class Demissingified extends TransformationEnvelope<Row> {
             final Schema schema = new SchemaOf<>(original);
             final Map<String, String> map = new MapOf<>(
                 name -> new MapEntry<>(
-                    name, String.format("missing(%s)", name)
+                    name, String.format("missing(`%s`)", name)
                 ),
                 schema.fieldNames()
             );
