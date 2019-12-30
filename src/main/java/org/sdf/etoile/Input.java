@@ -62,30 +62,6 @@ final class Formatted implements Transformation<Row> {
 }
 
 /**
- * Avro input.
- *
- * @since 0.5.0
- */
-final class Avro extends TransformationEnvelope<Row> {
-    /**
-     * Format.
-     */
-    private static final String FORMAT = AvroOutputWriter.class
-        .getPackage().getName();
-
-    public Avro(final SparkSession session, final String... path) {
-        super(
-            () -> new Formatted(
-                session,
-                Avro.FORMAT,
-                Collections.emptyMap(),
-                path
-            )
-        );
-    }
-}
-
-/**
  * Input from parameters.
  *
  * @since 0.5.0
