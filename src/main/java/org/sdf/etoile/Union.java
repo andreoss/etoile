@@ -11,7 +11,7 @@ import org.apache.spark.sql.Dataset;
  * @param <Y> Underlying data type.
  * @since 0.3.0
  */
-public final class Union<Y> extends Transformation.Envelope<Y> {
+public final class Union<Y> extends TransformationEnvelope<Y> {
 
     /**
      * Ctor.

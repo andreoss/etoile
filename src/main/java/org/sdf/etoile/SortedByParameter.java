@@ -10,7 +10,7 @@ import java.util.Map;
  * @param <Y> Underlying type.
  * @since 0.2.0
  */
-final class SortedByParameter<Y> extends Transformation.Envelope<Y> {
+final class SortedByParameter<Y> extends TransformationEnvelope<Y> {
 
     /**
      * Parameter name.
@@ -33,7 +33,7 @@ final class SortedByParameter<Y> extends Transformation.Envelope<Y> {
                         original, prm.split(",")
                     );
                 } else {
-                    result = new Transformation.Noop<>(original);
+                    result = new Noop<>(original);
                 }
                 return result;
             }

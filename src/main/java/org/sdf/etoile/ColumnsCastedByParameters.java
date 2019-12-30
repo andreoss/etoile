@@ -11,7 +11,7 @@ import org.apache.spark.sql.Row;
  *
  * @since 0.2.5
  */
-final class ColumnsCastedByParameters extends Transformation.Envelope<Row> {
+final class ColumnsCastedByParameters extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      * @param original Original tranformation.

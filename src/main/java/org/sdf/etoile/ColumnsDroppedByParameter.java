@@ -14,7 +14,7 @@ import org.apache.spark.sql.Row;
  *
  * @since 0.3.0
  */
-final class ColumnsDroppedByParameter<X> extends Transformation.Envelope<Row> {
+final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
     /**
      * Key for parameters.
      */
@@ -35,7 +35,7 @@ final class ColumnsDroppedByParameter<X> extends Transformation.Envelope<Row> {
                         Arrays.asList(params.get(ColumnsDroppedByParameter.KEY).split(","))
                     );
                 } else {
-                    result = new Transformation.Noop<>(
+                    result = new Noop<>(
                         original.get().toDF()
                     );
                 }

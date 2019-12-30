@@ -46,7 +46,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void startsSpark() throws IOException {
+    void startsSpark() {
         final File input = this.data.input();
         final File output = this.data.output();
         this.data.copyResource("test.avro");
@@ -67,7 +67,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canSetAColumnSep() throws IOException {
+    void canSetAColumnSep() {
         final File input = this.data.input();
         final File output = this.data.output();
         this.data.copyResource("test.avro");
@@ -92,7 +92,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canSpecifyNumberOfPartitions() throws IOException {
+    void canSpecifyNumberOfPartitions() {
         this.data.writeInput(
             "a,b,c,d,e",
             "1,x,a,y,5",
@@ -120,7 +120,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canUseCustomFormat() throws IOException {
+    void canUseCustomFormat() {
         this.data.writeInput(
             "1,2,3,4,5"
         );
@@ -151,7 +151,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void writesSortedOutput() throws IOException {
+    void writesSortedOutput() {
         this.data.copyResource("unsorted.avro");
         new Main(
             this.session,
@@ -180,7 +180,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastTypesStringToTimestampTwoColumns() throws IOException {
+    void canCastTypesStringToTimestampTwoColumns() {
         this.data.writeInput(
             "id,ts,ts",
             "0,2000-06-13 13:31:59,2019-06-13 13:31:59",
@@ -211,7 +211,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastTypeStringToTimestamp() throws IOException {
+    void canCastTypeStringToTimestamp() {
         this.data.writeInput(
             "id,ctl_validfrom,name",
             "0,2019-06-13 13:31:59,abc",
@@ -242,7 +242,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastTypAllTimestampsToStringOnWrite() throws IOException {
+    void canCastTypAllTimestampsToStringOnWrite() {
         this.data.writeInput(
             "id,ctl_validfrom,name",
             "0,2019-06-13 13:31:59,abc",
@@ -274,7 +274,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastAllIntsToTimestampOnRead() throws IOException {
+    void canCastAllIntsToTimestampOnRead() {
         this.data.writeInput(
             "id,ctl_validfrom,name",
             "0,0,abc",
@@ -306,7 +306,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastTypeStringToTimestampandTimestampToString() throws IOException {
+    void canCastTypeStringToTimestampandTimestampToString() {
         this.data.writeInput(
             "id,ctl_validfrom,name",
             "0,2019-06-13 13:31:59,abc",
@@ -337,7 +337,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canCastTypeStringToIntandIntToTimestamp() throws IOException {
+    void canCastTypeStringToIntandIntToTimestamp() {
         this.data.writeInput(
             "id,ts",
             "0,0",
@@ -368,7 +368,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void writesSortedOutputCastsByColumnName() throws IOException {
+    void writesSortedOutputCastsByColumnName() {
         this.data.copyResource("unsorted.avro");
         new Main(
             this.session,
@@ -400,7 +400,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void writesSortedOutputAndSortsNumerically() throws IOException {
+    void writesSortedOutputAndSortsNumerically() {
         this.data.copyResource("unsorted.avro");
         new Main(
             this.session,
@@ -431,7 +431,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void sortsInDescOrder() throws IOException {
+    void sortsInDescOrder() {
         this.data.copyResource("unsorted.avro");
         new Main(
             this.session,
@@ -462,7 +462,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canSortBySeveralColumns() throws IOException {
+    void canSortBySeveralColumns() {
         this.data.writeInput(
             "id,val,char",
             "1,3,o",
@@ -501,7 +501,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void doesNotKeepHeaderInOutput() throws IOException {
+    void doesNotKeepHeaderInOutput() {
         this.data.writeInput("id,val,char");
         final File output = this.data.output();
         new Main(
@@ -526,7 +526,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void convertsEmptyFileWithoutHeader() throws IOException {
+    void convertsEmptyFileWithoutHeader() {
         this.data.writeInput();
         final File output = this.data.output();
         new Main(
@@ -545,7 +545,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void convertsEmptyFileWithHeaderRequired() throws IOException {
+    void convertsEmptyFileWithHeaderRequired() {
         this.data.writeInput();
         final File output = this.data.output();
         new Main(
@@ -566,7 +566,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void convertsEmptyCsvWithHeaderToEmptyFile() throws IOException {
+    void convertsEmptyCsvWithHeaderToEmptyFile() {
         this.data.writeInput("id,name,value");
         final File output = this.data.output();
         new Main(
@@ -621,7 +621,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void doesNotKeepHeaderInOutputMultipleFiles() throws IOException {
+    void doesNotKeepHeaderInOutputMultipleFiles() {
         final File input = this.data.input();
         this.data.writeInput("id,val,char");
         this.data.writeInput("id,val,char");
@@ -648,7 +648,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canDropColumnFromOutput() throws IOException {
+    void canDropColumnFromOutput() {
         this.data.writeInput(
             "id,val,name",
             "0,2,go",
@@ -678,7 +678,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void writesHeaderForSpecialFormatWhenNonEmpty() throws IOException {
+    void writesHeaderForSpecialFormatWhenNonEmpty() {
         this.data.writeInput(
             "id,val,num",
             "1,foo,1234.0",
@@ -711,7 +711,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void writesHeaderForSpecialFormat() throws IOException {
+    void writesHeaderForSpecialFormat() {
         this.data.writeInput("id,val,char");
         new Main(
             this.session,
@@ -826,7 +826,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void canReplacesValuesByType() throws IOException {
+    void canReplacesValuesByType() {
         final File input = this.data.input();
         this.data.writeInput(
             "id,val,char",
@@ -856,7 +856,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void handlesColumnExprs() throws IOException {
+    void handlesColumnExprs() {
         final File input = this.data.input();
         this.data.writeInput(
             "id\tval\tnum",
@@ -889,7 +889,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void handlesExpressionsWithAvro() throws IOException {
+    void handlesExpressionsWithAvro() {
         final File input = this.data.input();
         final File output = this.data.output();
         this.data.copyResource("missing.avro");
@@ -919,7 +919,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void handlesExpressionsWithSpecialFormat() throws IOException {
+    void handlesExpressionsWithSpecialFormat() {
         final File input = this.data.input();
         final File output = this.data.output();
         this.data.copyResource("missing.avro");
@@ -946,7 +946,7 @@ public final class MainTest extends SparkTestTemplate {
     }
 
     @Test
-    void replacesMissingValues() throws IOException {
+    void replacesMissingValues() {
         final File input = this.data.input();
         final File output = this.data.output();
         this.data.copyResource("missing.avro");

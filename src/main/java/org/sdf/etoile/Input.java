@@ -14,7 +14,7 @@ import org.apache.spark.sql.SparkSession;
 /**
  * Input from parameters.
  *
- * @since 0.1.0
+ * @since 0.5.0
  */
 @RequiredArgsConstructor
 final class Input implements Transformation<Row> {
@@ -44,18 +44,17 @@ final class Input implements Transformation<Row> {
         final Dataset<Row> result;
         final String format = this.params.getOrDefault("format", Input.AVRO);
         if (format.endsWith("+missing")) {
-            final Dataset<Row> raw = this.spark.read()
-                .format(Input.removeModifier(format))
-                .options(this.params)
-                .load();
-            result = new Demissingified(raw).get();
+            result = new Demissingified(
+                new Formatted(
+                    this.spark, Input.removeModifier(format), this.params
+                )
+            ).get();
         } else if (this.params.containsKey(Input.TABLE_PARAM)) {
             result = this.spark.table(this.params.get(Input.TABLE_PARAM));
         } else {
-            result = this.spark.read()
-                .format(format)
-                .options(this.params)
-                .load();
+            result = new Formatted(
+                this.spark, format, this.params
+            ).get();
         }
         return result;
     }

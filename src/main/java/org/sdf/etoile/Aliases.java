@@ -7,7 +7,6 @@ import org.cactoos.Text;
 import org.cactoos.collection.CollectionEnvelope;
 import org.cactoos.collection.Filtered;
 import org.cactoos.list.Mapped;
-import org.cactoos.scalar.Not;
 import org.cactoos.text.IsBlank;
 import org.cactoos.text.Split;
 
@@ -30,7 +29,7 @@ final class Aliases extends CollectionEnvelope<Alias> {
                     new Mapped<>(
                         Text::asString,
                         new Filtered<>(
-                            x -> new Not(new IsBlank(x)).value(),
+                            x -> !new IsBlank(x).value(),
                             new Split(expression, ",")
                         )
                     )

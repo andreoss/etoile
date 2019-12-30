@@ -16,14 +16,14 @@ import org.cactoos.map.MapOf;
  * @param <Y> Underlying data type.
  * @since 0.3.2
  */
-public final class Stringified<Y> extends Transformation.Envelope<Row> {
+public final class Stringified<Y> extends TransformationEnvelope<Row> {
 
     /**
      * Ctor.
      * @param original Dataset.
      */
     public Stringified(final Dataset<Y> original) {
-        this(new Transformation.Noop<>(original));
+        this(new Noop<>(original));
     }
 
     /**
