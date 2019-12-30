@@ -12,6 +12,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import org.h2.Driver;
 import org.h2.tools.RunScript;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,8 +24,8 @@ import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
  *
  * @since 0.5.0
  */
-
 @EnableRuleMigrationSupport
+@SuppressWarnings("PMD.AvoidDuplicateLiterals")
 public final class MainJdbcTest extends SparkTestTemplate {
     /**
      * Files for tests.
@@ -34,7 +35,7 @@ public final class MainJdbcTest extends SparkTestTemplate {
     @SuppressWarnings("UseOfJDBCDriverClass")
     @BeforeEach
     void setUpDatabase() throws SQLException {
-        DriverManager.registerDriver(new org.h2.Driver());
+        DriverManager.registerDriver(new Driver());
     }
 
     @Test
@@ -49,7 +50,7 @@ public final class MainJdbcTest extends SparkTestTemplate {
             this.session,
             new Args(
                 "--input.format=jdbc",
-                "--input.url=" + url,
+                String.format("--input.url=%s", url),
                 "--input.dbtable=`X#X$X`",
                 String.format("--input.path=%s", this.data.input().toURI()),
                 String.format("--output.path=%s", output.toURI()),
@@ -89,7 +90,7 @@ public final class MainJdbcTest extends SparkTestTemplate {
             this.session,
             new Args(
                 "--input.format=jdbc",
-                "--input.url=" + url,
+                String.format("--input.url=%s", url),
                 "--input.dbtable=BAR",
                 String.format("--input.path=%s", this.data.input().toURI()),
                 String.format("--output.path=%s", output.toURI()),
@@ -108,17 +109,16 @@ public final class MainJdbcTest extends SparkTestTemplate {
         );
     }
 
-    @SuppressWarnings("resource")
     private String database(final String... sql) throws IOException, SQLException {
-        final String url = "jdbc:h2:file:" + temp.newFile("db.sql");
-        try (Connection x = DriverManager.getConnection(url)) {
+        final String url = String.format("jdbc:h2:file:%s", temp.newFile("db.sql"));
+        try (Connection conn = DriverManager.getConnection(url)) {
             final String command = Arrays
                 .stream(sql)
                 .collect(Collectors.joining(";"));
-            final ResultSet res = RunScript.execute(x,
-                new StringReader(command)
-            );
-            return url;
+            try (ResultSet res = RunScript.execute(conn, new StringReader(command))
+            ) {
+                return url;
+            }
         }
     }
 }

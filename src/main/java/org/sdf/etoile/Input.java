@@ -4,62 +4,12 @@
 package org.sdf.etoile;
 
 import com.databricks.spark.avro.AvroOutputWriter;
-import java.util.Collections;
 import java.util.Map;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
-
-/**
- * Input with certain format, options and path.
- *
- * @since 0.5.0
- */
-@RequiredArgsConstructor
-final class Formatted implements Transformation<Row> {
-    /**
-     * Default format.
-     */
-    private static final String FORMAT = AvroOutputWriter.class
-        .getPackage().getName();
-
-    /**
-     * Spark session.
-     */
-    private final SparkSession spark;
-
-    /**
-     * Format of data.
-     */
-    private final String format;
-
-    /**
-     * Options.
-     */
-    private final Map<String, String> opts;
-
-    /**
-     * Paths to load.
-     */
-    private final String[] paths;
-
-    /**
-     * Secondary ctor.
-     * @param spark Spark session.
-     * @param format Format.
-     * @param opts Options.
-     */
-    public Formatted(final SparkSession spark, final String format, final Map<String, String> opts) {
-        this(spark, format, opts, new String[]{});
-    }
-
-    @Override
-    public Dataset<Row> get() {
-        return this.spark.read().format(this.format).options(this.opts).load(this.paths);
-    }
-}
 
 /**
  * Input from parameters.
