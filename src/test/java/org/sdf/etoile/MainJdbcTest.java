@@ -71,15 +71,6 @@ public final class MainJdbcTest extends SparkTestTemplate {
 
     @Test
     void dumpsJdbcTable() throws Exception {
-        final String[] lines = {
-            "0,abc",
-            "1,xyz",
-        };
-        this.data.writeInput(
-            "ID#ID,NAME$NAME",
-            lines[0],
-            lines[1]
-        );
         final String url = this.database(
             "CREATE TABLE BAR(id int, name varchar)",
             "INSERT INTO BAR VALUES(1, 'horse')",
