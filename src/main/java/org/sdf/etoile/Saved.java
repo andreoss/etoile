@@ -3,6 +3,7 @@
  */
 package org.sdf.etoile;
 
+import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
 import lombok.RequiredArgsConstructor;
@@ -24,6 +25,15 @@ public final class Saved<X> implements Terminal {
      * Output to write.
      */
     private final Output<X> tran;
+
+    /**
+     * Secondary ctor.
+     * @param file Target file.
+     * @param output Output.
+     */
+    public Saved(final File file, final Output<X> output) {
+        this(file.toPath(), output);
+    }
 
     /**
      * Secondary ctor.

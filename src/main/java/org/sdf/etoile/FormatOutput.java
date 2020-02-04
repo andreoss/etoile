@@ -38,4 +38,5 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
             }
         );
     }
+
 }

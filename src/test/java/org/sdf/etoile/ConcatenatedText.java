@@ -4,11 +4,14 @@
 package org.sdf.etoile;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.cactoos.Func;
 import org.cactoos.collection.Filtered;
 import org.cactoos.collection.Mapped;
-import org.cactoos.iterable.IterableOf;
 import org.cactoos.iterable.NoNulls;
 import org.cactoos.text.Joined;
 import org.cactoos.text.TextEnvelope;
@@ -26,8 +29,7 @@ final class ConcatenatedText extends TextEnvelope {
      * @param extension Extention.
      */
     ConcatenatedText(final Path directory, final String extension) {
-        this(directory, (File f) -> f.getName()
-            .endsWith(extension));
+        this(directory, (File f) -> f.getName().endsWith(extension));
     }
 
     /**
@@ -44,13 +46,28 @@ final class ConcatenatedText extends TextEnvelope {
                     new Filtered<>(
                         filter,
                         new NoNulls<>(
-                            new IterableOf<>(
-                                directory.toFile().listFiles(File::isFile)
-                            )
+                            walk(directory)
                         )
                     )
                 )
             )
         );
+    }
+
+    /**
+     * Walk directory and collect files.
+     * @param directory Directory.
+     * @return Files.
+     */
+    private static Iterable<File> walk(final Path directory) {
+        try {
+            try (Stream<Path> files = Files.walk(directory)) {
+                return files.map(Path::toFile)
+                    .filter(File::isFile)
+                    .collect(Collectors.toList());
+            }
+        } catch (final IOException ex) {
+            throw new IllegalStateException(ex);
+        }
     }
 }

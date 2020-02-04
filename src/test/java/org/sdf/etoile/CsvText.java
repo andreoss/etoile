@@ -28,7 +28,7 @@ final class CsvText extends TextEnvelope {
      * Ctor.
      * @param uri URI of directory.
      */
-    private CsvText(final URI uri) {
+    CsvText(final URI uri) {
         this(Paths.get(uri));
     }
 
