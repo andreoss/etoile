@@ -53,9 +53,10 @@ public final class Main implements Runnable {
     @Override
     public void run() {
         final Runnable task;
-        if ("dump".equals(this.args.get(Main.COMMAND))) {
+        final String cmd = this.args.get(Main.COMMAND);
+        if ("dump".equals(cmd) || cmd == null) {
             task = new Dump(this.spark, this.args);
-        } else if ("pv".equals(this.args.get(Main.COMMAND))) {
+        } else if ("pv".equals(cmd)) {
             task = () -> {
                 final Map<String, String> output = new PrefixArgs("output", this.args);
                 new Saved<>(
