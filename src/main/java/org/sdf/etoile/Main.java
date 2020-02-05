@@ -38,12 +38,14 @@ public final class Main implements Runnable {
      * Main methods.
      * @param args Arguments.
      */
+    @SuppressWarnings("squid:S4925")
     public static void main(final String... args) {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
+            JdbcDialects.registerDialect(new ExtraOracleDialect());
         } catch (final ClassNotFoundException ignored) {
+            // ignored on purpose
         }
-        JdbcDialects.registerDialect(new ExtraOracleDialect());
         new Main(
             SparkSession.builder().getOrCreate(),
             new Args(args)
