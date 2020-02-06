@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -8,10 +8,10 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 /**
- * Third test for {@link Main}.
+ * Third test for {@link Dump}.
  * @since 0.4.0
  */
-final class MainThirdTest extends SparkTestTemplate {
+final class DumpThirdTest extends SparkTestTemplate {
     /**
      * Files for tests.
      */
@@ -26,7 +26,7 @@ final class MainThirdTest extends SparkTestTemplate {
             "CREATE TABLE IF NOT EXISTS FOO.BAR AS (SELECT 1 as ID, 'foo' as NAME)"
         ).count();
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.table=foo.bar",

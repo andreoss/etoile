@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -8,11 +8,11 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
 /**
- * Second test for {@link Main}.
+ * Second test for {@link Dump}.
  * @since 0.4.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class MainSecondTest extends SparkTestTemplate {
+final class DumpSecondTest extends SparkTestTemplate {
     /**
      * Files for tests.
      */
@@ -30,7 +30,7 @@ final class MainSecondTest extends SparkTestTemplate {
             lines[1]
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=csv",
@@ -64,7 +64,7 @@ final class MainSecondTest extends SparkTestTemplate {
             lines[1]
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=csv",
@@ -99,7 +99,7 @@ final class MainSecondTest extends SparkTestTemplate {
             lines[2]
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=csv+missing",
@@ -135,7 +135,7 @@ final class MainSecondTest extends SparkTestTemplate {
             lines[2]
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=csv+missing",

@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -38,4 +38,5 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
             }
         );
     }
+
 }

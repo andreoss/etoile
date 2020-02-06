@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -28,7 +28,7 @@ final class CsvText extends TextEnvelope {
      * Ctor.
      * @param uri URI of directory.
      */
-    private CsvText(final URI uri) {
+    CsvText(final URI uri) {
         this(Paths.get(uri));
     }
 

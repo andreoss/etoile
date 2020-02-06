@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -26,9 +26,8 @@ final class SavedTest extends SparkTestTemplate {
      */
     @Test
     void savesInCorrectPath() throws IOException {
-        final URI path = this.temp.newFolder().toURI();
         final Saved<Row> saved = new Saved<>(
-            path,
+            this.temp.newFolder(),
             new Mode<>(
                 "overwrite",
                 new HeaderCsvOutput<>(

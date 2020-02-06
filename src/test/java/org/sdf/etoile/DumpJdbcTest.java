@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
@@ -20,13 +20,13 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 
 /**
- * A test for {@link Main} with JDBC source.
+ * A test for {@link Dump} with JDBC source.
  *
  * @since 0.5.0
  */
 @EnableRuleMigrationSupport
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class MainJdbcTest extends SparkTestTemplate {
+public final class DumpJdbcTest extends SparkTestTemplate {
     /**
      * Files for tests.
      */
@@ -46,7 +46,7 @@ public final class MainJdbcTest extends SparkTestTemplate {
             "INSERT INTO `X#X$X` VALUES(2, 'goes to farm')"
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=jdbc",
@@ -77,7 +77,7 @@ public final class MainJdbcTest extends SparkTestTemplate {
             "INSERT INTO BAR VALUES(2, 'lover')"
         );
         final File output = this.data.output();
-        new Main(
+        new Dump(
             this.session,
             new Args(
                 "--input.format=jdbc",

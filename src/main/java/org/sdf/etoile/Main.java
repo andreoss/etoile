@@ -1,154 +1,88 @@
 /*
- * Copyright(C) 2019. See COPYING for more.
+ * Copyright(C) 2019, 2020. See COPYING for more.
  */
 package org.sdf.etoile;
 
-import java.net.URI;
+import java.nio.file.Paths;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SaveMode;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
-import org.apache.spark.sql.types.StringType$;
+import org.cactoos.list.Mapped;
+import org.sdf.etoile.expr.ExpressionOf;
 
 /**
- * Application.
+ * Entiry point and command dispatcher.
  *
- * @todo Reduce coupling (1h)
+ * @since 0.6.0
  * @checkstyle ClassDataAbstractionCouplingCheck (100 lines)
- * @since 0.0.1
  */
 @RequiredArgsConstructor
 public final class Main implements Runnable {
     /**
-     * A Spark session.
+     * Command parameter name.
+     */
+    private static final String COMMAND = "command";
+
+    /**
+     * The Spark Session.
      */
     private final SparkSession spark;
 
     /**
-     * Options for input.
+     * Command-line arguments.
      */
-    private final Map<String, String> source;
+    private final Map<String, String> args;
 
     /**
-     * Options for output.
+     * Main methods.
+     * @param args Arguments.
      */
-    private final Map<String, String> target;
-
-    /**
-     * Ctor.
-     *
-     * @param session A Spark session
-     * @param args Command line arguments
-     */
-    public Main(final SparkSession session, final Map<String, String> args) {
-        this(session,
-            new PrefixArgs("input", args),
-            new PrefixArgs("output", args)
-        );
-    }
-
-    /**
-     * Main method.
-     *
-     * @param args An array of command line arguments.
-     */
+    @SuppressWarnings("squid:S4925")
     public static void main(final String... args) {
         try {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             JdbcDialects.registerDialect(new ExtraOracleDialect());
         } catch (final ClassNotFoundException ignored) {
+            // ignored on purpose
         }
-        new Main(SparkSession.builder().getOrCreate(), new Args(args)).run();
+        new Main(
+            SparkSession.builder().getOrCreate(),
+            new Args(args)
+        ).run();
     }
 
     @Override
     public void run() {
-        final String udfarg = "missing";
-        this.spark.udf()
-            .register(
-                MissingUDF.MISSING_UDF_NAME, new MissingUDF(
-                    this.source.getOrDefault(udfarg, "\u0001"),
-                    this.target.getOrDefault(udfarg, "DEFAULT_VALUE")
-                ), StringType$.MODULE$
+        final Runnable task;
+        final String cmd = this.args.get(Main.COMMAND);
+        if ("dump".equals(cmd) || cmd == null) {
+            task = new Dump(this.spark, this.args);
+        } else if ("pv".equals(cmd)) {
+            task = () -> {
+                final Map<String, String> output = new PrefixArgs("output", this.args);
+                new Saved<>(
+                    Paths.get(output.get("path")),
+                    new FormatOutput<>(
+                        new PartitionSchemeValidated(
+                            new Input(this.spark, new PrefixArgs("input", this.args)),
+                            new Mapped<>(
+                                ExpressionOf::new,
+                                new PrefixArgs(
+                                    "expression",
+                                    this.args
+                                ).values()
+                            )
+                        ),
+                        output
+                    )
+                ).result();
+            };
+        } else {
+            throw new IllegalArgumentException(
+                String.format("command is not set: %s", this.args)
             );
-        final Transformation<Row> input = new Input(this.spark, this.source);
-        final Transformation<Row> sorted = new ProcessedInput(
-            input,
-            this.source
-        );
-        final Transformation<Row> recasted = new FullyCastedByParameters(
-            sorted,
-            this.target
-        );
-        final Transformation<Row> processed = new ColumnsDroppedByParameter<>(
-            recasted,
-            this.target
-        );
-        final Transformation<Row> reparted = new NumberedPartitions<>(
-            processed,
-            Integer.parseUnsignedInt(
-                this.target.getOrDefault("partitions", "1")
-            )
-        );
-        final Transformation<Row> replaced = this.replacedIfNeeded(reparted);
-        final Transformation<Row> renamed = new Renamed(
-            replaced,
-            new Aliases(this.target.getOrDefault("rename", ""))
-        );
-        final Transformation<Row> normalized = this.normalizedIfNeeded(renamed);
-        final Output<Row> output = new FormatOutput<>(
-            normalized,
-            this.target
-        );
-        final Output<Row> mode = new Mode<>(
-            this.target.getOrDefault(
-                "mode",
-                SaveMode.ErrorIfExists.name()
-            ),
-            output
-        );
-        final Terminal saved = new Saved<>(
-            URI.create(this.target.get("path")),
-            mode
-        );
-        saved.result();
-    }
-
-    /**
-     * Rename columns if specified by parameter.
-     *
-     * @param orig Dataset.
-     * @return Dataset with columns renamed.
-     */
-    private Transformation<Row> normalizedIfNeeded(final Transformation<Row> orig) {
-        Transformation<Row> result = orig;
-        if (Boolean.parseBoolean(this.target.getOrDefault("hive-names", "false"))) {
-            result = new HiveCompatable(orig);
         }
-        return result;
+        task.run();
     }
-
-    /**
-     * Replaced values in dataset if required by parameters.
-     *
-     * @param dataset A dataset
-     * @return A dataset with values replaced
-     */
-    private Transformation<Row> replacedIfNeeded(
-        final Transformation<Row> dataset) {
-        final String replace = "replace";
-        return new ConditionalTransformation<>(
-            () -> this.target.containsKey(replace),
-            new Substituted(
-                new Stringified<>(dataset),
-                new ReplacementMap(
-                    this.target.get(replace)
-                )
-            ),
-            dataset
-        );
-    }
-
 }
