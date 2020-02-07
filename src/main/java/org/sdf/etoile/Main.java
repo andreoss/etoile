@@ -44,7 +44,6 @@ public final class Main implements Runnable {
             Class.forName("oracle.jdbc.driver.OracleDriver");
             JdbcDialects.registerDialect(new ExtraOracleDialect());
         } catch (final ClassNotFoundException ignored) {
-            // ignored on purpose
         }
         new Main(
             SparkSession.builder().getOrCreate(),
