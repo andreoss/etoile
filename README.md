@@ -1,7 +1,8 @@
 # Étoilé
-[![Quality Gate Status](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=alert_status)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
-[![Lines of Code](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=ncloc)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
-[![Coverage](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=coverage)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
+[![Build Status](https://travis-ci.org/andreoss/etoile.svg?branch=master)](https://travis-ci.org/andreoss/etoile)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=alert_status)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
+[![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=ncloc)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=coverage)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 
 **Étoilé** is a multi-purpose Spark ETL application.
 
