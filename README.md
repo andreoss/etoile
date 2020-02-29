@@ -1,4 +1,7 @@
 # Étoilé
+[![Quality Gate Status](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=alert_status)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
+[![Lines of Code](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=ncloc)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
+[![Coverage](https://sonar.sdf.org/sonar/api/project_badges/measure?project=org.sdf.etl%3Aétoilé&metric=coverage)](https://sonar.sdf.org/sonar/dashboard?id=org.sdf.etl%3Aétoilé)
 
 **Étoilé** is a multi-purpose Spark ETL application.
 
