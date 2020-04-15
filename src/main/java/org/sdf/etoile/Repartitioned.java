@@ -5,8 +5,8 @@ package org.sdf.etoile;
 
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import scala.collection.JavaConversions;
 import org.sdf.etoile.expr.Expression;
+import scala.collection.JavaConversions;
 
 /**
  * Repartitioned.
