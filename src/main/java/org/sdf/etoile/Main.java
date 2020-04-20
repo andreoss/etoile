@@ -3,13 +3,10 @@
  */
 package org.sdf.etoile;
 
-import java.nio.file.Paths;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
-import org.cactoos.list.Mapped;
-import org.sdf.etoile.expr.ExpressionOf;
 
 /**
  * Entiry point and command dispatcher.
@@ -58,25 +55,9 @@ public final class Main implements Runnable {
         if ("dump".equals(cmd) || cmd == null) {
             task = new Dump(this.spark, this.args);
         } else if ("pv".equals(cmd)) {
-            task = () -> {
-                final Map<String, String> output = new PrefixArgs("output", this.args);
-                new Saved<>(
-                    Paths.get(output.get("path")),
-                    new FormatOutput<>(
-                        new PartitionSchemeValidated(
-                            new Input(this.spark, new PrefixArgs("input", this.args)),
-                            new Mapped<>(
-                                ExpressionOf::new,
-                                new PrefixArgs(
-                                    "expression",
-                                    this.args
-                                ).values()
-                            )
-                        ),
-                        output
-                    )
-                ).result();
-            };
+            task = new ValidatePartitions(this.spark, this.args);
+        } else if ("compare".equals(cmd)) {
+            task = new DiscrepancyMain(this.spark, this.args);
         } else {
             throw new IllegalArgumentException(
                 String.format("command is not set: %s", this.args)
@@ -84,4 +65,5 @@ public final class Main implements Runnable {
         }
         task.run();
     }
+
 }

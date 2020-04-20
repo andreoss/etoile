@@ -12,6 +12,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.apache.spark.sql.types.StructType;
+import org.cactoos.list.ListOf;
 
 /**
  * Fake Input.
@@ -43,6 +44,18 @@ final class FakeInput implements Transformation<Row> {
      */
     FakeInput(final SparkSession session, final String ddl) {
         this(session, StructType.fromDDL(ddl));
+    }
+
+    /**
+     * Secondary ctor.
+     * Creates Tranformation.
+     *
+     * @param session Spark session
+     * @param schm Schema of dataset
+     * @param rows List of rows
+     */
+    FakeInput(final SparkSession session, final String schm, final Object[]... rows) {
+        this(session, schm, new ListOf<>(rows));
     }
 
     /**
