@@ -58,7 +58,9 @@ public final class GroupOutcome implements Outcome {
                 "Failure(%d/%d): %s",
                 grouped.get(true).size(),
                 this.outcomes.size(),
-                grouped.get(false)
+                grouped.get(false).stream()
+                    .map(Outcome::description)
+                    .collect(Collectors.joining(", "))
             );
         }
         return result;

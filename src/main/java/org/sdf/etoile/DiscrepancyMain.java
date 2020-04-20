@@ -33,7 +33,7 @@ final class DiscrepancyMain implements Runnable {
             Paths.get(output.get("path")),
             new FormatOutput<>(
                 new Discrepancy(
-                    Arrays.asList(this.args.get("keys").split("\\s+,\\s+")),
+                    Arrays.asList(this.args.get("keys").split("\\s*,\\s*")),
                     new Input(this.spark, new PrefixArgs("right", this.args)),
                     new Input(this.spark, new PrefixArgs("left", this.args)),
                     new Compare(new EqualsComparison())
