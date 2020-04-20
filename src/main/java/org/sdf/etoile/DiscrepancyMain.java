@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.SparkSession;
+import org.sdf.etoile.discrepancy.Compare;
 import org.sdf.etoile.discrepancy.EqualsComparison;
 
 /**

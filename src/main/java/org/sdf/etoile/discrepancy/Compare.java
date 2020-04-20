@@ -1,7 +1,7 @@
 /*
  * Copyright(C) 2019, 2020. See COPYING for more.
  */
-package org.sdf.etoile;
+package org.sdf.etoile.discrepancy;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,10 +13,6 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.expressions.GenericRowWithSchema;
 import org.apache.spark.sql.types.StructType;
 import org.cactoos.iterator.IteratorOf;
-import org.sdf.etoile.discrepancy.Comparison;
-import org.sdf.etoile.discrepancy.Detailed;
-import org.sdf.etoile.discrepancy.GroupOutcome;
-import org.sdf.etoile.discrepancy.Outcome;
 import scala.Tuple2;
 
 /**

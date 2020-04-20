@@ -4,7 +4,7 @@
 package org.sdf.etoile.discrepancy;
 
 import org.hamcrest.MatcherAssert;
-import org.hamcrest.core.IsNot;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -22,7 +22,9 @@ final class GroupOutcomeTest {
                 new Mismatch("???"),
                 new Okay()
             ),
-            new IsNot<>(new IsOkay())
+            new IsMismatch(
+                Matchers.startsWith("Failure(1/4")
+            )
         );
     }
 
@@ -35,7 +37,7 @@ final class GroupOutcomeTest {
                 new Okay(),
                 new Okay()
             ),
-            new IsOkay()
+            new IsOkay("OK(4)")
         );
     }
 }

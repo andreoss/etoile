@@ -8,6 +8,7 @@ import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
+import org.sdf.etoile.discrepancy.Compare;
 import org.sdf.etoile.discrepancy.EqualsComparison;
 
 /**

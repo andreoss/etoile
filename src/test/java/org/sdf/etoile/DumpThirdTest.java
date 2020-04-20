@@ -5,12 +5,14 @@ package org.sdf.etoile;
 
 import java.io.File;
 import org.hamcrest.MatcherAssert;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 /**
  * Third test for {@link Dump}.
  * @since 0.4.0
  */
+@Disabled
 final class DumpThirdTest extends SparkTestTemplate {
     /**
      * Files for tests.

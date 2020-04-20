@@ -3,6 +3,8 @@
  */
 package org.sdf.etoile.discrepancy;
 
+import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -13,6 +15,8 @@ import lombok.ToString;
  */
 @RequiredArgsConstructor
 @ToString
+@Generated
+@EqualsAndHashCode
 public final class Okay implements Outcome {
     /**
      * Serial version UID.

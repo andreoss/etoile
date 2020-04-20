@@ -1,41 +1,39 @@
 /*
  * Copyright(C) 2019, 2020. See COPYING for more.
  */
-
 package org.sdf.etoile.discrepancy;
 
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.core.AllOf;
-import org.hamcrest.core.IsEqual;
 import org.hamcrest.core.IsNot;
-import org.hamcrest.object.HasEqualValues;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link Mismatch}.
+ * Test for {@link Okay}.
  *
  * @since 0.7.0
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class MismatchTest {
+final class OkayTest {
+
     @Test
-    void shouldAlwaysBeFalseAndHasDescription() {
+    void shouldAlwaysBeTrueAndHasDescription() {
         MatcherAssert.assertThat(
-            new Mismatch("hey"),
-            new IsMismatch(
+            new Okay("hey"),
+            new IsOkay(
                 Matchers.equalToIgnoringCase("HEY")
             )
         );
     }
 
     @Test
-    void shouldAlwaysBeFalse() {
+    void shouldAlwaysBeTrue() {
         MatcherAssert.assertThat(
-            new Mismatch("wft"),
+            new Okay(),
             new AllOf<>(
-                new IsMismatch(),
-                new IsNot<>(new IsOkay())
+                new IsNot<>(new IsMismatch()),
+                new IsOkay()
             )
         );
     }
@@ -43,7 +41,7 @@ final class MismatchTest {
     @Test
     void shouldHaveToString() {
         MatcherAssert.assertThat(
-            new Mismatch("whatever"),
+            new Okay("whatever"),
             Matchers.hasToString(
                 Matchers.containsString("whatever")
             )
@@ -51,22 +49,18 @@ final class MismatchTest {
     }
 
     @Test
-    void shouldBeEqualToItselfByHashCode() {
+    void shouldBeEqualToItselfByHashCodeWithArg() {
         MatcherAssert.assertThat(
-            new Mismatch("ffff").hashCode(),
-            Matchers.is(new Mismatch("ffff").hashCode())
+            new Okay("hello").hashCode(),
+            Matchers.is(new Okay("hello").hashCode())
         );
     }
 
     @Test
-    void shouldBeEqualToItself() {
+    void shouldBeEqualToItselfByHashCode() {
         MatcherAssert.assertThat(
-            new Mismatch("damn"),
-            new AllOf<>(
-                new HasEqualValues<>(new Mismatch("damn")),
-                new IsEqual<>(new Mismatch("damn")),
-                new IsNot<>(new IsEqual<>(new Mismatch("why?")))
-            )
+            new Okay().hashCode(),
+            Matchers.is(new Okay().hashCode())
         );
     }
 

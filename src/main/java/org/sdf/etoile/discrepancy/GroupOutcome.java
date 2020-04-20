@@ -7,9 +7,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
-import lombok.ToString;
 import org.cactoos.list.ListOf;
 
 /**
@@ -17,52 +14,49 @@ import org.cactoos.list.ListOf;
  *
  * @since 0.7.0
  */
-@RequiredArgsConstructor
-@ToString
-@EqualsAndHashCode
-public final class GroupOutcome implements Outcome {
+public final class GroupOutcome extends OutcomeEnvelope {
     /**
      * Serial version UID.
      */
     private static final long serialVersionUID = -7746651774303109371L;
 
     /**
-     * The group.
+     * Secondary vararg ctor.
+     * @param outcomes Outcomes.
      */
-    private final Collection<Outcome> outcomes;
+    public GroupOutcome(final Outcome... outcomes) {
+        this(new ListOf<>(outcomes));
+    }
 
     /**
-     * Secondary vararg ctor.
-     * @param otcms Outcomes.
+     * Ctor.
+     * @param outcomes Outcomes.
      */
-    public GroupOutcome(final Outcome... otcms) {
-        this(new ListOf<>(otcms));
-    }
-
-    @Override
-    public boolean isOkay() {
-        return this.outcomes.stream().allMatch(Outcome::isOkay);
-    }
-
-    @Override
-    public String description() {
-        final String result;
-        final Map<Boolean, List<Outcome>> grouped =
-            this.outcomes
-                .stream()
-                .collect(Collectors.groupingBy(Outcome::isOkay));
-        if (grouped.get(false).isEmpty()) {
-            result = String.format("OK(%s)", grouped.size());
-        } else {
-            result = String.format(
-                "Failure(%d/%d): %s",
-                grouped.get(true).size(),
-                this.outcomes.size(),
-                grouped.get(false).stream()
-                    .map(Outcome::description)
-                    .collect(Collectors.joining(", "))
-            );
-        }
-        return result;
+    public GroupOutcome(final Collection<Outcome> outcomes) {
+        super(
+            () -> {
+                final Outcome result;
+                final Map<Boolean, List<Outcome>> grouped =
+                    outcomes
+                        .stream()
+                        .collect(Collectors.groupingBy(Outcome::isOkay));
+                if (grouped.containsKey(false)) {
+                    result = new Mismatch(
+                        String.format(
+                            "Failure(%d/%d): %s",
+                            grouped.get(false).size(),
+                            outcomes.size(),
+                            grouped.get(false).stream()
+                                .map(Outcome::description)
+                                .collect(Collectors.joining(", "))
+                        )
+                    );
+                } else {
+                    result = new Okay(
+                        String.format("OK(%d)", outcomes.size())
+                    );
+                }
+                return result;
+            });
     }
 }

@@ -4,6 +4,7 @@
 package org.sdf.etoile.discrepancy;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -14,6 +15,7 @@ import lombok.ToString;
  */
 @ToString
 @RequiredArgsConstructor
+@Generated
 @EqualsAndHashCode
 public final class Mismatch implements Outcome {
     /**

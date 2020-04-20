@@ -10,13 +10,12 @@ import org.hamcrest.Matchers;
 import org.hamcrest.TypeSafeMatcher;
 
 /**
- * Matcher for a positive outcome.
+ * Matcher for a negative outcome.
  *
  * @since 0.7.0
- * @todo 30m Extract common class from IsMismatch & IsOkay
  */
 @RequiredArgsConstructor
-public final class IsOkay extends TypeSafeMatcher<Outcome> {
+public final class IsMismatch extends TypeSafeMatcher<Outcome> {
     /**
      * Matcher for description.
      */
@@ -24,28 +23,29 @@ public final class IsOkay extends TypeSafeMatcher<Outcome> {
 
     /**
      * Ctor.
-     * @param description Expected description.
      */
-    public IsOkay(final String description) {
-        this(Matchers.is(description));
+    public IsMismatch() {
+        this(Matchers.notNullValue());
     }
 
     /**
      * Ctor.
+     * @param description Expected description.
      */
-    public IsOkay() {
-        this(Matchers.notNullValue());
+    public IsMismatch(final String description) {
+        this(Matchers.is(description));
     }
 
     @Override
     public void describeTo(final Description description) {
-        description.appendText("should be okay")
+        description.appendText("should be not okay")
             .appendText(" and ")
             .appendDescriptionOf(this.descr);
     }
 
     @Override
     public boolean matchesSafely(final Outcome item) {
-        return item.isOkay() && this.descr.matches(item.description());
+        return item.isNotOkay() && this.descr.matches(item.description());
     }
 }
+

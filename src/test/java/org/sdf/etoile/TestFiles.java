@@ -12,6 +12,13 @@ import java.util.List;
  */
 public interface TestFiles {
     /**
+     * Write data to input file with directory.
+     * @param dir Parent directory.
+     * @param lines Input lines.
+     */
+    void writeInputWithDirectory(String dir, String... lines);
+
+    /**
      * Write data to input file.
      * @param lines Lines.
      */
