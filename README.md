@@ -74,8 +74,7 @@ Values after `=` should match the results of the expressions.
 ```
 
 ## Example 4: Compare two datasets
-
-
+Output will contain rows which not match.
 ```
 --command=compare
 --keys=id
@@ -87,14 +86,14 @@ Values after `=` should match the results of the expressions.
 --output.path=file://tmp/-result
 ```
 
-## Miscolenious options
+## Misc options
 
 * `--<prefix>.drop` can be used to exclude one or more columns.
 * `--<prefix>.sort` reorders dataset by column or expression.
-* `--<prefix>.cast` applies cast to a column
-  Example: `--output.cast=id:string,date:timestamp`
-* `--<prefix>.convert` same as cast, but casts type to type without specified columns
-  Example: `--output.convert=timestamp:string,decimal:timestamp`
+* `--<prefix>.cast` applies cast to a column. 
+Example: `--output.cast=id:string,date:timestamp`
+* `--<prefix>.convert` same as cast, but casts type to type without specified columns.  
+Example: `--output.convert=timestamp:string,decimal:timestamp`
 * `--<prefix>.hive-names` convert names to hive-comtable, i.e by removing non-alphanumeric characters
-* `--<prefix>.rename` renames a column
-  Example: `--output.rename=id as iden`
+* `--<prefix>.rename` renames a column.
+Example: `--output.rename=id as iden`
