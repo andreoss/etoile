@@ -34,7 +34,8 @@ final class PartitionSchemeValidated extends TransformationEnvelope<Row> {
      */
     private PartitionSchemeValidated(final String filecolumn,
         final Transformation<Row> original, final Expression... expressions) {
-        super(() -> {
+        super(
+            () -> {
                 if (expressions.length == 0) {
                     throw new IllegalArgumentException("empty list of expressions");
                 }
