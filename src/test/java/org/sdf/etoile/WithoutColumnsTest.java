@@ -20,7 +20,7 @@ final class WithoutColumnsTest extends SparkTestTemplate {
     @Test
     void dropsColumnsFromDataset() {
         final Transformation<Row> trns = new WithoutColumns<>(
-            new FakeInput(this.session, "id int, val string"),
+            new FakeInput(SparkTestTemplate.session, "id int, val string"),
             "val"
         );
         MatcherAssert.assertThat(
@@ -33,7 +33,7 @@ final class WithoutColumnsTest extends SparkTestTemplate {
     @Test
     void failsOnUnresolvebleColumn() {
         final Transformation<Row> trns = new WithoutColumns<>(
-            new FakeInput(this.session, "id int, name string"),
+            new FakeInput(SparkTestTemplate.session, "id int, name string"),
             "notfound"
         );
         Assertions.assertThrows(AnalysisException.class, trns::get);
@@ -42,7 +42,10 @@ final class WithoutColumnsTest extends SparkTestTemplate {
     @Test
     void dropsSeveralColumns() {
         final Transformation<Row> trns = new WithoutColumns<>(
-            new FakeInput(this.session, "id int, removed string, alsoremoved timestamp"),
+            new FakeInput(
+                SparkTestTemplate.session,
+                "id int, removed string, alsoremoved timestamp"
+            ),
             Arrays.asList("removed", "alsoremoved")
         );
         MatcherAssert.assertThat(

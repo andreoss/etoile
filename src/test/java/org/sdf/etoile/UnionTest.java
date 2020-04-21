@@ -23,7 +23,7 @@ final class UnionTest extends SparkTestTemplate {
             "union of two datasets",
             new Union<>(
                 new FakeInput(
-                    this.session,
+                    SparkTestTemplate.session,
                     schema,
                     new ListOf<>(
                         new Object[]{++id, "foo"},
@@ -31,7 +31,7 @@ final class UnionTest extends SparkTestTemplate {
                     )
                 ),
                 new FakeInput(
-                    this.session,
+                    SparkTestTemplate.session,
                     schema,
                     new ListOf<>(
                         new Object[]{++id, "baz"},

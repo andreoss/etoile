@@ -47,7 +47,7 @@ public final class DumpJdbcTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=jdbc",
                 String.format("--input.url=%s", url),
@@ -78,7 +78,7 @@ public final class DumpJdbcTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=jdbc",
                 String.format("--input.url=%s", url),

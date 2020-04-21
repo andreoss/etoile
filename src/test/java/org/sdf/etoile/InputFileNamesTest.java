@@ -37,7 +37,7 @@ final class InputFileNamesTest extends SparkTestTemplate {
         final List<Row> result = new Collected<>(
             new InputFileNames<>(
                 "__file",
-                new CsvInput(this.session, this.data.input())
+                new CsvInput(SparkTestTemplate.session, this.data.input())
             )
         );
         MatcherAssert.assertThat(

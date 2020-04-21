@@ -34,7 +34,7 @@ final class ValidatePartitionsTest extends SparkTestTemplate {
             "4,wtf"
         );
         new ValidatePartitions(
-            this.session,
+            SparkTestTemplate.session,
             new MapOf<>(
                 new MapEntry<>("expression.1", "cast(_c0 % 2 as int) as part"),
                 new MapEntry<>("input.format", "csv"),
@@ -67,7 +67,7 @@ final class ValidatePartitionsTest extends SparkTestTemplate {
             "4,wtf"
         );
         new ValidatePartitions(
-            this.session,
+            SparkTestTemplate.session,
             new MapOf<>(
                 new MapEntry<>("expression.1", "cast(_c0 % 2 as int) as part"),
                 new MapEntry<>("input.format", "csv"),

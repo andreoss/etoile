@@ -71,7 +71,7 @@ final class ColumnsCastedToTypeTest extends SparkTestTemplate {
     }
 
     private Dataset<Row> mkDataset() {
-        return this.session.createDataFrame(
+        return SparkTestTemplate.session.createDataFrame(
             Arrays.asList(
                 new GenericRow(new Object[]{"0", "2000-01-01 00:00:00"}),
                 new GenericRow(new Object[]{"1", "2000-01-01 00:00:00"})

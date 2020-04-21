@@ -36,7 +36,7 @@ final class DiscrepancyMainTest extends SparkTestTemplate {
             "1,0,wtf"
         );
         new DiscrepancyMain(
-            this.session,
+            SparkTestTemplate.session,
             new MapOf<>(
                 new MapEntry<>("keys", "_c0"),
                 new MapEntry<>("left.format", "csv"),
@@ -65,7 +65,7 @@ final class DiscrepancyMainTest extends SparkTestTemplate {
             "1,0,wtf"
         );
         new DiscrepancyMain(
-            this.session,
+            SparkTestTemplate.session,
             new MapOf<>(
                 new MapEntry<>("keys", "_c0"),
                 new MapEntry<>("left.format", "csv"),

@@ -19,7 +19,7 @@ final class HeaderTest extends SparkTestTemplate {
             new Collected<>(
                 new Header<>(
                     new FakeInput(
-                        this.session,
+                        SparkTestTemplate.session,
                         "id int, val string, num decimal(38,12)"
                     )
                 )

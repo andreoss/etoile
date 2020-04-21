@@ -35,7 +35,7 @@ final class SubstitutedTest extends SparkTestTemplate {
     void replacesStringValue() {
         final Transformation<Row> replaced = new Substituted(
             new FakeInput(
-                this.session,
+                SparkTestTemplate.session,
                 "id int, name string",
                 Arrays.asList(
                     Factory.arrayOf(1, "foo"),
@@ -61,7 +61,7 @@ final class SubstitutedTest extends SparkTestTemplate {
     void replacesMultipleStringValues() {
         final Transformation<Row> replaced = new Substituted(
             new FakeInput(
-                this.session,
+                SparkTestTemplate.session,
                 "id int, name string",
                 Arrays.asList(
                     Factory.arrayOf(1, "foo"),
@@ -87,7 +87,7 @@ final class SubstitutedTest extends SparkTestTemplate {
     void replacesTsValue() {
         final Transformation<Row> replaced = new Substituted(
             new FakeInput(
-                this.session,
+                SparkTestTemplate.session,
                 "id int, name timestamp",
                 Arrays.asList(
                     Factory.arrayOf(1, Timestamp.valueOf("2000-01-01 00:00:00")),

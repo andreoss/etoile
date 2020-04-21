@@ -3,11 +3,12 @@
  */
 package org.sdf.etoile;
 
+import java.io.File;
 import java.io.IOException;
 import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.internal.StaticSQLConf;
 import org.junit.Rule;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
 import org.junit.rules.TemporaryFolder;
 
@@ -21,30 +22,39 @@ import org.junit.rules.TemporaryFolder;
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
 abstract class SparkTestTemplate {
     /**
+     * The spark session.
+     * @checkstyle VisibilityModifierCheck (3 lines)
+     */
+    protected static SparkSession session;
+
+    /**
      * Temporary folder.
      */
     @Rule
     public final TemporaryFolder temp = new TemporaryFolder();
 
     /**
-     * The spark session.
-     * @checkstyle VisibilityModifierCheck (3 lines)
-     */
-    protected SparkSession session;
-
-    /**
      * Start session.
      *
      * @throws IOException If unable to create temp folder.
      */
-    @BeforeEach
-    void setUp() throws IOException {
-        this.session = SparkSession.builder()
+    @BeforeAll
+    static void setUp() throws IOException {
+        final TemporaryFolder temp = new TemporaryFolder();
+        temp.create();
+        final File scratch = temp.newFolder("scratch");
+        scratch.setExecutable(true, false);
+        scratch.setReadable(true, false);
+        scratch.setWritable(true, false);
+        System.setProperty("derby.system.home", scratch.toString());
+        SparkTestTemplate.session = SparkSession.builder()
             .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
             .config(
                 StaticSQLConf.WAREHOUSE_PATH().key(),
-                this.temp.newFolder().toString()
+                scratch.toString()
             )
+            .config("hive.exec.scratchdir", scratch.toString())
+            .config("hive.exec.local.scratchdir", scratch.toString())
             .enableHiveSupport()
             .master("local[*]")
             .getOrCreate();

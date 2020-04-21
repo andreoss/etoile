@@ -31,15 +31,16 @@ final class InputTest extends SparkTestTemplate {
             "0,0,XXX",
             "1,0,wtf"
         );
-        this.session.udf().register(
+        SparkTestTemplate.session.udf().register(
             "missing",
             new MissingUDF("XXX", "YYY"),
             DataTypes.StringType
         );
+        SparkTestTemplate.session.sql("DROP TABLE IF EXISTS FOO.BARX");
         final Transformation<Row> input = new Input(
-            this.session,
+            SparkTestTemplate.session,
             new MapOf<>(
-                new MapEntry<>("table", "FOO.BAR")
+                new MapEntry<>("table", "FOO.BARX")
             )
         );
         MatcherAssert.assertThat(
@@ -56,14 +57,14 @@ final class InputTest extends SparkTestTemplate {
             "0,0,XXX",
             "1,0,wtf"
         );
-        this.session.udf().register(
+        SparkTestTemplate.session.udf().register(
             "missing",
             new MissingUDF("XXX", "YYY"),
             DataTypes.StringType
         );
         MatcherAssert.assertThat(
             new Input(
-                this.session,
+                SparkTestTemplate.session,
                 new MapOf<>(
                     new MapEntry<>("path", this.data.input().toString()),
                     new MapEntry<>("format", "csv+missing")
@@ -85,7 +86,7 @@ final class InputTest extends SparkTestTemplate {
         );
         MatcherAssert.assertThat(
             new Input(
-                this.session,
+                SparkTestTemplate.session,
                 new MapOf<>(
                     new MapEntry<>("path", this.data.input().toString()),
                     new MapEntry<>("format", "csv")
