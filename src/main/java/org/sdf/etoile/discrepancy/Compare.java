@@ -47,29 +47,41 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
     @Override
     public Row apply(final Row fst, final Row snd) {
         final Row res;
-        final StructType fsc = fst.schema();
-        final Collection<Outcome> result = new ArrayList<>(fsc.size());
-        for (final String field : fsc.fieldNames()) {
-            final Object fval = fst.getAs(field);
-            final Object sval = snd.getAs(field);
-            result.add(
-                new Detailed(
-                    Compare.fieldDescription(field, fsc),
-                    this.comp.make(fval, sval)
-                )
-            );
-        }
-        final Outcome fin = new GroupOutcome(result);
-        if (fin.isOkay()) {
-            res = null;
+        if (fst == null && snd != null) {
+            res = this.result(snd, new Mismatch("left side is missing"));
+        } else if (snd == null && fst != null) {
+            res = this.result(fst, new Mismatch("right side is missing"));
         } else {
-            final Object[] row = new Object[fst.schema().size()];
-            fst.toSeq().copyToArray(row);
-            row[fst.schema().fieldIndex("__result")] = fin.description();
-            res = new GenericRowWithSchema(
-                row, fst.schema()
-            );
+            final StructType fsc = fst.schema();
+            final Collection<Outcome> result = new ArrayList<>(fsc.size());
+            for (final String field : fsc.fieldNames()) {
+                final Object fval = fst.getAs(field);
+                final Object sval = snd.getAs(field);
+                result.add(
+                    new Detailed(
+                        Compare.fieldDescription(field, fsc),
+                        this.comp.make(fval, sval)
+                    )
+                );
+            }
+            final Outcome fin = new GroupOutcome(result);
+            if (fin.isOkay()) {
+                res = null;
+            } else {
+                res = result(fst, fin);
+            }
         }
+        return res;
+    }
+
+    private Row result(final Row fst, final Outcome fin) {
+        final Row res;
+        final Object[] row = new Object[fst.schema().size()];
+        fst.toSeq().copyToArray(row);
+        row[fst.schema().fieldIndex("__result")] = fin.description();
+        res = new GenericRowWithSchema(
+            row, fst.schema()
+        );
         return res;
     }
 
