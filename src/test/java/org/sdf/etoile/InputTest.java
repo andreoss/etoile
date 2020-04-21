@@ -36,6 +36,7 @@ final class InputTest extends SparkTestTemplate {
             new MissingUDF("XXX", "YYY"),
             DataTypes.StringType
         );
+        SparkTestTemplate.session.sql("CREATE DATABASE IF NOT EXISTS FOO");
         SparkTestTemplate.session.sql("DROP TABLE IF EXISTS FOO.BARX");
         final Transformation<Row> input = new Input(
             SparkTestTemplate.session,
