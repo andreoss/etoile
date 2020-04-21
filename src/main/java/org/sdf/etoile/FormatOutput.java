@@ -6,6 +6,7 @@ package org.sdf.etoile;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SaveMode;
 
 /**
  * Output with specified format.
@@ -54,10 +55,16 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
                 } else {
                     res = new Noop<>(input.get().toDF());
                 }
-                return new ParameterizedOutput<>(
-                    res,
-                    copy,
-                    copy.getOrDefault(FormatOutput.FORMAT, FormatOutput.CSV)
+                return new Mode<>(
+                    parameters.getOrDefault(
+                        "mode",
+                        SaveMode.ErrorIfExists.name()
+                    ),
+                    new ParameterizedOutput<>(
+                        res,
+                        copy,
+                        copy.getOrDefault(FormatOutput.FORMAT, FormatOutput.CSV)
+                    )
                 );
             }
         );

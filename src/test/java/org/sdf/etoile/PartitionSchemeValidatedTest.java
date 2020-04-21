@@ -12,6 +12,7 @@ import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.sdf.etoile.expr.ExpressionOf;
 
@@ -27,6 +28,17 @@ final class PartitionSchemeValidatedTest extends SparkTestTemplate {
      * Files for tests.
      */
     private final TestFiles data = new TempFiles(this.temp);
+
+    @Test
+    void shoudlFailIfNoExpressions() {
+        Assertions.assertThrows(
+            IllegalArgumentException.class, () ->
+                new PartitionSchemeValidated(
+                    () -> null,
+                    new ListOf<>()
+                ).get()
+        );
+    }
 
     @Test
     void outputsMismatchRows() {
