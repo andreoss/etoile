@@ -5,6 +5,8 @@ package org.sdf.etoile;
 
 import java.io.IOException;
 import org.cactoos.list.ListOf;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,7 @@ final class UnionTest extends SparkTestTemplate {
             new CsvText(
                 new Saved<>(
                     this.temp.newFolder().toPath().resolve("out"),
-                    new HeaderCsvOutput<>(
+                    new FormatOutput<>(
                         new Union<>(
                             new FakeInput(
                                 this.session,
@@ -42,6 +44,9 @@ final class UnionTest extends SparkTestTemplate {
                                     new Object[]{++id, "fee"}
                                 )
                             )
+                        ),
+                        new MapOf<>(
+                            new MapEntry<>("format", "csv+header")
                         )
                     )
                 )

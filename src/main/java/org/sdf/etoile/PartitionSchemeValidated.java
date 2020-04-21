@@ -34,12 +34,12 @@ final class PartitionSchemeValidated extends TransformationEnvelope<Row> {
      */
     private PartitionSchemeValidated(final String filecolumn,
         final Transformation<Row> original, final Expression... expressions) {
-        super(() -> {
-            return new WithColumns(
+        super(() ->
+            new WithColumns(
                 new InputFileNames<>(filecolumn, original),
                 expressions
-            ).get().filter(new Not<>(new PartitionValuesMatch(filecolumn)));
-        });
+            ).get().filter(new Not<>(new PartitionValuesMatch(filecolumn)))
+        );
     }
 
     /**

@@ -3,9 +3,8 @@
  */
 package org.sdf.etoile;
 
-import java.io.IOException;
-import java.net.URI;
 import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
 
 /**
@@ -15,46 +14,38 @@ import org.junit.jupiter.api.Test;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class RenamedTest extends SparkTestTemplate {
     @Test
-    void shouldDoesNothingWhenNoAliases() throws IOException {
-        final URI output = this.temp.newFolder().toPath().resolve("csv").toUri();
+    void shouldDoesNothingWhenNoAliases() {
         MatcherAssert.assertThat(
-            "should write unchanged dataset",
-            new CsvText(
-                new Saved<>(
-                    output,
-                    new HeaderCsvOutput<>(
-                        new Renamed(
-                            new FakeInput(this.session, "number int, name string")
-                        )
-                    )
+            "should keep names",
+            new SchemaOf(
+                new Renamed(
+                    new FakeInput(this.session, "number int, name string")
                 )
-            ),
-            new LinesAre("number,name")
+            ).asMap(),
+            Matchers.allOf(
+                Matchers.hasEntry("name", "string"),
+                Matchers.hasEntry("number", "int")
+            )
         );
     }
 
     @Test
-    void renamesColumns() throws IOException {
-        final URI output = this.temp.newFolder().toPath().resolve("csv").toUri();
+    void renamesColumns() {
         MatcherAssert.assertThat(
             "should rename columns to provided aliases",
-            new CsvText(
-                new Saved<>(
-                    output,
-                    new HeaderCsvOutput<>(
-                        new Renamed(
-                            new FakeInput(
-                                this.session,
-                                "number int, name string"
-                            ),
-                            "name as nombre",
-                            "number as numbero"
-                        )
-                    )
+            new SchemaOf<>(
+                new Renamed(
+                    new FakeInput(
+                        this.session,
+                        "number int, name string"
+                    ),
+                    "name as nombre",
+                    "number as numero"
                 )
-            ),
-            new LinesAre(
-                "numbero,nombre"
+            ).asMap(),
+            Matchers.allOf(
+                Matchers.hasEntry("nombre", "string"),
+                Matchers.hasEntry("numero", "int")
             )
         );
     }

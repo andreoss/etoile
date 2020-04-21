@@ -29,7 +29,10 @@ final class TypeValueSubsituteMapFunction<V> implements MapFunction<Row, Row> {
 
     /**
      * Dictionary.
+     *
+     * Assumed being Serializable.
      */
+    @SuppressWarnings("squid:S1948")
     private final Map<Type, Map<V, V>> repl;
 
     @Override

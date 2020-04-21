@@ -21,14 +21,14 @@ public final class Repartitioned<X> extends TransformationEnvelope<X> {
      */
     public Repartitioned(final Transformation<X> original,
         final Expression... partitions) {
-        super(() -> {
-            return () -> original.get().repartition(
+        super(
+            () -> original.get().repartition(
                 JavaConversions.asScalaBuffer(
                     Stream.of(partitions)
                         .map(Expression::get)
                         .collect(Collectors.toList())
                 )
-            );
-        });
+            )
+        );
     }
 }

@@ -3,7 +3,9 @@
  */
 package org.sdf.etoile;
 
+import java.io.IOException;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.internal.StaticSQLConf;
 import org.junit.Rule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
@@ -32,11 +34,17 @@ abstract class SparkTestTemplate {
 
     /**
      * Start session.
+     *
+     * @throws IOException If unable to create temp folder.
      */
     @BeforeEach
-    void setUp() {
+    void setUp() throws IOException {
         this.session = SparkSession.builder()
             .config("spark.serializer", "org.apache.spark.serializer.KryoSerializer")
+            .config(
+                StaticSQLConf.WAREHOUSE_PATH().key(),
+                this.temp.newFolder().toString()
+            )
             .enableHiveSupport()
             .master("local[*]")
             .getOrCreate();
