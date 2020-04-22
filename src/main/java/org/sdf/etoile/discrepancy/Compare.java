@@ -6,6 +6,7 @@ package org.sdf.etoile.discrepancy;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BinaryOperator;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.api.java.function.FlatMapFunction;
@@ -48,10 +49,12 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
     public Row apply(final Row fst, final Row snd) {
         final Row res;
         if (fst == null && snd != null) {
-            res = this.result(snd, new Mismatch("left side is missing"));
+            res = Compare.result(snd, new Mismatch("left side is missing"));
         } else if (snd == null && fst != null) {
-            res = this.result(fst, new Mismatch("right side is missing"));
+            res = Compare.result(fst, new Mismatch("right side is missing"));
         } else {
+            Objects.requireNonNull(fst);
+            Objects.requireNonNull(snd);
             final StructType fsc = fst.schema();
             final Collection<Outcome> result = new ArrayList<>(fsc.size());
             for (final String field : fsc.fieldNames()) {
@@ -68,13 +71,19 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
             if (fin.isOkay()) {
                 res = null;
             } else {
-                res = result(fst, fin);
+                res = Compare.result(fst, fin);
             }
         }
         return res;
     }
 
-    private Row result(final Row fst, final Outcome fin) {
+    /**
+     * Result row.
+     * @param fst Original row.
+     * @param fin Outcome of check.
+     * @return Resulting row.
+     */
+    private static Row result(final Row fst, final Outcome fin) {
         final Row res;
         final Object[] row = new Object[fst.schema().size()];
         fst.toSeq().copyToArray(row);
