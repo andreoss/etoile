@@ -8,6 +8,7 @@ import org.apache.spark.sql.types.StructType;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.sdf.etoile.TestRow;
 import scala.Tuple2;
@@ -35,6 +36,14 @@ final class CompareTest {
             Matchers.hasToString(
                 Matchers.containsString("right side is missing")
             )
+        );
+    }
+
+    @Test
+    void throwsExceptionWhenBothAreNull() throws Exception {
+        Assertions.assertThrows(
+            NullPointerException.class, () ->
+                new Compare(new EqualsComparison()).apply(null, null)
         );
     }
 
