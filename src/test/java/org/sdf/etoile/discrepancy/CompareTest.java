@@ -8,6 +8,7 @@ import org.apache.spark.sql.types.StructType;
 import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.sdf.etoile.TestRow;
 import scala.Tuple2;
@@ -20,15 +21,39 @@ import scala.Tuple2;
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class CompareTest {
     @Test
-    void shouldReturnRowIteratorIfDoNotMatch() throws Exception {
+    void shouldReturnIfLeftIsNull() throws Exception {
         MatcherAssert.assertThat(
             new Compare(new EqualsComparison())
                 .call(
                     Tuple2.apply(
                         new TestRow(
                             "id int, num int, name string, __result string",
-                            1, 2, "X", null
+                            1, 2, "Y", null
                         ),
+                        null
+                    )
+                ).next(),
+            Matchers.hasToString(
+                Matchers.containsString("right side is missing")
+            )
+        );
+    }
+
+    @Test
+    void throwsExceptionWhenBothAreNull() throws Exception {
+        Assertions.assertThrows(
+            NullPointerException.class, () ->
+                new Compare(new EqualsComparison()).apply(null, null)
+        );
+    }
+
+    @Test
+    void shouldReturnIfRightIsNull() throws Exception {
+        MatcherAssert.assertThat(
+            new Compare(new EqualsComparison())
+                .call(
+                    Tuple2.apply(
+                        null,
                         new TestRow(
                             "id int, num int, name string, __result string",
                             1, 2, "Y", null
@@ -36,7 +61,7 @@ final class CompareTest {
                     )
                 ).next(),
             Matchers.hasToString(
-                Matchers.containsString("is \"X\" => was \"Y\"")
+                Matchers.containsString("left side is missing")
             )
         );
     }
@@ -60,6 +85,28 @@ final class CompareTest {
                     )
             ),
             Matchers.empty()
+        );
+    }
+
+    @Test
+    void shouldReturnRowIteratorIfDoNotMatch() throws Exception {
+        MatcherAssert.assertThat(
+            new Compare(new EqualsComparison())
+                .call(
+                    Tuple2.apply(
+                        new TestRow(
+                            "id int, num int, name string, __result string",
+                            1, 2, "X", null
+                        ),
+                        new TestRow(
+                            "id int, num int, name string, __result string",
+                            1, 2, "Y", null
+                        )
+                    )
+                ).next(),
+            Matchers.hasToString(
+                Matchers.containsString("is \"X\" => was \"Y\"")
+            )
         );
     }
 }
