@@ -5,8 +5,6 @@ package org.sdf.etoile;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
-
-import org.cactoos.list.ListOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.hamcrest.collection.IsMapContaining;
@@ -42,6 +40,37 @@ final class StringifiedTest extends SparkTestTemplate {
                 IsMapContaining.hasEntry("name", type),
                 IsMapContaining.hasEntry("val", type)
             )
+        );
+    }
+    @Test
+    void stringifiesSchemaBinary() {
+                        new Stringified<>(
+                                new FakeInput(
+                                        this.session,
+                                        "raw binary",
+                                        Arrays.asList(
+                                                Factory.arrayOf(new byte[]{66,66}),
+                                                Factory.arrayOf(new byte[]{65,65})
+                                        )
+                                )
+                        ).get().show();
+    }
+    @Test
+    void stringifiesSchemaRow() {
+        MatcherAssert.assertThat(
+                        new Stringified<>(
+                                new FakeInput(
+                                        this.session,
+                                        "id int, name binary",
+                                        Arrays.asList(
+                                                Factory.arrayOf(1, "AA".getBytes()),
+                                                Factory.arrayOf(2, "BB".getBytes())
+                                        )
+                                )
+                ), new HasRows<>(
+                        "[1,QUEK]",
+                        "[2,QkIK]"
+                )
         );
     }
 }
