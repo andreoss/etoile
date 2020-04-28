@@ -47,7 +47,6 @@ public final class Stringified<Y> extends TransformationEnvelope<Row> {
                         final String type = entry.getValue();
                         if (type.equalsIgnoreCase("binary")) {
                             memo = memo.withColumn(column, functions.base64(memo.col(column)));
-                            // ???
                         } else {
                             memo = memo.withColumn(column, functions.col(column).cast("string"));
                         }
