@@ -43,7 +43,7 @@ final class StringifiedTest extends SparkTestTemplate {
         );
     }
     @Test
-    void stringifiesSchemaBinary() {
+    void stringifiesSchemaBinaryType() {
                         new Stringified<>(
                                 new FakeInput(
                                         this.session,
@@ -56,7 +56,7 @@ final class StringifiedTest extends SparkTestTemplate {
                         ).get().show();
     }
     @Test
-    void stringifiesSchemaRow() {
+    void stringifiesSchemaRowType() {
         MatcherAssert.assertThat(
                         new Stringified<>(
                                 new FakeInput(
@@ -68,8 +68,8 @@ final class StringifiedTest extends SparkTestTemplate {
                                         )
                                 )
                 ), new HasRows<>(
-                        "[1,QUEK]",
-                        "[2,QkIK]"
+                        "[1,QUE=]",
+                        "[2,QkI=]"
                 )
         );
     }
