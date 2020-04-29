@@ -55,6 +55,8 @@ abstract class SparkTestTemplate {
             )
             .config("hive.exec.scratchdir", scratch.toString())
             .config("hive.exec.local.scratchdir", scratch.toString())
+            .config("spark.ui.enabled", false)
+            .config("spark.sql.shuffle.partitions", 1)
             .enableHiveSupport()
             .master("local[*]")
             .getOrCreate();
