@@ -43,21 +43,6 @@ final class StringifiedTest extends SparkTestTemplate {
     }
 
     @Test
-    void stringifiesSchemaBinaryType() {
-        new Stringified<>(
-            new FakeInput(
-                this.session,
-                "raw binary",
-                Arrays.asList(
-                    // @checkstyle MagicNumberCheck (2 lines)
-                    Factory.arrayOf(new byte[]{66, 66}),
-                    Factory.arrayOf(new byte[]{65, 65})
-                )
-            )
-        ).get().show();
-    }
-
-    @Test
     void stringifiesSchemaRowType() {
         MatcherAssert.assertThat(
             new Stringified<>(
