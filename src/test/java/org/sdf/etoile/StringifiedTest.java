@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 /**
  * Test for {@link Stringified}.
- *
  * @since 0.3.2
  * @checkstyle MagicNumberCheck (30 lines)
  */
@@ -42,35 +41,39 @@ final class StringifiedTest extends SparkTestTemplate {
             )
         );
     }
+
     @Test
     void stringifiesSchemaBinaryType() {
-                        new Stringified<>(
-                                new FakeInput(
-                                        this.session,
-                                        "raw binary",
-                                        Arrays.asList(
-                                                Factory.arrayOf(new byte[]{66,66}),
-                                                Factory.arrayOf(new byte[]{65,65})
-                                        )
-                                )
-                        ).get().show();
+        new Stringified<>(
+            new FakeInput(
+                this.session,
+                "raw binary",
+                Arrays.asList(
+                    // @checkstyle MagicNumberCheck (2 lines)
+                    Factory.arrayOf(new byte[]{66, 66}),
+                    Factory.arrayOf(new byte[]{65, 65})
+                )
+            )
+        ).get().show();
     }
+
     @Test
     void stringifiesSchemaRowType() {
         MatcherAssert.assertThat(
-                        new Stringified<>(
-                                new FakeInput(
-                                        this.session,
-                                        "id int, name binary",
-                                        Arrays.asList(
-                                                Factory.arrayOf(1, "AA".getBytes()),
-                                                Factory.arrayOf(2, "BB".getBytes())
-                                        )
-                                )
-                ), new HasRows<>(
-                        "[1,QUE=]",
-                        "[2,QkI=]"
+            new Stringified<>(
+                new FakeInput(
+                    this.session,
+                    "id int, name binary",
+                    Arrays.asList(
+                        // @checkstyle MagicNumberCheck (2 lines)
+                        Factory.arrayOf(1, "AA".getBytes()),
+                        Factory.arrayOf(2, "BB".getBytes())
+                    )
                 )
+            ), new HasRows<>(
+                "[1,QUE=]",
+                "[2,QkI=]"
+            )
         );
     }
 }
