@@ -5,6 +5,7 @@ package org.sdf.etoile;
 
 import java.util.Map;
 import org.apache.spark.sql.Row;
+import org.apache.spark.sql.SaveMode;
 
 /**
  * Output with specified format.
@@ -34,7 +35,13 @@ final class FormatOutput<T> extends Output.Envelope<Row> {
                         codec
                     );
                 }
-                return result;
+                return new Mode<>(
+                    parameters.getOrDefault(
+                        "mode",
+                        SaveMode.ErrorIfExists.name()
+                    ),
+                    result
+                );
             }
         );
     }

@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +50,20 @@ public final class TempFiles implements TestFiles {
     }
 
     @Override
-    public void writeInput(final String... lines) {
+    public void writeInputWithDirectory(final String dir, final String... lines) {
+        final Path parent = this.input().toPath().resolve(dir);
+        parent.toFile().mkdirs();
         IOUtil.writeText(
-            String.join("\n", lines),
-            this.input().toPath()
+            String.join(System.lineSeparator(), lines),
+            parent
                 .resolve(String.format("part-%s.csv", UUID.randomUUID()))
                 .toFile()
         );
+    }
+
+    @Override
+    public void writeInput(final String... lines) {
+        this.writeInputWithDirectory(".", lines);
     }
 
     @Override
