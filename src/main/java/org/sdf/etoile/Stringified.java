@@ -3,11 +3,10 @@
  */
 package org.sdf.etoile;
 
+import java.util.Map;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.apache.spark.sql.types.StringType$;
-import org.cactoos.map.MapEntry;
-import org.cactoos.map.MapOf;
+import org.apache.spark.sql.functions;
 
 /**
  * A tranformation which each column converted to `string`.
@@ -20,6 +19,7 @@ public final class Stringified<Y> extends TransformationEnvelope<Row> {
 
     /**
      * Ctor.
+     *
      * @param original Dataset.
      */
     public Stringified(final Dataset<Y> original) {
@@ -28,20 +28,26 @@ public final class Stringified<Y> extends TransformationEnvelope<Row> {
 
     /**
      * Ctor.
+     *
      * @param original Original tranfomation.
      */
     public Stringified(final Transformation<Y> original) {
-        super(
-            new ColumnsCastedToType<Y>(
-                original,
-                new MapOf<>(
-                    f -> new MapEntry<>(
-                        f,
-                        StringType$.MODULE$.catalogString()
-                    ),
-                    new SchemaOf<>(original).fieldNames()
-                )
-            )
+        super(() -> {
+            final Schema schema = new SchemaOf<>(original);
+            final Map<String, String> entries = schema.asMap();
+            Dataset<Row> memo = original.get().toDF();
+            for (final Map.Entry<String, String> entry : entries.entrySet()) {
+                final String column = entry.getKey();
+                final String type = entry.getValue();
+                if (type.equalsIgnoreCase("binary")) {
+                    memo = memo.withColumn(column, functions.base64(memo.col(column)));
+                } else {
+                    memo = memo.withColumn(column, functions.col(column).cast("string"));
+                }
+            }
+            return memo;
+        }
         );
     }
 }
+
