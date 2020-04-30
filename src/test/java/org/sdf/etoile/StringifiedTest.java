@@ -50,7 +50,6 @@ final class StringifiedTest extends SparkTestTemplate {
                     this.session,
                     "id int, name binary",
                     Arrays.asList(
-                        // @checkstyle MagicNumberCheck (2 lines)
                         Factory.arrayOf(1, "AA".getBytes()),
                         Factory.arrayOf(2, "BB".getBytes())
                     )
