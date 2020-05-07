@@ -31,7 +31,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -65,7 +65,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -100,7 +100,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv+missing",
                 "--input.header=true",
@@ -136,7 +136,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv+missing",
                 "--input.header=true",

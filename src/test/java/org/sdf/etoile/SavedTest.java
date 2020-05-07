@@ -8,6 +8,7 @@ import java.net.URI;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import org.apache.spark.sql.Row;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Assertions;
@@ -30,15 +31,18 @@ final class SavedTest extends SparkTestTemplate {
             this.temp.newFolder(),
             new Mode<>(
                 "overwrite",
-                new HeaderCsvOutput<>(
-                    new FakeInput(
-                        this.session,
-                        "id int, val string",
-                        Arrays.asList(
-                            Factory.arrayOf(1, "abc"),
-                            Factory.arrayOf(2, "abc")
+                new FormatOutput<>(
+                    new StringifiedWithHeader<>(
+                        new FakeInput(
+                            SparkTestTemplate.session,
+                            "id int, val string",
+                            Arrays.asList(
+                                Factory.arrayOf(1, "abc"),
+                                Factory.arrayOf(2, "abc")
+                            )
                         )
-                    )
+                    ),
+                    new MapOf<>()
                 )
             )
         );
@@ -61,15 +65,16 @@ final class SavedTest extends SparkTestTemplate {
             URI.create(String.format("hdfs://%s", path.getPath())),
             new Mode<>(
                 "overwrite",
-                new HeaderCsvOutput<>(
+                new FormatOutput<>(
                     new FakeInput(
-                        this.session,
+                        SparkTestTemplate.session,
                         "id int, val string",
                         Arrays.asList(
                             Factory.arrayOf(1, "abc"),
                             Factory.arrayOf(2, "abc")
                         )
-                    )
+                    ),
+                    new MapOf<>()
                 )
             )
         );

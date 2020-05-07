@@ -51,7 +51,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         this.data.copyResource("test.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.path=" + input.toURI(),
                 "--output.path=" + output.toURI()
@@ -72,7 +72,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         this.data.copyResource("test.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.path=" + input.toURI(),
                 "--output.path=" + output.toURI(),
@@ -102,7 +102,7 @@ public final class DumpTest extends SparkTestTemplate {
             "5,x,c,y,5"
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -125,7 +125,7 @@ public final class DumpTest extends SparkTestTemplate {
             "1,2,3,4,5"
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.delimiter=,",
@@ -154,7 +154,7 @@ public final class DumpTest extends SparkTestTemplate {
     void writesSortedOutput() {
         this.data.copyResource("unsorted.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + this.data.input().toURI(),
@@ -188,7 +188,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -219,7 +219,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -250,7 +250,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -282,7 +282,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -313,7 +313,7 @@ public final class DumpTest extends SparkTestTemplate {
             "1,2019-06-13 13:31:59,xyz"
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -345,7 +345,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -371,7 +371,7 @@ public final class DumpTest extends SparkTestTemplate {
     void writesSortedOutputCastsByColumnName() {
         this.data.copyResource("unsorted.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + this.data.input().toURI(),
@@ -403,7 +403,7 @@ public final class DumpTest extends SparkTestTemplate {
     void writesSortedOutputAndSortsNumerically() {
         this.data.copyResource("unsorted.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + this.data.input().toURI(),
@@ -434,7 +434,7 @@ public final class DumpTest extends SparkTestTemplate {
     void sortsInDescOrder() {
         this.data.copyResource("unsorted.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + this.data.input().toURI(),
@@ -474,7 +474,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -505,7 +505,7 @@ public final class DumpTest extends SparkTestTemplate {
         this.data.writeInput("id,val,char");
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -530,7 +530,7 @@ public final class DumpTest extends SparkTestTemplate {
         this.data.writeInput();
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.path=" + this.data.input().toURI(),
@@ -549,7 +549,7 @@ public final class DumpTest extends SparkTestTemplate {
         this.data.writeInput();
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.header=true",
                 "--output.header=true",
@@ -570,7 +570,7 @@ public final class DumpTest extends SparkTestTemplate {
         this.data.writeInput("id,name,value");
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.header=true",
                 "--output.header=true",
@@ -602,7 +602,7 @@ public final class DumpTest extends SparkTestTemplate {
         Assertions.assertTrue(second.toPath().resolve("1.csv").toFile().createNewFile());
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -627,7 +627,7 @@ public final class DumpTest extends SparkTestTemplate {
         this.data.writeInput("id,val,char");
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -656,7 +656,7 @@ public final class DumpTest extends SparkTestTemplate {
             "2,0,se"
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -686,7 +686,7 @@ public final class DumpTest extends SparkTestTemplate {
             "2,baz,12.34"
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -714,7 +714,7 @@ public final class DumpTest extends SparkTestTemplate {
     void writesHeaderForSpecialFormat() {
         this.data.writeInput("id,val,char");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -745,7 +745,7 @@ public final class DumpTest extends SparkTestTemplate {
             output.toPath().resolve("bar.csv").toFile().createNewFile()
         );
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -786,7 +786,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         for (final File input : inputs) {
             new Dump(
-                this.session,
+                SparkTestTemplate.session,
                 new Args(
                     "--input.format=csv",
                     "--input.header=true",
@@ -800,7 +800,7 @@ public final class DumpTest extends SparkTestTemplate {
         }
         final File aggreg = second.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -834,7 +834,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -864,7 +864,7 @@ public final class DumpTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -894,7 +894,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         this.data.copyResource("missing.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + input.toURI(),
@@ -924,7 +924,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         this.data.copyResource("missing.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=avro+missing",
                 "--input.path=" + input.toURI(),
@@ -951,7 +951,7 @@ public final class DumpTest extends SparkTestTemplate {
         final File output = this.data.output();
         this.data.copyResource("missing.avro");
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.format=com.databricks.spark.avro",
                 "--input.path=" + input.toURI(),

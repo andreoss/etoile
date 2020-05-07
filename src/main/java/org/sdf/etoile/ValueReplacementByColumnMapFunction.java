@@ -31,7 +31,10 @@ final class ValueReplacementByColumnMapFunction<V> implements MapFunction<Row, R
 
     /**
      * Dictionary.
+     *
+     * Assumed being Serializable.
      */
+    @SuppressWarnings("squid:S1948")
     private final Map<V, V> dict;
 
     @Override

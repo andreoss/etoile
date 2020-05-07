@@ -34,15 +34,17 @@ final class PartitionSchemeValidated extends TransformationEnvelope<Row> {
      */
     private PartitionSchemeValidated(final String filecolumn,
         final Transformation<Row> original, final Expression... expressions) {
-        super(() -> {
-            if (expressions.length == 0) {
-                throw new IllegalArgumentException("empty list of expressions");
+        super(
+            () -> {
+                if (expressions.length == 0) {
+                    throw new IllegalArgumentException("empty list of expressions");
+                }
+                return new WithColumns(
+                    new InputFileNames<>(filecolumn, original),
+                    expressions
+                ).get().filter(new Not<>(new PartitionValuesMatch(filecolumn)));
             }
-            return new WithColumns(
-                new InputFileNames<>(filecolumn, original),
-                expressions
-            ).get().filter(new Not<>(new PartitionValuesMatch(filecolumn)));
-        });
+        );
     }
 
     /**

@@ -4,66 +4,44 @@
 package org.sdf.etoile;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.Arrays;
-import java.util.Collections;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 /**
- * Test for {@link HeaderCsvOutput}.
- * @since 0.2.0
+ * Test for {@link FormatOutput}.
+ *
+ * @since 0.3.2
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-final class HeaderCsvOutputTest extends SparkTestTemplate {
-    /**
-     * Adds header for resulting file for empty tranformation.
-     * @throws IOException on error
-     */
-    @Test
-    void addsHeaderForEmptyOutput() throws IOException {
-        final Path output = this.temp.newFolder("output")
-            .toPath()
-            .resolve("csv");
-        MatcherAssert.assertThat(
-            "writes csv with header",
-            new CsvText(
-                new Saved<>(
-                    output.toUri(),
-                    new HeaderCsvOutput<>(
-                        new FakeInput(this.session, "id int, name string")
-                    )
-                )
-            ),
-            new LinesAre(
-                "id,name"
-            )
-        );
-    }
-
+final class FormatOutputTest extends SparkTestTemplate {
     /**
      * Adds header for resulting file.
      * @throws IOException on error
      */
     @Test
     void addsHeader() throws IOException {
-        final Path output = this.temp.newFolder("output")
-            .toPath()
-            .resolve("csv");
         MatcherAssert.assertThat(
             "writes csv with header",
             new CsvText(
                 new Saved<>(
-                    output,
-                    new HeaderCsvOutput<>(
+                    this.temp.newFolder("output")
+                        .toPath()
+                        .resolve("csv"),
+                    new FormatOutput<>(
                         new FakeInput(
-                            this.session,
+                            SparkTestTemplate.session,
                             "id int, name string",
                             Arrays.asList(
                                 Factory.arrayOf(1, "foo"),
                                 Factory.arrayOf(2, "bar")
                             )
+                        ),
+                        new MapOf<>(
+                            new MapEntry<>("format", "csv+header")
                         )
                     )
                 )
@@ -84,10 +62,14 @@ final class HeaderCsvOutputTest extends SparkTestTemplate {
     void checksParametersForHeaderOptions() throws IOException {
         Assertions.assertThrows(
             IllegalArgumentException.class,
-            new HeaderCsvOutput<>(
-                new FakeInput(this.session, "id int"),
-                Collections.singletonMap("header", "true")
-            )::get
+            () -> new FormatOutput<>(
+                new FakeInput(SparkTestTemplate.session, "id int"),
+                new MapOf<>(
+                    new MapEntry<>("header", "true"),
+                    new MapEntry<>("format", "csv+header")
+                )
+            )
         );
     }
+
 }

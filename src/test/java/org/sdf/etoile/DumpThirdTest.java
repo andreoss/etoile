@@ -19,15 +19,15 @@ final class DumpThirdTest extends SparkTestTemplate {
 
     @Test
     void canDumpHiveTable() {
-        this.session.sql(
+        SparkTestTemplate.session.sql(
             "CREATE DATABASE IF NOT EXISTS FOO"
         ).count();
-        this.session.sql(
+        SparkTestTemplate.session.sql(
             "CREATE TABLE IF NOT EXISTS FOO.BAR AS (SELECT 1 as ID, 'foo' as NAME)"
         ).count();
         final File output = this.data.output();
         new Dump(
-            this.session,
+            SparkTestTemplate.session,
             new Args(
                 "--input.table=foo.bar",
                 String.format("--output.path=%s", output.toURI()),

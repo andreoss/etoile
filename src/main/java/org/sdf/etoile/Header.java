@@ -8,7 +8,7 @@ import org.apache.spark.sql.Row;
 import org.apache.spark.sql.catalyst.expressions.GenericRow;
 
 /**
- * Extactd header (column names) from transformation.
+ * Header (column names) of transformation.
  *
  * @param <Y> Underlying type of original tranformation.
  * @since 0.2.1
@@ -29,15 +29,12 @@ public final class Header<Y> extends TransformationEnvelope<Row> {
      * @param dataset A dataset.
      */
     public Header(final Dataset<Y> dataset) {
-        super(() -> {
-            final Schema schema = new SchemaOf<>(new Stringified<>(dataset));
-            return new Rows(
+        super(
+            () -> new Rows(
                 dataset.sparkSession(),
-                schema,
-                new GenericRow(schema.get()
-                    .fieldNames()
-                )
-            );
-        });
+                new SchemaOf<>(new Stringified<>(dataset)),
+                new GenericRow(dataset.schema().fieldNames())
+            )
+        );
     }
 }

@@ -40,15 +40,15 @@ public final class CsvInput extends TransformationEnvelope<Row> {
      * @param path Path to files.
      */
     public CsvInput(final SparkSession session, final String path) {
-        super(() -> {
-            return new Input(
+        super(() ->
+            new Input(
                 session,
                 new MapOf<>(
                     new MapEntry<>("format", "csv"),
                     new MapEntry<>("header", "true"),
                     new MapEntry<>("path", path)
                 )
-            );
-        });
+            )
+        );
     }
 }

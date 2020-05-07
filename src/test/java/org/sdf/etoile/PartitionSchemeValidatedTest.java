@@ -59,7 +59,7 @@ final class PartitionSchemeValidatedTest extends SparkTestTemplate {
                 new FormatOutput<>(
                     new Repartitioned<>(
                         new WithColumns(
-                            new CsvInput(this.session, this.data.input()),
+                            new CsvInput(SparkTestTemplate.session, this.data.input()),
                             new ExpressionOf("pmod(nm, 100) as part_id")
                         ),
                         new ExpressionOf("part_id")
@@ -71,7 +71,7 @@ final class PartitionSchemeValidatedTest extends SparkTestTemplate {
         final Transformation<Row> input =
             new PartitionSchemeValidated(
                 new Input(
-                    this.session,
+                    SparkTestTemplate.session,
                     new MapOf<>(
                         new MapEntry<>("path", result.toString()),
                         new MapEntry<>("format", "json")
@@ -109,7 +109,7 @@ final class PartitionSchemeValidatedTest extends SparkTestTemplate {
                 "id",
                 new FormatOutput<>(
                     new Repartitioned<>(
-                        new CsvInput(this.session, this.data.input()),
+                        new CsvInput(SparkTestTemplate.session, this.data.input()),
                         new ExpressionOf("id")
                     ),
                     Collections.singletonMap("format", "json")
@@ -119,7 +119,7 @@ final class PartitionSchemeValidatedTest extends SparkTestTemplate {
         final Transformation<Row> input =
             new PartitionSchemeValidated(
                 new Input(
-                    this.session,
+                    SparkTestTemplate.session,
                     new MapOf<>(
                         new MapEntry<>("path", result.toString()),
                         new MapEntry<>("format", "json")
