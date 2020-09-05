@@ -157,6 +157,9 @@
                 <configuration>
                     <trimStackTrace>false</trimStackTrace>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
+                    <environmentVariables>
+                        <TZ>PTS</TZ>
+                    </environmentVariables>
                 </configuration>
             </plugin>
             <plugin>
