@@ -538,8 +538,8 @@ public final class DumpTest extends SparkTestTemplate {
             )
         ).run();
         MatcherAssert.assertThat(
-            "no files written",
-            this.data.outputFiles(),
+            "no data written",
+            this.data.outputLines(),
             Matchers.empty()
         );
     }
@@ -559,8 +559,8 @@ public final class DumpTest extends SparkTestTemplate {
             )
         ).run();
         MatcherAssert.assertThat(
-            "no files written",
-            this.data.outputFiles(),
+            "no data written",
+            this.data.outputLines(),
             Matchers.empty()
         );
     }
@@ -614,8 +614,8 @@ public final class DumpTest extends SparkTestTemplate {
             )
         ).run();
         MatcherAssert.assertThat(
-            "no files written",
-            this.data.outputFiles(),
+            "no data written",
+            this.data.outputLines(),
             Matchers.empty()
         );
     }
