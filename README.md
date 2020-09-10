@@ -1,5 +1,6 @@
 # Étoilé
 [![Build Status](https://travis-ci.org/andreoss/etoile.svg?branch=master)](https://travis-ci.org/andreoss/etoile)
+[![Maintainability](https://api.codeclimate.com/v1/badges/45765fb306089171912c/maintainability)](https://codeclimate.com/github/andreoss/etoile/maintainability)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=alert_status)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=ncloc)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=coverage)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
