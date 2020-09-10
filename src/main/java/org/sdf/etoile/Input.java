@@ -65,7 +65,7 @@ final class Input implements Transformation<Row> {
      */
     private static String removeModifier(final String format) {
         String fmt = Pattern.compile("[+]missing$").matcher(format).replaceFirst("");
-        if ("avro".equalsIgnoreCase(fmt)) {
+        if (Input.AVRO.equalsIgnoreCase(fmt)) {
             fmt = Input.AVRO;
         }
         return fmt;
