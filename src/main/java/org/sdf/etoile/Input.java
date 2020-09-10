@@ -3,7 +3,6 @@
  */
 package org.sdf.etoile;
 
-import com.databricks.spark.avro.AvroOutputWriter;
 import java.util.Map;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,7 @@ final class Input implements Transformation<Row> {
     /**
      * Default format.
      */
-    private static final String AVRO = AvroOutputWriter.class
-        .getPackage().getName();
+    private static final String AVRO = "avro";
 
     /**
      * Spark session.
