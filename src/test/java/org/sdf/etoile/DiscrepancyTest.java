@@ -22,7 +22,7 @@ final class DiscrepancyTest extends SparkTestTemplate {
     @Test
     void shouldBeEmptyIfDatasetsMatch() {
         final Transformation<Row> trns = new Discrepancy(
-            new ListOf("id"), new FakeInput(
+            new ListOf<>("id"), new FakeInput(
             SparkTestTemplate.session,
             "id int, val string",
             new Object[]{1, "FOO"},
@@ -37,14 +37,37 @@ final class DiscrepancyTest extends SparkTestTemplate {
         MatcherAssert.assertThat(
             "must be empty when matches",
             trns,
-            new IsEmpty()
+            new IsEmpty<>()
+        );
+    }
+
+    @Test
+    void whenRowMissing() {
+        final Transformation<Row> trns = new Discrepancy(
+            new ListOf<>("id"), new FakeInput(
+            SparkTestTemplate.session,
+            "id int, val string",
+            new Object[]{1, "FOO"}
+        ), new FakeInput(
+            SparkTestTemplate.session,
+            "id int, val string",
+            new Object[]{1, "FOO"},
+            new Object[]{2, "BAR"}
+        ), new Compare(new EqualsComparison())
+        );
+        MatcherAssert.assertThat(
+            "must be empty when matches",
+            trns,
+            new HasRows<>(
+                "[2,BAR,left side is missing]"
+            )
         );
     }
 
     @Test
     void shouldContainMismatchedRow() {
         final Transformation<Row> trns = new Discrepancy(
-            new ListOf("id"), new FakeInput(
+            new ListOf<>("id"), new FakeInput(
             SparkTestTemplate.session,
             "id int, val string",
             new Object[]{1, "FOO"},
@@ -59,14 +82,11 @@ final class DiscrepancyTest extends SparkTestTemplate {
         MatcherAssert.assertThat(
             "must be empty when matches",
             trns,
-            new HasRows(
-                new ListOf<>(
-                    Matchers.hasToString(
-                        Matchers.containsString("is \"BAR\" => was \"YOLO\"")
-                    )
+            new HasRows<>(
+                Matchers.hasToString(
+                    Matchers.containsString("is \"BAR\" => was \"YOLO\"")
                 )
             )
         );
     }
-
 }
