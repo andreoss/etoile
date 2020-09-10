@@ -13,7 +13,8 @@ import org.hamcrest.TypeSafeMatcher;
  * Matcher for a positive outcome.
  *
  * @since 0.7.0
- * @todo 30m Extract common class from IsMismatch & IsOkay
+ * @todo #0:24h Refactor IsMismatch & IsOkay in order to reduce duplication.
+ *  Probably IsMismatch can be replaced with IsNot & IsOkay.
  */
 @RequiredArgsConstructor
 public final class IsOkay extends TypeSafeMatcher<Outcome> {

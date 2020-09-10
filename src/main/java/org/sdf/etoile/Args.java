@@ -14,7 +14,9 @@ import org.cactoos.map.MapEnvelope;
  * Command-line arguments.
  *
  * @since 0.1.0
- * @todo Replace with args4j
+ * @todo #0:24h Replace this Map with proper object for configuration.
+ *  Take into account that prefix is stripped with {@link PrefixArgs} in
+ *  many places.
  */
 final class Args extends MapEnvelope<String, String> {
     /**

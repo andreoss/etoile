@@ -18,7 +18,10 @@ import javax.annotation.Nullable;
  * Replacement dictionary by type.
  *
  * @since 0.2.5
- * @todo Refactor to a simplier interface.
+ * @todo #0:24h Refactor to a simpler interface for type-based replacement.
+ *  The base class from `spark-core` is especially bad. A dictionary
+ *  for replacement could be probably reused for different operations, for
+ *  example {@link MissingUDF}.
  */
 final class ReplacementMap extends
     SerializableMapEnvelope<Type, Map<Object, Object>> {
