@@ -37,7 +37,7 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
     public Iterator<Row> call(final Tuple2<Row, Row> joined) throws Exception {
         final Iterator<Row> result;
         final Row res = this.apply(joined._1(), joined._2());
-        if (res == null) {
+        if (this.isMissing(res)) {
             result = new IteratorOf<>();
         } else {
             result = new IteratorOf<>(res);
@@ -48,9 +48,9 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
     @Override
     public Row apply(final Row fst, final Row snd) {
         final Row res;
-        if (fst == null && snd != null) {
+        if (this.isMissing(fst) && this.isNotMissing(snd)) {
             res = Compare.result(snd, new Mismatch("left side is missing"));
-        } else if (snd == null && fst != null) {
+        } else if (this.isMissing(snd) && this.isNotMissing(fst)) {
             res = Compare.result(fst, new Mismatch("right side is missing"));
         } else {
             Objects.requireNonNull(fst);
@@ -75,6 +75,14 @@ public final class Compare implements FlatMapFunction<Tuple2<Row, Row>, Row>, Bi
             }
         }
         return res;
+    }
+
+    private boolean isNotMissing(final Row row) {
+        return row != null && !row.toSeq().forall(Objects::isNull);
+    }
+
+    private boolean isMissing(final Row row) {
+        return row == null || row.toSeq().forall(Objects::isNull);
     }
 
     /**
