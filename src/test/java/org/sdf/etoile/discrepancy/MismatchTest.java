@@ -1,5 +1,5 @@
 /*
- * Copyright(C) 2019, 2020. See COPYING for more.
+ * Copyright(C) 2019, 2020. See LICENSE for more.
  */
 
 package org.sdf.etoile.discrepancy;
