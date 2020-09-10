@@ -156,7 +156,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + this.data.input().toURI(),
                 "--input.sort=CTL_SEQNO",
                 "--output.path=" + this.data.output().toURI(),
@@ -373,7 +373,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + this.data.input().toURI(),
                 "--input.cast=numb1:int",
                 "--input.sort=NUMB1",
@@ -405,7 +405,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + this.data.input().toURI(),
                 "--input.sort=cast(NUMB1 as int)",
                 "--output.path=" + this.data.output().toURI(),
@@ -436,7 +436,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + this.data.input().toURI(),
                 "--input.sort=cast(NUMB1 as int):desc",
                 "--output.path=" + this.data.output().toURI(),
@@ -515,51 +515,11 @@ public final class DumpTest extends SparkTestTemplate {
                 "--output.path=" + output.toURI(),
                 "--output.format=csv",
                 "--output.delimiter=;",
-                "--output.header=true"
+                "--output.header=false"
             )
         ).run();
         MatcherAssert.assertThat(
             "header discarded on write",
-            this.data.outputLines(),
-            Matchers.empty()
-        );
-    }
-
-    @Test
-    void convertsEmptyFileWithoutHeader() {
-        this.data.writeInput();
-        final File output = this.data.output();
-        new Dump(
-            SparkTestTemplate.session,
-            new Args(
-                "--input.format=csv",
-                "--input.path=" + this.data.input().toURI(),
-                "--output.path=" + output.toURI()
-            )
-        ).run();
-        MatcherAssert.assertThat(
-            "no data written",
-            this.data.outputLines(),
-            Matchers.empty()
-        );
-    }
-
-    @Test
-    void convertsEmptyFileWithHeaderRequired() {
-        this.data.writeInput();
-        final File output = this.data.output();
-        new Dump(
-            SparkTestTemplate.session,
-            new Args(
-                "--input.header=true",
-                "--output.header=true",
-                "--input.format=csv",
-                "--input.path=" + this.data.input().toURI(),
-                "--output.path=" + output.toURI()
-            )
-        ).run();
-        MatcherAssert.assertThat(
-            "no data written",
             this.data.outputLines(),
             Matchers.empty()
         );
@@ -576,7 +536,8 @@ public final class DumpTest extends SparkTestTemplate {
                 "--output.header=true",
                 "--input.format=csv",
                 "--input.path=" + this.data.input().toURI(),
-                "--output.path=" + output.toURI()
+                "--output.path=" + output.toURI(),
+                "--output.header=false"
             )
         ).run();
         MatcherAssert.assertThat(
@@ -586,35 +547,6 @@ public final class DumpTest extends SparkTestTemplate {
         );
         MatcherAssert.assertThat(
             "empty output",
-            this.data.outputLines(),
-            Matchers.empty()
-        );
-    }
-
-    @Test
-    void doesNotKeepHeaderInOutputWhenMultipleFilesAllEmpty() throws IOException {
-        final File input = new TempFiles(this.temp).input();
-        final File first = input.toPath().resolve("part-1").toFile();
-        final File second = input.toPath().resolve("part-2").toFile();
-        Assertions.assertTrue(first.mkdirs());
-        Assertions.assertTrue(second.mkdirs());
-        Assertions.assertTrue(first.toPath().resolve("1.csv").toFile().createNewFile());
-        Assertions.assertTrue(second.toPath().resolve("1.csv").toFile().createNewFile());
-        final File output = this.data.output();
-        new Dump(
-            SparkTestTemplate.session,
-            new Args(
-                "--input.format=csv",
-                "--input.header=true",
-                "--input.path=" + input + "/*",
-                "--output.path=" + output.toURI(),
-                "--output.format=csv",
-                "--output.delimiter=;",
-                "--output.header=true"
-            )
-        ).run();
-        MatcherAssert.assertThat(
-            "no data written",
             this.data.outputLines(),
             Matchers.empty()
         );
@@ -637,7 +569,7 @@ public final class DumpTest extends SparkTestTemplate {
                 "--output.path=" + output.toURI(),
                 "--output.format=csv",
                 "--output.delimiter=;",
-                "--output.header=true"
+                "--output.header=false"
             )
         ).run();
         MatcherAssert.assertThat(
@@ -896,7 +828,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + input.toURI(),
                 "--input.expr="
                     + "type_number:missing(type_number),"
@@ -953,7 +885,7 @@ public final class DumpTest extends SparkTestTemplate {
         new Dump(
             SparkTestTemplate.session,
             new Args(
-                "--input.format=com.databricks.spark.avro",
+                "--input.format=avro",
                 "--input.path=" + input.toURI(),
                 "--output.replace=string:\u0001/DEFAULT_VALUE",
                 "--output.path=" + output.toURI(),

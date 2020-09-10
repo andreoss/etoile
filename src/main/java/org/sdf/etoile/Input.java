@@ -3,7 +3,6 @@
  */
 package org.sdf.etoile;
 
-import com.databricks.spark.avro.AvroOutputWriter;
 import java.util.Map;
 import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
@@ -26,8 +25,7 @@ final class Input implements Transformation<Row> {
     /**
      * Default format.
      */
-    private static final String AVRO = AvroOutputWriter.class
-        .getPackage().getName();
+    private static final String AVRO = "avro";
 
     /**
      * Spark session.
@@ -67,7 +65,7 @@ final class Input implements Transformation<Row> {
      */
     private static String removeModifier(final String format) {
         String fmt = Pattern.compile("[+]missing$").matcher(format).replaceFirst("");
-        if ("avro".equalsIgnoreCase(fmt)) {
+        if (Input.AVRO.equalsIgnoreCase(fmt)) {
             fmt = Input.AVRO;
         }
         return fmt;

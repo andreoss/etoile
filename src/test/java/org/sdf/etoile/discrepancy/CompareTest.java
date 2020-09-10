@@ -109,4 +109,27 @@ final class CompareTest {
             )
         );
     }
+
+    @Test
+    void shouldReturnIfLeftIfAllColumnsAreNow() throws Exception {
+        MatcherAssert.assertThat(
+            new Compare(new EqualsComparison())
+                .call(
+                    Tuple2.apply(
+                        new TestRow(
+                            "id int, num int, name string, __result string",
+                            1, 2, "Y", null
+                        ),
+                        new TestRow(
+                            "id int, num int, name string, __result string",
+                            null, null, null, null
+                        )
+                    )
+                ).next(),
+            Matchers.hasToString(
+                Matchers.containsString("right side is missing")
+            )
+        );
+    }
+
 }

@@ -3,6 +3,7 @@
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=alert_status)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=ncloc)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=coverage)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
+[![Hits-of-Code](https://hitsofcode.com/github/andreoss/etoile)](https://hitsofcode.com/view/github/andreoss/etoile)
 
 **Étoilé** is a multi-purpose Spark ETL application.
 
@@ -94,9 +95,9 @@ Output will contain rows which not match.
 
 * `--<prefix>.drop` can be used to exclude one or more columns.
 * `--<prefix>.sort` reorders dataset by column or expression.
-* `--<prefix>.cast` applies cast to a column. 
+* `--<prefix>.cast` applies cast to a column.
 Example: `--output.cast=id:string,date:timestamp`
-* `--<prefix>.convert` same as cast, but casts type to type without specified columns.  
+* `--<prefix>.convert` same as cast, but casts type to type without specified columns.
 Example: `--output.convert=timestamp:string,decimal:timestamp`
 * `--<prefix>.hive-names` convert names to hive-comtable, i.e by removing non-alphanumeric characters
 * `--<prefix>.rename` renames a column.

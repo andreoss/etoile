@@ -48,6 +48,15 @@ public class HasRows<X> extends TypeSafeDiagnosingMatcher<Transformation<X>> {
         this(new IsIterableContainingInOrder(matcher));
     }
 
+    /**
+     * Ctor.
+     * @param matchers Rows in Order.
+     */
+    @SafeVarargs
+    public HasRows(final Matcher<? extends X>... matchers) {
+        this(new ListOf<>(matchers));
+    }
+
     @Override
     public final void describeTo(final Description description) {
         description.appendText("contains rows:").appendValue(this.matcher);
