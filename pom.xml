@@ -160,7 +160,7 @@
                     <trimStackTrace>false</trimStackTrace>
                     <redirectTestOutputToFile>true</redirectTestOutputToFile>
                     <environmentVariables>
-                        <TZ>PTS</TZ>
+                        <TZ>Z</TZ>
                     </environmentVariables>
                 </configuration>
             </plugin>
