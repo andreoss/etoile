@@ -18,7 +18,9 @@ import org.mockito.Mockito;
 
 /**
  * Test {@link Dump}.
- * @todo Refactor to sepearate test cases.
+ * @todo #0:1h Split this test case to several ones based on the feature.
+ *  This could be related to coupling problems in Dump.
+ *  After it's done remove the suppressions.
  * @checkstyle StringLiteralsConcatenationCheck (2000 lines)
  * @since 0.0.1
  */

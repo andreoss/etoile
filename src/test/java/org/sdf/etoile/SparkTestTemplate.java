@@ -16,7 +16,9 @@ import org.junit.rules.TemporaryFolder;
  * Template for tests with Spark.
  *
  * @since 0.1.0
- * @todo Replace with @{link Extension}
+ * @todo #0:24h Consider turning this class to Extension. Note that
+ *  it works on per-fork basis, saving some time in tests.
+ *  The temporary directory is not used by this class also.  
  */
 @EnableRuleMigrationSupport
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")

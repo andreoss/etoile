@@ -14,7 +14,8 @@ import org.apache.spark.sql.types.StringType$;
 /**
  * Application.
  *
- * @todo Reduce coupling (1h)
+ * @todo #0:24h Find a way to reduce coupling in this class. The other
+ *  way to setup a chain of transformations should be probably used.
  * @checkstyle ClassDataAbstractionCouplingCheck (100 lines)
  * @since 0.0.1
  */

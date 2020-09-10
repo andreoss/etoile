@@ -14,9 +14,14 @@ import scala.Option;
 import scala.Some;
 
 /**
- * Work/around for currenly unhandled by Spark types.
+ * Work/around for currently unhandled by Spark types.
+ *
  * @since 0.3.0
- * @todo Test cover.
+ * @todo #0:24h Since #5 this class serves no purpose, and is black-listed for
+ *  test coverage checks.
+ *  It would be nice to have an ability to affect type conversions on this
+ *  level. Though it's hard to test.
+ *
  */
 public final class ExtraOracleDialect extends JdbcDialect {
     /**
