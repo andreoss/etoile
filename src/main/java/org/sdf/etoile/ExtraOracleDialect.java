@@ -21,7 +21,6 @@ import scala.Some;
  *  test coverage checks.
  *  It would be nice to have an ability to affect type conversions on this
  *  level. Though it's hard to test.
- *
  */
 public final class ExtraOracleDialect extends JdbcDialect {
     /**

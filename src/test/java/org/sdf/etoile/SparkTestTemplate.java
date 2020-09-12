@@ -18,7 +18,7 @@ import org.junit.rules.TemporaryFolder;
  * @since 0.1.0
  * @todo #0:24h Consider turning this class to Extension. Note that
  *  it works on per-fork basis, saving some time in tests.
- *  The temporary directory is not used by this class also.  
+ *  The temporary directory is not used by this class also.
  */
 @EnableRuleMigrationSupport
 @SuppressWarnings("PMD.AbstractClassWithoutAbstractMethod")
