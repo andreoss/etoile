@@ -29,7 +29,7 @@ final class Aliases extends CollectionEnvelope<Alias> {
                     ColumnAlias::new,
                     new Mapped<Text, String>(
                         Text::asString,
-                        new Filtered<>(
+                        new Filtered<Text>(
                             x -> !new IsBlank(x).value(),
                             new Split(expression, ",")
                         )

@@ -50,7 +50,7 @@ final class Pairs extends CollectionEnvelope<Map<String, String>> {
                 .filter(s -> !s.isEmpty())
                 .map(s -> Arrays.asList(s.split(sep)))
                 .map(l -> Collections.singletonMap(l.get(0), l.get(1)))
-                .collect(Collectors.toList())
+                .collect(Collectors.<Map<String, String>>toList())
         );
     }
 
