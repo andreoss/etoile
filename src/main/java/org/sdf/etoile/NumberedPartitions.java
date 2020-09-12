@@ -14,7 +14,7 @@ package org.sdf.etoile;
 final class NumberedPartitions<T> extends TransformationEnvelope<T> {
     /**
      * Ctor.
-     * @param trans Original tranformation.
+     * @param trans Original transformation.
      * @param num Number of partitions.
      */
     NumberedPartitions(final Transformation<T> trans, final int num) {

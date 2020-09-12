@@ -18,11 +18,8 @@ public final class StringifiedWithHeader<T> extends TransformationEnvelope<Row> 
      * @param source Original transformation.
      */
     StringifiedWithHeader(final Transformation<T> source) {
-        super(() ->
-            new OrderedUnion<>(
-                new Header<>(source),
-                new Stringified<>(source)
-            )
+        super(
+            new OrderedUnion<>(new Header<>(source), new Stringified<>(source))
         );
     }
 }

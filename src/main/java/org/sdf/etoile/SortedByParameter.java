@@ -25,18 +25,14 @@ final class SortedByParameter<Y> extends TransformationEnvelope<Y> {
     SortedByParameter(final Transformation<Y> original,
         final Map<String, String> params) {
         super(
-            () -> {
-                final Transformation<Y> result;
-                if (params.containsKey(SortedByParameter.PARAM_NAME)) {
-                    final String prm = params.get(SortedByParameter.PARAM_NAME);
-                    result = new Sorted<>(
-                        original, prm.split(",")
-                    );
-                } else {
-                    result = new Noop<>(original);
-                }
-                return result;
-            }
+            new ConditionalTransformation<>(
+                () -> params.containsKey(SortedByParameter.PARAM_NAME),
+                () -> new Sorted<>(
+                    original,
+                    params.get(SortedByParameter.PARAM_NAME).split(",")
+                ).get(),
+                new Noop<>(original)
+            )
         );
     }
 }
