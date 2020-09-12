@@ -5,8 +5,9 @@ package org.sdf.etoile;
 
 import org.cactoos.Text;
 import org.cactoos.collection.CollectionEnvelope;
-import org.cactoos.collection.Filtered;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Filtered;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.cactoos.text.IsBlank;
 import org.cactoos.text.Split;
 
@@ -23,7 +24,7 @@ final class Aliases extends CollectionEnvelope<Alias> {
      */
     Aliases(final String expression) {
         super(
-            () ->
+            new ListOf<>(
                 new Mapped<>(
                     ColumnAlias::new,
                     new Mapped<>(
@@ -34,6 +35,7 @@ final class Aliases extends CollectionEnvelope<Alias> {
                         )
                     )
                 )
+            )
         );
     }
 }

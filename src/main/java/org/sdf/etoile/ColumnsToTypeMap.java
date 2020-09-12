@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import org.cactoos.collection.CollectionEnvelope;
+import org.cactoos.list.ListOf;
 
 /**
  * Each column to type.
@@ -25,13 +26,20 @@ final class ColumnsToTypeMap extends CollectionEnvelope<Map<String, String>> {
     ColumnsToTypeMap(final Map<String, List<String>> typcol,
         final Collection<Map<String, String>> typtyp) {
         super(
-            () -> {
-                final Collection<Map<String, String>> result = new ArrayList<>(typtyp.size());
-                for (final Map<String, String> type : typtyp) {
-                    buildColumnToTypeMapping(typcol, result, type);
+            new ListOf<>(
+                () -> {
+                    final Collection<Map<String, String>> result =
+                        new ArrayList<>(typtyp.size());
+                    for (final Map<String, String> type : typtyp) {
+                        ColumnsToTypeMap.buildColumnToTypeMapping(
+                            typcol,
+                            result,
+                            type
+                        );
+                    }
+                    return result.iterator();
                 }
-                return Collections.unmodifiableCollection(result);
-            }
+            )
         );
     }
 
