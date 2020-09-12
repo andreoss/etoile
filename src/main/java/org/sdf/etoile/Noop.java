@@ -18,7 +18,7 @@ public final class Noop<Y> extends TransformationEnvelope<Y> {
      * @param tran A transformation
      */
     Noop(final Transformation<Y> tran) {
-        super(() -> tran);
+        super(tran);
     }
 
     /**

@@ -3,7 +3,6 @@
  */
 package org.sdf.etoile;
 
-import java.util.function.Supplier;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 
@@ -18,7 +17,7 @@ public abstract class TransformationEnvelope<Y> implements Transformation<Y> {
     /**
      * A factory for Transformation.
      */
-    private final Supplier<Transformation<Y>> factory;
+    private final Transformation<Y> factory;
 
     /**
      * Secondary ctor.
@@ -29,17 +28,8 @@ public abstract class TransformationEnvelope<Y> implements Transformation<Y> {
         this(() -> set);
     }
 
-    /**
-     * Secondary ctor.
-     *
-     * @param trans A wrapped transformation.
-     */
-    TransformationEnvelope(final Transformation<Y> trans) {
-        this(() -> trans);
-    }
-
     @Override
     public final Dataset<Y> get() {
-        return this.factory.get().get();
+        return this.factory.get();
     }
 }

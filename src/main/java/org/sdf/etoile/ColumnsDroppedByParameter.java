@@ -22,25 +22,23 @@ final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
 
     /**
      * Ctor.
-     * @param original Original tranformation.
+     * @param original Original transformation.
      * @param params Parameters.
      */
     ColumnsDroppedByParameter(final Transformation<X> original, final Map<String, String> params) {
         super(
-            () -> {
-                final Transformation<Row> result;
-                if (params.containsKey(ColumnsDroppedByParameter.KEY)) {
-                    result = new WithoutColumns<>(
-                        original,
-                        Arrays.asList(params.get(ColumnsDroppedByParameter.KEY).split(","))
-                    );
-                } else {
-                    result = new Noop<>(
-                        original.get().toDF()
-                    );
-                }
-                return result;
-            }
+            new ConditionalTransformation<>(
+                () -> params.containsKey(ColumnsDroppedByParameter.KEY),
+                () -> new WithoutColumns<>(
+                    original,
+                    Arrays.asList(
+                        params.get(
+                            ColumnsDroppedByParameter.KEY
+                        ).split(",")
+                    )
+                ).get(),
+                new Noop<>(original.get().toDF())
+            )
         );
     }
 }

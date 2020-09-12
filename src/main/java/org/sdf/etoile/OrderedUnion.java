@@ -36,26 +36,25 @@ final class OrderedUnion<Y> extends TransformationEnvelope<Row> {
         final String pseudo
     ) {
         super(
-            () -> {
-                final Dataset<Row> lord = left.withColumn(
-                    pseudo,
-                    functions.lit(0)
-                );
-                final Dataset<Row> rord = right.withColumn(
-                    pseudo,
-                    functions.monotonically_increasing_id()
-                );
-                return new NumberedPartitions<>(
-                    new WithoutColumns<>(
-                        new Sorted<>(
-                            new Union<>(lord, rord),
-                            pseudo
+            new NumberedPartitions<>(
+                new WithoutColumns<>(
+                    new Sorted<>(
+                        new Union<>(
+                            left.withColumn(
+                                pseudo,
+                                functions.lit(0)
+                            ),
+                            right.withColumn(
+                                pseudo,
+                                functions.monotonically_increasing_id()
+                            )
                         ),
                         pseudo
                     ),
-                    1
-                );
-            }
+                    pseudo
+                ),
+                1
+            )
         );
     }
 }

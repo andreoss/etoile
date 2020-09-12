@@ -28,6 +28,6 @@ public final class Union<Y> extends TransformationEnvelope<Y> {
      * @param right Right side.
      */
     public Union(final Dataset<Y> left, final Dataset<Y> right) {
-        super(() -> left.union(right));
+        super(left.union(right));
     }
 }

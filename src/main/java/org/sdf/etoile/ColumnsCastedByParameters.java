@@ -14,18 +14,17 @@ import org.apache.spark.sql.Row;
 final class ColumnsCastedByParameters extends TransformationEnvelope<Row> {
     /**
      * Ctor.
-     * @param original Original tranformation.
-     * @param key Key of paramaters.
+     * @param original Original transformation.
+     * @param key Key of parameters.
      * @param params Parameters.
      */
     ColumnsCastedByParameters(final Transformation<Row> original,
         final String key, final Map<String, String> params) {
         super(
-            () ->
-                new ColumnsCastedToTypeMultiple(
-                    original,
-                    new Pairs(key, params)
-                )
+            new ColumnsCastedToTypeMultiple(
+                original,
+                new Pairs(key, params)
+            )
         );
     }
 }

@@ -8,7 +8,7 @@ import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.cactoos.collection.Mapped;
+import org.cactoos.list.Mapped;
 
 /**
  * Renamed according to aliases.

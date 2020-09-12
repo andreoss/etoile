@@ -10,7 +10,7 @@ import org.sdf.etoile.expr.ExpressionOf;
 /**
  * Add a column with data file location.
  *
- * @param <X> Underlying type of original tranformation.
+ * @param <X> Underlying type of original transformation.
  * @since 0.6.0
  */
 final class InputFileNames<X> extends TransformationEnvelope<Row> {
@@ -21,7 +21,7 @@ final class InputFileNames<X> extends TransformationEnvelope<Row> {
      */
     InputFileNames(final String col, final Transformation<X> original) {
         super(
-            () -> new WithColumns(
+            new WithColumns(
                 original,
                 new ExpressionOf(
                     functions.input_file_name().as(col)

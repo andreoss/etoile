@@ -10,14 +10,14 @@ import org.apache.spark.sql.catalyst.expressions.GenericRow;
 /**
  * Header (column names) of transformation.
  *
- * @param <Y> Underlying type of original tranformation.
+ * @param <Y> Underlying type of original transformation.
  * @since 0.2.1
  */
 public final class Header<Y> extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      *
-     * @param transformation A tranformation.
+     * @param transformation A transformation.
      */
     public Header(final Transformation<Y> transformation) {
         this(transformation.get());
@@ -30,7 +30,7 @@ public final class Header<Y> extends TransformationEnvelope<Row> {
      */
     public Header(final Dataset<Y> dataset) {
         super(
-            () -> new Rows(
+            new Rows(
                 dataset.sparkSession(),
                 new SchemaOf<>(new Stringified<>(dataset)),
                 new GenericRow(dataset.schema().fieldNames())
