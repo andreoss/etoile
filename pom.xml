@@ -125,7 +125,7 @@
         <dependency>
             <groupId>org.cactoos</groupId>
             <artifactId>cactoos</artifactId>
-            <version>0.41</version>
+            <version>0.46</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>
