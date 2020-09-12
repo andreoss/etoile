@@ -279,24 +279,10 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>com.qulice</groupId>
-                <artifactId>qulice-maven-plugin</artifactId>
-                <version>0.18.19</version>
-                <configuration>
-                    <license>file:${basedir}/HEADER</license>
-                    <excludes>
-                        <exclude>duplicatefinder:.*</exclude>
-                    </excludes>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+            <!-- @todo #2:30m Qulice was disabled due to #qulice/878.
+                  When this issue resolved, re-enabled the plugin.
+                  Also research a suitable alternative for qulice.
+            -->
         </plugins>
     </build>
     <repositories>
