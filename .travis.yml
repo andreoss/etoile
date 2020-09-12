@@ -11,4 +11,4 @@ cache:
 script:
   - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=andreoss_etoile
 jdk:
-  - openjdk8
+  - openjdk11
