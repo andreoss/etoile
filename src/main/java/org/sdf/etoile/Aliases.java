@@ -24,10 +24,10 @@ final class Aliases extends CollectionEnvelope<Alias> {
      */
     Aliases(final String expression) {
         super(
-            new ListOf<>(
-                new Mapped<>(
+            new ListOf<Alias>(
+                new Mapped<String, Alias>(
                     ColumnAlias::new,
-                    new Mapped<>(
+                    new Mapped<Text, String>(
                         Text::asString,
                         new Filtered<>(
                             x -> !new IsBlank(x).value(),

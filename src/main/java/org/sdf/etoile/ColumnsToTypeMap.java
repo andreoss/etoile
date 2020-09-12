@@ -26,7 +26,7 @@ final class ColumnsToTypeMap extends CollectionEnvelope<Map<String, String>> {
     ColumnsToTypeMap(final Map<String, List<String>> typcol,
         final Collection<Map<String, String>> typtyp) {
         super(
-            new ListOf<>(
+            new ListOf<Map<String, String>>(
                 () -> {
                     final Collection<Map<String, String>> result =
                         new ArrayList<>(typtyp.size());

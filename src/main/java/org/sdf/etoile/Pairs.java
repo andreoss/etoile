@@ -44,11 +44,14 @@ final class Pairs extends CollectionEnvelope<Map<String, String>> {
      * @param expr An expression string
      */
     Pairs(final String colon, final String sep, final String expr) {
-        super(Stream.of(expr.split(colon))
-            .filter(s -> !s.isEmpty())
-            .map(s -> Arrays.asList(s.split(sep)))
-            .map(l -> Collections.singletonMap(l.get(0), l.get(1)))
-            .collect(Collectors.toList()));
+        super(
+            Stream
+                .of(expr.split(colon))
+                .filter(s -> !s.isEmpty())
+                .map(s -> Arrays.asList(s.split(sep)))
+                .map(l -> Collections.singletonMap(l.get(0), l.get(1)))
+                .collect(Collectors.toList())
+        );
     }
 
 }
