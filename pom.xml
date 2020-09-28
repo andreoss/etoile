@@ -136,7 +136,7 @@
         <dependency>
             <groupId>org.llorllale</groupId>
             <artifactId>cactoos-matchers</artifactId>
-            <version>0.19</version>
+            <version>0.21</version>
             <exclusions>
                 <exclusion>
                     <groupId>org.hamcrest</groupId>
