@@ -5,6 +5,7 @@
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=ncloc)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=coverage)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Hits-of-Code](https://hitsofcode.com/github/andreoss/etoile)](https://hitsofcode.com/view/github/andreoss/etoile)
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/andreoss/etoile.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/andreoss/etoile/context:java)
 
 **Étoilé** is a multi-purpose Spark ETL application.
 
