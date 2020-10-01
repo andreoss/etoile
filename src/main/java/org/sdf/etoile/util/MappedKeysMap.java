@@ -3,10 +3,12 @@
  */
 package org.sdf.etoile.util;
 
+import org.cactoos.iterable.Mapped;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapEnvelope;
+import org.cactoos.map.MapOf;
 import java.util.Map;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import org.cactoos.map.MapEnvelope;
 
 /**
  * Map keys.
@@ -24,17 +26,15 @@ public final class MappedKeysMap<X, K, V> extends MapEnvelope<X, V> {
      */
     public MappedKeysMap(final Function<K, X> conv, final Map<K, V> orig) {
         super(
-            () -> {
-                final Function<Map.Entry<K, V>, K> key = Map.Entry::getKey;
-                return orig.entrySet()
-                    .stream()
-                    .collect(
-                        Collectors.toMap(
-                            key.andThen(conv),
-                            Map.Entry::getValue
-                        )
-                    );
-            }
+            () -> new MapOf<>(
+                new Mapped<>(
+                    e -> new MapEntry<>(
+                        conv.apply(e.getKey()),
+                        e.getValue()
+                    ),
+                    orig.entrySet()
+                )
+            )
         );
     }
 }
