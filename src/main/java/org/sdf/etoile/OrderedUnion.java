@@ -3,9 +3,9 @@
  */
 package org.sdf.etoile;
 
-import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.functions;
+import org.sdf.etoile.expr.ExpressionOf;
 
 /**
  * Ordered union of two {@link Transformation}s.
@@ -21,7 +21,7 @@ final class OrderedUnion<Y> extends TransformationEnvelope<Row> {
      * @param right Right side.
      */
     OrderedUnion(final Transformation<Y> left, final Transformation<Y> right) {
-        this(left.get(), right.get(), "__order");
+        this(left, right, "__order");
     }
 
     /**
@@ -31,31 +31,38 @@ final class OrderedUnion<Y> extends TransformationEnvelope<Row> {
      * @param pseudo Column name for order clause.
      */
     private OrderedUnion(
-        final Dataset<Y> left,
-        final Dataset<Y> right,
+        final Transformation<Y> left,
+        final Transformation<Y> right,
         final String pseudo
     ) {
         super(
-            () -> {
-                final Dataset<Row> lord = left.withColumn(
-                    pseudo,
-                    functions.lit(0)
-                );
-                final Dataset<Row> rord = right.withColumn(
-                    pseudo,
-                    functions.monotonically_increasing_id()
-                );
-                return new NumberedPartitions<>(
-                    new WithoutColumns<>(
-                        new Sorted<>(
-                            new Union<>(lord, rord),
-                            pseudo
+            new NumberedPartitions<>(
+                new WithoutColumns<>(
+                    new Sorted<>(
+                        new Union<>(
+                            new WithColumns(
+                                left,
+                                new ExpressionOf(
+                                    functions
+                                        .lit(0)
+                                        .as(pseudo)
+                                )
+                            ),
+                            new WithColumns(
+                                right,
+                                new ExpressionOf(
+                                    functions
+                                        .monotonically_increasing_id()
+                                        .as(pseudo)
+                                )
+                            )
                         ),
                         pseudo
                     ),
-                    1
-                );
-            }
+                    pseudo
+                ),
+                1
+            )
         );
     }
 }
