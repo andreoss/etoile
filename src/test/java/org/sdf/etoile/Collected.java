@@ -4,6 +4,7 @@
 package org.sdf.etoile;
 
 import org.cactoos.list.ListEnvelope;
+import org.cactoos.list.ListOf;
 
 /**
  * A transformation collected to List.
@@ -15,9 +16,13 @@ final class Collected<X> extends ListEnvelope<X> {
     /**
      * Ctor.
      *
-     * @param tran A tranformation to collect.
+     * @param tran A transformation to collect.
      */
     Collected(final Transformation<X> tran) {
-        super(tran.get()::collectAsList);
+        super(
+            new ListOf<>(
+                () -> tran.get().collectAsList().iterator()
+            )
+        );
     }
 }

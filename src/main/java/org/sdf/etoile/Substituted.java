@@ -13,13 +13,13 @@ import org.apache.spark.sql.Row;
 final class Substituted extends TransformationEnvelope<Row> {
     /**
      * Ctor.
-     * @param input Input tranformation.
+     * @param input Input transformations.
      * @param dict Dictionary.
      */
     Substituted(final Transformation<Row> input,
         final Map<Type, Map<Object, Object>> dict) {
         super(
-            () -> new MappedTransformation(
+            new MappedTransformation(
                 input,
                 new Substitute(new SerializableOnly<>(dict).get())
             )
