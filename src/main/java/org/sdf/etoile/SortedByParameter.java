@@ -22,8 +22,10 @@ final class SortedByParameter<Y> extends TransformationEnvelope<Y> {
      * @param original Original transformation.
      * @param params Parameters.
      */
-    SortedByParameter(final Transformation<Y> original,
-        final Map<String, String> params) {
+    SortedByParameter(
+        final Transformation<Y> original,
+        final Map<String, String> params
+    ) {
         super(
             new ConditionalTransformation<>(
                 () -> params.containsKey(SortedByParameter.PARAM_NAME),

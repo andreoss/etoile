@@ -9,7 +9,7 @@ import org.apache.spark.sql.SparkSession;
 import org.apache.spark.sql.jdbc.JdbcDialects;
 
 /**
- * Entiry point and command dispatcher.
+ * Entry-point and command dispatcher.
  *
  * @since 0.6.0
  * @checkstyle ClassDataAbstractionCouplingCheck (100 lines)
@@ -60,7 +60,7 @@ public final class Main implements Runnable {
             task = new DiscrepancyMain(this.spark, this.args);
         } else {
             throw new IllegalArgumentException(
-                String.format("command is not set: %s", this.args)
+                String.format("unknown command: %s", this.args)
             );
         }
         task.run();

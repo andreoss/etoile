@@ -18,7 +18,7 @@ import org.cactoos.list.Mapped;
 @RequiredArgsConstructor
 public final class Renamed implements Transformation<Row> {
     /**
-     * The original tranformation.
+     * The original transformation.
      */
     private final Transformation<Row> original;
 

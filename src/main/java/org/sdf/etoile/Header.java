@@ -20,21 +20,23 @@ public final class Header<Y> extends TransformationEnvelope<Row> {
      * @param transformation A transformation.
      */
     public Header(final Transformation<Y> transformation) {
-        this(transformation.get());
-    }
-
-    /**
-     * Secondary ctor.
-     *
-     * @param dataset A dataset.
-     */
-    public Header(final Dataset<Y> dataset) {
         super(
-            new Rows(
-                dataset.sparkSession(),
-                new SchemaOf<>(new Stringified<>(dataset)),
-                new GenericRow(dataset.schema().fieldNames())
-            )
+            new Transformation<Row>() {
+                private final Dataset<?> dataset = transformation.get();
+
+                @Override
+                public Dataset<Row> get() {
+                    return new Rows(
+                        this.dataset.sparkSession(),
+                        new SchemaOf<>(
+                            new Stringified<>(this.dataset)
+                        ),
+                        new GenericRow(
+                            this.dataset.schema().fieldNames()
+                        )
+                    ).get();
+                }
+            }
         );
     }
 }

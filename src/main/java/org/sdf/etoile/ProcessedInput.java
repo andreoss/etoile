@@ -17,15 +17,14 @@ final class ProcessedInput extends TransformationEnvelope<Row> {
      * @param input Raw input.
      * @param parameters Command-line parameters.
      */
-    ProcessedInput(final Transformation<Row> input,
-        final Map<String, String> parameters) {
+    ProcessedInput(
+        final Transformation<Row> input,
+        final Map<String, String> parameters
+    ) {
         super(
             new SortedByParameter<>(
                 new ExpressionTransformed(
-                    new FullyCastedByParameters(
-                        input,
-                        parameters
-                    ),
+                    new FullyCastedByParameters(input, parameters),
                     parameters
                 ),
                 parameters

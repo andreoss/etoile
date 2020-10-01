@@ -29,7 +29,7 @@ public final class Stringified<Y> extends TransformationEnvelope<Row> {
     /**
      * Ctor.
      *
-     * @param original Original tranfomation.
+     * @param original Original transformation.
      */
     public Stringified(final Transformation<Y> original) {
         super(() -> {

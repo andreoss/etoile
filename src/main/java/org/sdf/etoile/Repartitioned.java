@@ -6,11 +6,11 @@ package org.sdf.etoile;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.sdf.etoile.expr.Expression;
-import scala.collection.JavaConversions;
+import scala.collection.JavaConverters;
 
 /**
  * Repartitioned.
- * @param <X> Underylying data type.
+ * @param <X> Underlying data type.
  * @since 0.6.0
  */
 public final class Repartitioned<X> extends TransformationEnvelope<X> {
@@ -23,7 +23,7 @@ public final class Repartitioned<X> extends TransformationEnvelope<X> {
         final Expression... partitions) {
         super(
             () -> original.get().repartition(
-                JavaConversions.asScalaBuffer(
+                JavaConverters.asScalaBuffer(
                     Stream.of(partitions)
                         .map(Expression::get)
                         .collect(Collectors.toList())

@@ -3,12 +3,12 @@
  */
 package org.sdf.etoile.util;
 
+import java.util.Map;
+import java.util.function.Function;
 import org.cactoos.iterable.Mapped;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapEnvelope;
 import org.cactoos.map.MapOf;
-import java.util.Map;
-import java.util.function.Function;
 
 /**
  * Map keys.

@@ -15,9 +15,9 @@ import org.apache.spark.sql.Dataset;
 @RequiredArgsConstructor
 public abstract class TransformationEnvelope<Y> implements Transformation<Y> {
     /**
-     * A factory for Transformation.
+     * Original.
      */
-    private final Transformation<Y> factory;
+    private final Transformation<Y> wrapped;
 
     /**
      * Secondary ctor.
@@ -30,6 +30,6 @@ public abstract class TransformationEnvelope<Y> implements Transformation<Y> {
 
     @Override
     public final Dataset<Y> get() {
-        return this.factory.get();
+        return this.wrapped.get();
     }
 }

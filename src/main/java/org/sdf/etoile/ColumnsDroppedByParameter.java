@@ -8,10 +8,9 @@ import java.util.Map;
 import org.apache.spark.sql.Row;
 
 /**
- * Tranformation with removed columns.
- *
+ * Transformation with removed columns.
+ * g
  * @param <X> Underlying data type.
- *
  * @since 0.3.0
  */
 final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
@@ -25,7 +24,10 @@ final class ColumnsDroppedByParameter<X> extends TransformationEnvelope<Row> {
      * @param original Original transformation.
      * @param params Parameters.
      */
-    ColumnsDroppedByParameter(final Transformation<X> original, final Map<String, String> params) {
+    ColumnsDroppedByParameter(
+        final Transformation<X> original,
+        final Map<String, String> params
+    ) {
         super(
             new ConditionalTransformation<>(
                 () -> params.containsKey(ColumnsDroppedByParameter.KEY),

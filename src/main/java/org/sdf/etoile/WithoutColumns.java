@@ -18,7 +18,7 @@ import org.cactoos.list.ListOf;
 @RequiredArgsConstructor
 public final class WithoutColumns<Y> implements Transformation<Row> {
     /**
-     * An original tranformation.
+     * An original transformation.
      */
     private final Transformation<Y> orig;
 

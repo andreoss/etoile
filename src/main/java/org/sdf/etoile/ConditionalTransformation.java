@@ -3,7 +3,8 @@
  */
 package org.sdf.etoile;
 
-import java.util.function.BooleanSupplier;
+import org.apache.spark.sql.Dataset;
+import org.cactoos.Scalar;
 import org.cactoos.scalar.Ternary;
 import org.cactoos.scalar.Unchecked;
 
@@ -21,18 +22,23 @@ final class ConditionalTransformation<T> extends TransformationEnvelope<T> {
      * @param left Otherwise
      */
     ConditionalTransformation(
-        final BooleanSupplier cond,
+        final Scalar<Boolean> cond,
         final Transformation<T> right,
         final Transformation<T> left
     ) {
         super(
-            new Unchecked<>(
-                new Ternary<>(
-                    cond::getAsBoolean,
-                    right,
-                    left
-                )
-            ).value()
+            new Transformation<T>() {
+                private final Scalar<Transformation<T>> ternary = new Ternary<>(
+                    cond,
+                    () -> right,
+                    () -> left
+                );
+
+                @Override
+                public Dataset<T> get() {
+                    return new Unchecked<>(this.ternary).value().get();
+                }
+            }
         );
     }
 
