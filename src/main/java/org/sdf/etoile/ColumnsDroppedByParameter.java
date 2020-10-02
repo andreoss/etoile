@@ -9,7 +9,7 @@ import org.apache.spark.sql.Row;
 
 /**
  * Transformation with removed columns.
- * g
+ *
  * @param <X> Underlying data type.
  * @since 0.3.0
  */
