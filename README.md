@@ -6,6 +6,7 @@
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=andreoss_etoile&metric=coverage)](https://sonarcloud.io/dashboard?id=andreoss_etoile)
 [![Hits-of-Code](https://hitsofcode.com/github/andreoss/etoile)](https://hitsofcode.com/view/github/andreoss/etoile)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/andreoss/etoile.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/andreoss/etoile/context:java)
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fandreoss%2Fetoile.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fandreoss%2Fetoile?ref=badge_shield)
 
 **Étoilé** is a multi-purpose Spark ETL application.
 
@@ -104,3 +105,7 @@ Example: `--output.convert=timestamp:string,decimal:timestamp`
 * `--<prefix>.hive-names` convert names to hive-comtable, i.e by removing non-alphanumeric characters
 * `--<prefix>.rename` renames a column.
 Example: `--output.rename=id as iden`
+
+
+## License
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fandreoss%2Fetoile.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2Fandreoss%2Fetoile?ref=badge_large)
