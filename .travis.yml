@@ -3,12 +3,12 @@ sudo: false
 addons:
   sonarcloud:
     organization: "andreoss"
-    token:
-      secure: "OJEQYpltMkRgfF3IX1daWCuL3ksMMZ/raogjadWhkuRNz644z+HvAFBFq1OwikjKr8QO2X+TSBTDOzb5xUYuKFGEqEzGbkHtga9hVHvsfy0PVmDSu2Srp9vZwf+D5/6BVWz0xywNZPfc1V+ktQ5zBlOHGZD2ehA+J3n4W1yR5JQuTx6tmUmtN0rq0biu91nRnhK4PxUU1TUTYsMhwSAV5EIsjU/fgUbHNGPgAU8ebmxORW3Q8CD5v7BgPRj3s6j1jSZKDSHmSEonaxcFWMPGxPkaCwrp8mNTzWiKO/QB9NsxsT5Ggt1G1Np9mtTxzD6jWXLlfNAVt+NF1js/JSsl3iv8Uu9RGjUY7Kjf08jSV4kzAyjS5IggTrLt8dr4J2+vkvVnq9ZIhtgwnAosBWpwbfYw7rI/xGllC5eOX/T/lpzcj+8D5EosVvZ7gODFnqmflzjKZFdZf2n2aVCOFea+TjNOggFs6aeSLIMmsDkr5im3Vp+FB860Vkw4ATbgDfKfiABiWK/BQgfYhqeKdxqMxujMUBwKO0nJMyTghxQfayOiHJCsHhqhu+RWw2HfeSABTHPoZ1m6pBSmfgN4qglhjX2OVnBFzq4ajti1jVQJsd/ZThMQ+SFYE3tiftx47x+B/iHVsNtzNyzzOyq2rLEudefqblgLVWr0JxgmcIqJ6Xw="
+
 cache:
   directories:
     - $HOME/.m2
+
 script:
-  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=andreoss_etoile
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=andreoss_etoile -Dsonar.login=e905a0238eb393aea61ea978baaefc1461786f87
 jdk:
   - openjdk11
