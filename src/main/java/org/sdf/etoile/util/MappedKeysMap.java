@@ -26,7 +26,7 @@ public final class MappedKeysMap<X, K, V> extends MapEnvelope<X, V> {
      */
     public MappedKeysMap(final Function<K, X> conv, final Map<K, V> orig) {
         super(
-            () -> new MapOf<>(
+            new MapOf<>(
                 new Mapped<>(
                     e -> new MapEntry<>(
                         conv.apply(e.getKey()),

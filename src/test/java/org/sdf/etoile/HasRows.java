@@ -6,8 +6,8 @@ package org.sdf.etoile;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.cactoos.iterable.Mapped;
 import org.cactoos.list.ListOf;
-import org.cactoos.list.Mapped;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.hamcrest.Matchers;
@@ -18,7 +18,7 @@ import org.hamcrest.collection.IsIterableContainingInOrder;
  * Has rows.
  *
  * @since 0.7.0
- * @param <X> Type of tranformation.
+ * @param <X> Type of transformation.
  */
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class HasRows<X> extends TypeSafeDiagnosingMatcher<Transformation<X>> {
@@ -44,8 +44,8 @@ public class HasRows<X> extends TypeSafeDiagnosingMatcher<Transformation<X>> {
      * Ctor.
      * @param matcher Rows in Order.
      */
-    public HasRows(final List<Matcher<? extends X>> matcher) {
-        this(new IsIterableContainingInOrder(matcher));
+    public HasRows(final Iterable<Matcher<? extends X>> matcher) {
+        this(new IsIterableContainingInOrder(new ListOf<Matcher<?>>(matcher)));
     }
 
     /**

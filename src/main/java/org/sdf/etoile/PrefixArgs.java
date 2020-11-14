@@ -20,22 +20,17 @@ final class PrefixArgs extends MapEnvelope<String, String> {
      * @param source Source map.
      */
     PrefixArgs(final String prefix, final Map<String, String> source) {
-        super(
-            () -> {
-                final Map<String, String> result = new HashMap<>();
-                for (final Map.Entry<String, String> ent : source.entrySet()) {
-                    final String key = ent.getKey();
-                    final String value = ent.getValue();
-                    if (key.startsWith(prefix)) {
-                        result.put(
-                            key.replaceFirst(String.format("%s.", prefix), ""),
-                            value
-                        );
-                    }
-                }
-                return Collections.unmodifiableMap(result);
+        super(new HashMap<>());
+        for (final Map.Entry<String, String> ent : source.entrySet()) {
+            final String key = ent.getKey();
+            final String value = ent.getValue();
+            if (key.startsWith(prefix)) {
+                this.put(
+                    key.replaceFirst(String.format("%s.", prefix), ""),
+                    value
+                );
             }
-        );
+        }
     }
 
 }

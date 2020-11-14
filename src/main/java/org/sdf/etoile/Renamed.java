@@ -8,7 +8,8 @@ import java.util.Collection;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 
 /**
  * Renamed according to aliases.
@@ -33,7 +34,7 @@ public final class Renamed implements Transformation<Row> {
      * @param original The original transformation.
      */
     public Renamed(final Collection<String> aliases, final Transformation<Row> original) {
-        this(original, new Mapped<>(ColumnAlias::new, aliases));
+        this(original, new ListOf<>(new Mapped<>(ColumnAlias::new, aliases)));
     }
 
     /**

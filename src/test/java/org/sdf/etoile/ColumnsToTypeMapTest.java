@@ -4,7 +4,6 @@
 package org.sdf.etoile;
 
 import java.util.List;
-import org.cactoos.collection.CollectionOf;
 import org.cactoos.list.ListOf;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
@@ -30,7 +29,7 @@ final class ColumnsToTypeMapTest {
                     new MapEntry<>(strtype, new ListOf<>("name")),
                     new MapEntry<>(inttype, cols)
                 ),
-                new CollectionOf<>(
+                new ListOf<>(
                     new MapOf<>(new MapEntry<>(inttype, strtype)),
                     new MapOf<>(new MapEntry<>("timestamp", inttype))
                 )
