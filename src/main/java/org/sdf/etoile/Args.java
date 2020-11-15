@@ -8,7 +8,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import org.cactoos.iterable.IterableOf;
 import org.cactoos.map.MapEnvelope;
+import org.cactoos.map.MapOf;
 
 /**
  * Command-line arguments.
@@ -37,27 +39,31 @@ final class Args extends MapEnvelope<String, String> {
      */
     Args(final Pattern pattern, final String... arguments) {
         super(
-            () -> {
-                final Map<String, String> result = new HashMap<>();
-                for (final String arg : arguments) {
-                    final Matcher matcher = pattern.matcher(arg);
-                    if (matcher.matches()) {
-                        result.put(
-                            matcher.group("key"),
-                            matcher.group("value")
-                        );
-                    } else {
-                        throw new IllegalArgumentException(
-                            String.format(
-                                "%s does not match %s",
-                                arg,
-                                pattern
-                            )
-                        );
+            new MapOf<String, String>(
+                new IterableOf<Entry<? extends String, ? extends String>>(
+                    () -> {
+                        final Map<String, String> result = new HashMap<>();
+                        for (final String arg : arguments) {
+                            final Matcher matcher = pattern.matcher(arg);
+                            if (matcher.matches()) {
+                                result.put(
+                                    matcher.group("key"),
+                                    matcher.group("value")
+                                );
+                            } else {
+                                throw new IllegalArgumentException(
+                                    String.format(
+                                        "%s does not match %s",
+                                        arg,
+                                        pattern
+                                    )
+                                );
+                            }
+                        }
+                        return Collections.unmodifiableMap(result).entrySet().iterator();
                     }
-                }
-                return Collections.unmodifiableMap(result);
-            }
+                )
+            )
         );
     }
 

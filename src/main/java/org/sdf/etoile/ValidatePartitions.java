@@ -7,7 +7,8 @@ import java.nio.file.Paths;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.sql.SparkSession;
-import org.cactoos.list.Mapped;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.list.ListOf;
 import org.sdf.etoile.expr.ExpressionOf;
 
 /**
@@ -34,12 +35,14 @@ final class ValidatePartitions implements Runnable {
             new FormatOutput<>(
                 new PartitionSchemeValidated(
                     new Input(this.spark, new PrefixArgs("input", this.args)),
-                    new Mapped<>(
-                        ExpressionOf::new,
-                        new PrefixArgs(
-                            "expression",
-                            this.args
-                        ).values()
+                    new ListOf<>(
+                        new Mapped<>(
+                            ExpressionOf::new,
+                            new PrefixArgs(
+                                "expression",
+                                this.args
+                            ).values()
+                        )
                     )
                 ),
                 output

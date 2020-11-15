@@ -4,6 +4,7 @@
 package org.sdf.etoile;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -36,20 +37,18 @@ final class TypeToColumnsMap extends MapEnvelope<DataType, List<String>> {
      * @param schema Schema.
      */
     private TypeToColumnsMap(final StructType schema) {
-        super(
-            () -> {
-                final Function<StructField, DataType> type = StructField::dataType;
-                final Function<StructField, String> name = StructField::name;
-                return Stream.of(schema.fields())
-                    .collect(
-                        Collectors.toMap(
-                            type,
-                            name.andThen(Collections::singletonList),
-                            (a, b) -> new ListOf<>(new Joined<>(a, b))
-                        )
-                    );
-            }
-        );
+        super(new HashMap<>());
+        final Function<StructField, DataType> type = StructField::dataType;
+        final Function<StructField, String> name = StructField::name;
+        this.putAll(
+            Stream.of(schema.fields())
+                .collect(
+                    Collectors.toMap(
+                        type,
+                        name.andThen(Collections::singletonList),
+                        (a, b) -> new ListOf<>(new Joined<>(a, b))
+                    )
+                ));
     }
 
 }
