@@ -3,15 +3,20 @@
  */
 package org.sdf.etoile;
 
+import org.cactoos.Text;
+import org.cactoos.iterable.Mapped;
+import org.cactoos.text.FormattedText;
+import org.cactoos.text.Joined;
+import org.cactoos.text.TextOf;
+import org.llorllale.cactoos.matchers.MatcherEnvelope;
 import org.llorllale.cactoos.matchers.TextIs;
-import org.llorllale.cactoos.matchers.TextMatcherEnvelope;
 
 /**
  * Matcher for lines.
  *
  * @since 0.3.1
  */
-final class LinesAre extends TextMatcherEnvelope {
+final class LinesAre extends MatcherEnvelope<Text> {
     /**
      * Ctor.
      * @param lines Lines to match.
@@ -19,10 +24,13 @@ final class LinesAre extends TextMatcherEnvelope {
     LinesAre(final String... lines) {
         super(
             new TextIs(
-                String.join(System.lineSeparator(), lines)
-                    + System.lineSeparator()
-            ),
-            "Lines are: "
+                new FormattedText(
+                    "%s%n",
+                    new Joined(
+                        new FormattedText("%n"), new Mapped<>(TextOf::new, lines)
+                    )
+                )
+            )
         );
     }
 }
