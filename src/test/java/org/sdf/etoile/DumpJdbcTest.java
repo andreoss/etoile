@@ -26,11 +26,7 @@ import org.junit.jupiter.migrationsupport.rules.EnableRuleMigrationSupport;
  */
 @EnableRuleMigrationSupport
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
-public final class DumpJdbcTest extends SparkTestTemplate {
-    /**
-     * Files for tests.
-     */
-    private final TestFiles data = new TempFiles(this.temp);
+final class DumpJdbcTest extends SparkTestTemplate {
 
     @SuppressWarnings("UseOfJDBCDriverClass")
     @BeforeEach
@@ -47,7 +43,7 @@ public final class DumpJdbcTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=jdbc",
                 String.format("--input.url=%s", url),
@@ -78,7 +74,7 @@ public final class DumpJdbcTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=jdbc",
                 String.format("--input.url=%s", url),
@@ -101,7 +97,7 @@ public final class DumpJdbcTest extends SparkTestTemplate {
     }
 
     private String database(final String... sql) throws IOException, SQLException {
-        final String url = String.format("jdbc:h2:file:%s", temp.newFile("db.sql"));
+        final String url = String.format("jdbc:h2:file:%s", this.temp.newFile("db.sql"));
         try (Connection conn = DriverManager.getConnection(url)) {
             final String command = Arrays
                 .stream(sql)

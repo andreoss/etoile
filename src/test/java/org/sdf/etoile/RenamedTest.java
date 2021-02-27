@@ -19,7 +19,7 @@ final class RenamedTest extends SparkTestTemplate {
             "should keep names",
             new SchemaOf(
                 new Renamed(
-                    new FakeInput(SparkTestTemplate.session, "number int, name string")
+                    new FakeInput(this.session(), "number int, name string")
                 )
             ).asMap(),
             Matchers.allOf(
@@ -36,7 +36,7 @@ final class RenamedTest extends SparkTestTemplate {
             new SchemaOf<>(
                 new Renamed(
                     new FakeInput(
-                        SparkTestTemplate.session,
+                        this.session(),
                         "number int, name string"
                     ),
                     "name as nombre",

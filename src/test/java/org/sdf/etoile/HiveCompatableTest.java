@@ -23,7 +23,7 @@ final class HiveCompatableTest extends SparkTestTemplate {
             new SchemaOf<>(
                 new HiveCompatable(
                     new FakeInput(
-                        SparkTestTemplate.session,
+                        this.session(),
                         new StructType()
                             .add("i$d", StringType$.MODULE$)
                             .add("abx#xxx", StringType$.MODULE$),

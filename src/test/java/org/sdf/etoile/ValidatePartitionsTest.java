@@ -16,10 +16,6 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class ValidatePartitionsTest extends SparkTestTemplate {
-    /**
-     * Files for tests.
-     */
-    private final TestFiles data = new TempFiles(this.temp);
 
     @Test
     void validatesPartitions() {
@@ -34,7 +30,7 @@ final class ValidatePartitionsTest extends SparkTestTemplate {
             "4,wtf"
         );
         new ValidatePartitions(
-            SparkTestTemplate.session,
+            this.session(),
             new MapOf<>(
                 new MapEntry<>("expression.1", "cast(_c0 % 2 as int) as part"),
                 new MapEntry<>("input.format", "csv"),
@@ -67,7 +63,7 @@ final class ValidatePartitionsTest extends SparkTestTemplate {
             "4,wtf"
         );
         new ValidatePartitions(
-            SparkTestTemplate.session,
+            this.session(),
             new MapOf<>(
                 new MapEntry<>("expression.1", "cast(_c0 % 2 as int) as part"),
                 new MapEntry<>("input.format", "csv"),

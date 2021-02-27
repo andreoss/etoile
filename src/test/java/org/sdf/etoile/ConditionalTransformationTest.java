@@ -51,11 +51,11 @@ final class ConditionalTransformationTest extends SparkTestTemplate {
     }
 
     private Noop<Row> left() {
-        return new Noop<>(new FakeInput(SparkTestTemplate.session, "id int"));
+        return new Noop<>(new FakeInput(this.session(), "id int"));
     }
 
     private Noop<Row> right() {
-        return new Noop<>(new FakeInput(SparkTestTemplate.session, "id string"));
+        return new Noop<>(new FakeInput(this.session(), "id string"));
     }
 
 }

@@ -24,7 +24,7 @@ final class StringifiedTest extends SparkTestTemplate {
             new SchemaOf<>(
                 new Stringified<>(
                     new FakeInput(
-                        SparkTestTemplate.session,
+                        this.session(),
                         "id int, name string, val decimal(38,12)",
                         Arrays.asList(
                             Factory.arrayOf(1, "foo", BigDecimal.valueOf(0.12)),
@@ -47,7 +47,7 @@ final class StringifiedTest extends SparkTestTemplate {
         MatcherAssert.assertThat(
             new Stringified<>(
                 new FakeInput(
-                    this.session,
+                    this.session(),
                     "id int, name binary",
                     Arrays.asList(
                         Factory.arrayOf(1, "AA".getBytes()),

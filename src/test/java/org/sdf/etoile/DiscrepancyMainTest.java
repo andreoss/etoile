@@ -3,6 +3,7 @@
  */
 package org.sdf.etoile;
 
+import org.apache.spark.sql.SparkSession;
 import org.cactoos.map.MapEntry;
 import org.cactoos.map.MapOf;
 import org.hamcrest.MatcherAssert;
@@ -36,7 +37,7 @@ final class DiscrepancyMainTest extends SparkTestTemplate {
             "1,0,wtf"
         );
         new DiscrepancyMain(
-            SparkTestTemplate.session,
+            this.spark(),
             new MapOf<>(
                 new MapEntry<>("keys", "_c0"),
                 new MapEntry<>("left.format", "csv"),
@@ -65,7 +66,7 @@ final class DiscrepancyMainTest extends SparkTestTemplate {
             "1,0,wtf"
         );
         new DiscrepancyMain(
-            SparkTestTemplate.session,
+            spark(),
             new MapOf<>(
                 new MapEntry<>("keys", "_c0"),
                 new MapEntry<>("left.format", "csv"),
@@ -81,6 +82,14 @@ final class DiscrepancyMainTest extends SparkTestTemplate {
                 "0,0,XXX,\"Failure(1/4): _c2(STRING):: is \\\"XXX\\\" => was \\\"???\\\"\""
             )
         );
+    }
+
+    /**
+     * Spark.
+     * @return Session.
+     */
+    private SparkSession spark() {
+        return this.session();
     }
 
 }

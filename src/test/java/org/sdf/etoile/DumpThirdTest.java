@@ -12,22 +12,18 @@ import org.junit.jupiter.api.Test;
  * @since 0.4.0
  */
 final class DumpThirdTest extends SparkTestTemplate {
-    /**
-     * Files for tests.
-     */
-    private final TestFiles data = new TempFiles(this.temp);
 
     @Test
     void canDumpHiveTable() {
-        SparkTestTemplate.session.sql(
+        this.session().sql(
             "CREATE DATABASE IF NOT EXISTS FOO"
         ).count();
-        SparkTestTemplate.session.sql(
+        this.session().sql(
             "CREATE TABLE IF NOT EXISTS FOO.BAR AS (SELECT 1 as ID, 'foo' as NAME)"
         ).count();
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.table=foo.bar",
                 String.format("--output.path=%s", output.toURI()),

@@ -13,10 +13,6 @@ import org.junit.jupiter.api.Test;
  */
 @SuppressWarnings("PMD.AvoidDuplicateLiterals")
 final class DumpSecondTest extends SparkTestTemplate {
-    /**
-     * Files for tests.
-     */
-    private final TestFiles data = new TempFiles(this.temp);
 
     @Test
     void canRenamesColumnsToHiveCompatableNams() {
@@ -31,7 +27,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -65,7 +61,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=csv",
                 "--input.header=true",
@@ -100,7 +96,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=csv+missing",
                 "--input.header=true",
@@ -136,7 +132,7 @@ final class DumpSecondTest extends SparkTestTemplate {
         );
         final File output = this.data.output();
         new Dump(
-            SparkTestTemplate.session,
+            this.session(),
             new Args(
                 "--input.format=csv+missing",
                 "--input.header=true",
