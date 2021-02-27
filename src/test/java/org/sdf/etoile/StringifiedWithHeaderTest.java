@@ -21,7 +21,7 @@ final class StringifiedWithHeaderTest extends SparkTestTemplate {
             "writes csv with header",
             new StringifiedWithHeader<>(
                 new FakeInput(
-                    SparkTestTemplate.session,
+                    this.session(),
                     "id int, name string",
                     Factory.arrayOf(1, "hi there")
                 )

@@ -23,12 +23,12 @@ final class DiscrepancyTest extends SparkTestTemplate {
     void shouldBeEmptyIfDatasetsMatch() {
         final Transformation<Row> trns = new Discrepancy(
             new ListOf<>("id"), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"},
             new Object[]{2, "BAR"}
         ), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"},
             new Object[]{2, "BAR"}
@@ -45,11 +45,11 @@ final class DiscrepancyTest extends SparkTestTemplate {
     void whenRowMissing() {
         final Transformation<Row> trns = new Discrepancy(
             new ListOf<>("id"), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"}
         ), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"},
             new Object[]{2, "BAR"}
@@ -68,12 +68,12 @@ final class DiscrepancyTest extends SparkTestTemplate {
     void shouldContainMismatchedRow() {
         final Transformation<Row> trns = new Discrepancy(
             new ListOf<>("id"), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"},
             new Object[]{2, "BAR"}
         ), new FakeInput(
-            SparkTestTemplate.session,
+            this.session(),
             "id int, val string",
             new Object[]{1, "FOO"},
             new Object[]{2, "YOLO"}

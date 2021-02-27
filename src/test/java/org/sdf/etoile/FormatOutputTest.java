@@ -33,7 +33,7 @@ final class FormatOutputTest extends SparkTestTemplate {
                         .resolve("csv"),
                     new FormatOutput<>(
                         new FakeInput(
-                            SparkTestTemplate.session,
+                            this.session(),
                             "id int, name string",
                             Arrays.asList(
                                 Factory.arrayOf(1, "foo"),
@@ -63,7 +63,7 @@ final class FormatOutputTest extends SparkTestTemplate {
         Assertions.assertThrows(
             IllegalArgumentException.class,
             () -> new FormatOutput<>(
-                new FakeInput(SparkTestTemplate.session, "id int"),
+                new FakeInput(this.session(), "id int"),
                 new MapOf<>(
                     new MapEntry<>("header", "true"),
                     new MapEntry<>("format", "csv+header")

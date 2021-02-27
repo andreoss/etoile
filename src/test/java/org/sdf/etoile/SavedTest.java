@@ -34,7 +34,7 @@ final class SavedTest extends SparkTestTemplate {
                 new FormatOutput<>(
                     new StringifiedWithHeader<>(
                         new FakeInput(
-                            SparkTestTemplate.session,
+                            this.session(),
                             "id int, val string",
                             Arrays.asList(
                                 Factory.arrayOf(1, "abc"),
@@ -67,7 +67,7 @@ final class SavedTest extends SparkTestTemplate {
                 "overwrite",
                 new FormatOutput<>(
                     new FakeInput(
-                        SparkTestTemplate.session,
+                        this.session(),
                         "id int, val string",
                         Arrays.asList(
                             Factory.arrayOf(1, "abc"),
