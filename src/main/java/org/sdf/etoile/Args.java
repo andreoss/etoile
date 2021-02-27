@@ -28,7 +28,7 @@ final class Args extends MapEnvelope<String, String> {
      */
     Args(final String... arguments) {
         this(
-            Pattern.compile("--(?<key>[a-z0-9-\\.]+)=(?<value>.+)"), arguments
+            Pattern.compile("--(?<key>[a-z0-9-.]+)=(?<value>.+)"), arguments
         );
     }
 
