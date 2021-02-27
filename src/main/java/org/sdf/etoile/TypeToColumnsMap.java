@@ -46,7 +46,7 @@ final class TypeToColumnsMap extends MapEnvelope<DataType, List<String>> {
                     Collectors.toMap(
                         type,
                         name.andThen(Collections::singletonList),
-                        (a, b) -> new ListOf<>(new Joined<>(a, b))
+                        (a, b) -> new ListOf<String>(new Joined<String>(a, b))
                     )
                 ));
     }

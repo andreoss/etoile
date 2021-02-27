@@ -6,7 +6,7 @@ package org.sdf.etoile;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.function.Function;
+import org.apache.spark.api.java.function.Function;
 
 /**
  * Extract values of partition columns from input file name.
@@ -17,7 +17,7 @@ import java.util.function.Function;
 final class ExtractPartitions implements Function<String, Map<String, String>> {
 
     @Override
-    public Map<String, String> apply(final String filename) {
+    public Map<String, String> call(final String filename) throws Exception {
         final Map<String, String> res = new LinkedHashMap<>();
         final String[] parts = filename.split("/");
         for (int inx = parts.length - 2; inx >= 0; inx -= 1) {
