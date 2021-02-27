@@ -15,10 +15,10 @@ import org.junit.jupiter.api.Test;
  */
 final class ExtractPartitionsTest {
     @Test
-    void stopsAfterAllPartitionsCollected() {
+    void stopsAfterAllPartitionsCollected() throws Exception {
         MatcherAssert.assertThat(
             new ExtractPartitions()
-                .apply("/foo=garbage/bar/a=1/more/z=2/b=3/1.csv"),
+                .call("/foo=garbage/bar/a=1/more/z=2/b=3/1.csv"),
             Matchers.allOf(
                 Matchers.hasEntry("z", "2"),
                 Matchers.hasEntry("b", "3")
@@ -27,28 +27,28 @@ final class ExtractPartitionsTest {
     }
 
     @Test
-    void emptyString() {
+    void emptyString() throws Exception {
         MatcherAssert.assertThat(
             new ExtractPartitions()
-                .apply(""),
+                .call(""),
             IsMapWithSize.anEmptyMap()
         );
     }
 
     @Test
-    void noPartitions() {
+    void noPartitions() throws Exception {
         MatcherAssert.assertThat(
             new ExtractPartitions()
-                .apply("/foo/bar/1.csv"),
+                .call("/foo/bar/1.csv"),
             IsMapWithSize.anEmptyMap()
         );
     }
 
     @Test
-    void extractsPartitionsAMap() {
+    void extractsPartitionsAMap() throws Exception {
         MatcherAssert.assertThat(
             new ExtractPartitions()
-                .apply("/foo/bar/a=1/b=3/1.csv"),
+                .call("/foo/bar/a=1/b=3/1.csv"),
             Matchers.allOf(
                 Matchers.hasEntry("a", "1"),
                 Matchers.hasEntry("b", "3")

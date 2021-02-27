@@ -3,14 +3,15 @@
  */
 package org.sdf.etoile;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.apache.spark.api.java.function.FilterFunction;
 import org.apache.spark.sql.Row;
+import org.cactoos.iterable.IterableOf;
+import org.cactoos.iterator.Mapped;
+import org.cactoos.map.MapEntry;
+import org.cactoos.map.MapOf;
 
 /**
  * Filter rows with correct partition scheme.
@@ -30,24 +31,22 @@ final class PartitionValuesMatch implements FilterFunction<Row> {
     private final String column;
 
     @Override
-    public boolean call(final Row value) {
-        final String file = value.getAs(this.column);
-        final Map<String, String> pvs = new ExtractPartitions()
-            .apply(file);
-        final Map<String, String> cvs = pvs.keySet().stream()
-            .map(
-                k -> Collections.singletonMap(
-                    k,
-                    Objects.toString(value.getAs(k), "NULL")
+    public boolean call(final Row value) throws Exception {
+        final Map<String, String> pvs = new ExtractPartitions().call(
+            value.<String>getAs(this.column)
+        );
+        final Map<String, String> cvs =
+            new MapOf<>(
+                new IterableOf<>(
+                    new Mapped<>(
+                        k -> new MapEntry<>(
+                            k,
+                            Objects.toString(value.getAs(k), "NULL")
+                        ),
+                        pvs.keySet().iterator()
+                    )
                 )
-            )
-            .map(Map::entrySet)
-            .flatMap(Collection::stream)
-            .collect(
-                Collectors.toMap(
-                    Map.Entry::getKey,
-                    Map.Entry::getValue
-                )
+
             );
         return pvs.equals(cvs);
     }
