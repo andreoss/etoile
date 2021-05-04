@@ -9,7 +9,7 @@ import org.cactoos.text.FormattedText;
 import org.cactoos.text.Joined;
 import org.cactoos.text.TextOf;
 import org.llorllale.cactoos.matchers.MatcherEnvelope;
-import org.llorllale.cactoos.matchers.TextIs;
+import org.llorllale.cactoos.matchers.IsText;
 
 /**
  * Matcher for lines.
@@ -23,7 +23,7 @@ final class LinesAre extends MatcherEnvelope<Text> {
      */
     LinesAre(final String... lines) {
         super(
-            new TextIs(
+            new IsText(
                 new FormattedText(
                     "%s%n",
                     new Joined(
@@ -34,4 +34,3 @@ final class LinesAre extends MatcherEnvelope<Text> {
         );
     }
 }
-
