@@ -8,7 +8,7 @@
     <name>étoilé</name>
     <version>0.9.1-SNAPSHOT</version>
     <properties>
-        <junit-jupiter.version>5.9.1</junit-jupiter.version>
+        <junit-jupiter.version>5.9.2</junit-jupiter.version>
         <junit.platform.version>1.9.1</junit.platform.version>
         <spark.version>3.3.1</spark.version>
         <sonar.dependencyCheck.reportPath>${project.basedir}/target/dependency-check-report.xml
