@@ -10,7 +10,7 @@
     <properties>
         <junit-jupiter.version>5.9.1</junit-jupiter.version>
         <junit.platform.version>1.9.1</junit.platform.version>
-        <spark.version>3.3.1</spark.version>
+        <spark.version>3.3.2</spark.version>
         <sonar.dependencyCheck.reportPath>${project.basedir}/target/dependency-check-report.xml
         </sonar.dependencyCheck.reportPath>
     </properties>
